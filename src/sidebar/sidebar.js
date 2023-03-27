@@ -1,8 +1,8 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import styles from './styles';
-import List from '@material-ui/core/List';
-import { Divider, Button } from '@material-ui/core';
+import List from '@mui/material/List';
+import { Button } from '@mui/material';
 import SidebarItemComponent from '../sidebarItem/sidebarItem';
 
 class sidebarComponent extends React.Component {
@@ -51,7 +51,7 @@ class sidebarComponent extends React.Component {
                                         deleteNote={this.deleteNote}>
 
                                     </SidebarItemComponent>
-                                    <Divider></Divider>
+                                    <dividerClasses></dividerClasses>
                                 </div>
                             )
                         })
@@ -79,9 +79,8 @@ class sidebarComponent extends React.Component {
         console.log(this.state);
     }
 
-    selectNote = () => {
-        console.log('select note')
-    }
+    selectNote = (n, i) => this.props.selectNote(n, i);
+    
 
     deleteNote = () => {
         console.log('delete note')

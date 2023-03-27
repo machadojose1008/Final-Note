@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../helpers';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import styles from './styles'
 
 class EditorComponent extends React.Component {
