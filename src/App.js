@@ -2,13 +2,12 @@ import React from 'react';
 import './App.css';
 import SidebarComponent from './sidebar/sidebar';
 import EditorComponent from './editor/editor';
-import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import { collection, getFirestore, onSnapshot} from "firebase/firestore";
+import db from '../src/firebase-config.js'
 
 
-const firebase = require("firebase/app");
 // Required for side-effects
 require("firebase/firestore");
-
 
 
 class App extends React.Component {
@@ -38,7 +37,8 @@ class App extends React.Component {
             <EditorComponent
               selectedNote={this.state.selectedNote}
               selectedNoteIndex={this.state.selectedNoteIndex}
-              notes={this.newNote}></EditorComponent> :
+              notes={this.newNote}
+              noteUpdate={this.noteUpdate}></EditorComponent> :
               null
           }
       </div>
@@ -46,7 +46,7 @@ class App extends React.Component {
   }
 
   componentDidMount = () => {
-    const db = getFirestore();
+    
     const notesRef = collection(db, 'notes');
 
     onSnapshot(notesRef, (serverUpdate) => {
@@ -61,6 +61,15 @@ class App extends React.Component {
   }
 
   selectNote = (note, index) => this.setState({ selectedNoteIndex: index, selectedNote: note });
+  // noteUpdate = (id, noteObj) => {
+  //   const db = getFirestore();
+  //   const notesRef = collection(db,'notes');
+  //   notesRef.doc(id).update({
+  //     title: noteObj.title,
+  //     body: noteObj.body
+  //   });
+  // }
+  
 
 }
 

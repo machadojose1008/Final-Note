@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { initializeApp } from "firebase/app";
 
+/*
 const firebaseConfig = {
   apiKey: "AIzaSyBllhFpOow-uXGgQuCzdMl15F3bRUgrGbQ",
   authDomain: "final-note-29240.firebaseapp.com",
@@ -17,7 +17,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
+*/
 
 
 const root = ReactDOM.createRoot(document.getElementById('finalnote-container'));
