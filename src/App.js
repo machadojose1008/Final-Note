@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import SidebarComponent from './sidebar/sidebar';
 import EditorComponent from './editor/editor';
-import { collection, onSnapshot, updateDoc, doc} from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, doc, serverTimestamp} from "firebase/firestore";
 import db from '../src/firebase-config.js'
 
 
@@ -66,7 +66,8 @@ class App extends React.Component {
     const noteRef = doc(db, 'notes',id);
     const data = {
       title: noteObj.title,
-      body: noteObj.body
+      body: noteObj.body,
+      timestamp: serverTimestamp()
     };
 
     updateDoc(noteRef, data)
