@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import SidebarComponent from './sidebar/sidebar';
 import EditorComponent from './editor/editor';
-import { collection, getFirestore, onSnapshot} from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, doc} from "firebase/firestore";
 import db from '../src/firebase-config.js'
 
 
@@ -61,14 +61,24 @@ class App extends React.Component {
   }
 
   selectNote = (note, index) => this.setState({ selectedNoteIndex: index, selectedNote: note });
-  // noteUpdate = (id, noteObj) => {
-  //   const db = getFirestore();
-  //   const notesRef = collection(db,'notes');
-  //   notesRef.doc(id).update({
-  //     title: noteObj.title,
-  //     body: noteObj.body
-  //   });
-  // }
+
+  noteUpdate = (id, noteObj) => {
+    const noteRef = doc(db, 'notes',id);
+    const data = {
+      title: noteObj.title,
+      body: noteObj.body
+    };
+
+    updateDoc(noteRef, data)
+      .then(docRef => {
+        console.log('Documento atualizado1');
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+
+ 
   
 
 }
