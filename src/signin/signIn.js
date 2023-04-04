@@ -1,9 +1,8 @@
 import React from "react";
-import useStyles from "./styles";
 import { withStyles } from '@mui/styles';
-import { CheckBox, Avatar, Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, Link, TextField, Typography } from "@mui/material";
+import { Avatar, Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, Link, TextField, Typography } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
-
+import useStyles from "./styles";
 
 class SignIn extends React.Component {
 
@@ -26,7 +25,7 @@ class SignIn extends React.Component {
 
         return (
             <Container component="main" maxWidth="xs">
-                <CssBaseline />
+                 <CssBaseline />
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
                         <LockOutlined />

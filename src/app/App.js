@@ -1,10 +1,9 @@
 import React from 'react';
 import './App.css';
-import SidebarComponent from './sidebar/sidebar';
-import EditorComponent from './editor/editor';
-import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc} from "firebase/firestore";
-import db from '../src/firebase-config.js';
-import SignIn from "./signin/signIn";
+import SidebarComponent from '../sidebar/sidebar';
+import EditorComponent from '../editor/editor';
+import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
+import db from '../firebase-config.js';
 
 // Required for side-effects
 require("firebase/firestore");
@@ -17,40 +16,35 @@ class App extends React.Component {
     this.state = {
       selectedNoteIndex: null,
       selectedNote: null,
-      notes: null,
-      authenticated: false
+      notes: null
     };
   }
 
   render() {
     return (
-      <div className='app-container' authenticated={this.state.authenticated}>
-        {this.props.authenticated ? (
-          <SidebarComponent
+      <div className="app-container">
+        <SidebarComponent
           selectedNoteIndex={this.state.selectedNoteIndex}
           notes={this.state.notes}
           deleteNote={this.deleteNote}
           selectNote={this.selectNote}
           newNote={this.newNote}
         />
-        ) : (
-          <SignIn />
-        )}
         {
-          this.state.selectedNote ?
+          this.state.selectedNote ? (
             <EditorComponent
               selectedNote={this.state.selectedNote}
               selectedNoteIndex={this.state.selectedNoteIndex}
               notes={this.newNote}
-              noteUpdate={this.noteUpdate}></EditorComponent> :
-              null
-          }
+              noteUpdate={this.noteUpdate}/>
+            ) : null
+        }
       </div>
     );
   }
 
   componentDidMount = () => {
-    
+
     const notesRef = collection(db, 'notes');
 
     onSnapshot(notesRef, (serverUpdate) => {
@@ -67,7 +61,7 @@ class App extends React.Component {
   selectNote = (note, index) => this.setState({ selectedNoteIndex: index, selectedNote: note });
 
   noteUpdate = (id, noteObj) => {
-    const noteRef = doc(db, 'notes',id);
+    const noteRef = doc(db, 'notes', id);
     const data = {
       title: noteObj.title,
       body: noteObj.body,
@@ -96,20 +90,20 @@ class App extends React.Component {
       addDoc(dbRef, note)
     );
     const newID = newFromDB.id;
-    await this.setState({ notes: [...this.state.notes, note]});
+    await this.setState({ notes: [...this.state.notes, note] });
     const newNoteIndex = this.state.notes.indexOf(this.state.notes.filter(_note => _note.id === newID)[0]);
-    this.setState({ selectedNote: this.state.notes[newNoteIndex], selectedNoteIndex: newNoteIndex});
+    this.setState({ selectedNote: this.state.notes[newNoteIndex], selectedNoteIndex: newNoteIndex });
   }
 
   deleteNote = async (note) => {
     const noteIndex = note.id;
-    await this.setState({notes: this.state.notes.filter(_note => _note !== note)});
-    if(this.state.selectedNoteIndex === noteIndex) {
-      this.setState({ selectedNoteIndex: null, selectedNote: null});
-    }else {
-      this.state.notes.length > 1 ?
-      this.selectNote(this.state.notes[this.state.selectedNoteIndex - 1], this.state.selectedNoteIndex - 1) :
+    await this.setState({ notes: this.state.notes.filter(_note => _note !== note) });
+    if (this.state.selectedNoteIndex === noteIndex) {
       this.setState({ selectedNoteIndex: null, selectedNote: null });
+    } else {
+      this.state.notes.length > 1 ?
+        this.selectNote(this.state.notes[this.state.selectedNoteIndex - 1], this.state.selectedNoteIndex - 1) :
+        this.setState({ selectedNoteIndex: null, selectedNote: null });
     }
 
     const docRef = doc(db, 'notes', noteIndex);
@@ -118,8 +112,8 @@ class App extends React.Component {
 
   }
 
- // selectNote = (note, index) => this.setState({ selectedNoteIndex: index, selectedNote: note });
-  
+  // selectNote = (note, index) => this.setState({selectedNoteIndex: index, selectedNote: note });
+
 
 }
 

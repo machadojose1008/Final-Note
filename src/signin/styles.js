@@ -11,7 +11,7 @@ const useStyles = theme => ({
     alignItems: "center"
   },
   avatar: {
-    margin: "100px",
+    margin: "50px",
     backgroundColor: "#fff"
   },
   form: {
