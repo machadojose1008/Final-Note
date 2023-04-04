@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../helpers';
+import { BorderColor } from '@mui/icons-material';
 import { withStyles } from '@mui/styles';
 import styles from './styles'
 
@@ -23,7 +24,7 @@ class EditorComponent extends React.Component {
     }
 
     componentDidUpdate = () => {
-        if(this.props.selectedNote.id !== this.state.id){
+        if (this.props.selectedNote.id !== this.state.id) {
             this.setState({
                 text: this.props.selectedNote.body,
                 title: this.props.selectedNote.title,
@@ -32,20 +33,33 @@ class EditorComponent extends React.Component {
         }
     }
 
-    render(){
+    render() {
 
         const { classes } = this.props;
-        return(<div className={classes.EditorComponent}>
-            <ReactQuill 
-            value={this.state.text}
-            onChange={this.updateBody}>
-            </ReactQuill>
-        </div>);
+        return (
+            <div className={classes.EditorComponent}>
+                <BorderColor className={classes.editIcon}></BorderColor>
+                <input
+                    className={classes.titleInput}
+                    placeholder='Note title...'
+                    value={this.state.title ? this.state.title : ''}
+                    onChange={(e) => this.updateTitle(e.target.value)}>
+                </input>
+                <ReactQuill
+                    value={this.state.text}
+                    onChange={this.updateBody}>
+                </ReactQuill>
+            </div>);
     }
     updateBody = async (val) => {
         await this.setState({ text: val });
         this.update();
     };
+
+    updateTitle = async (txt) => {
+        await this.setState({ title: txt });
+        this.update();
+    }
 
     // função de atualização do banco de dados quando o usuário fica 1500 segundo sem alterar a nota
     update = debounce(() => {

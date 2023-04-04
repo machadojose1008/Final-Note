@@ -2,9 +2,9 @@ import React from 'react';
 import './App.css';
 import SidebarComponent from './sidebar/sidebar';
 import EditorComponent from './editor/editor';
-import { collection, onSnapshot, updateDoc, doc, serverTimestamp} from "firebase/firestore";
-import db from '../src/firebase-config.js'
-
+import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc} from "firebase/firestore";
+import db from '../src/firebase-config.js';
+import SignIn from "./signin/signIn";
 
 // Required for side-effects
 require("firebase/firestore");
@@ -17,21 +17,25 @@ class App extends React.Component {
     this.state = {
       selectedNoteIndex: null,
       selectedNote: null,
-      notes: null
+      notes: null,
+      authenticated: false
     };
   }
 
   render() {
     return (
-      <div className='app-container'>
-        <SidebarComponent
+      <div className='app-container' authenticated={this.state.authenticated}>
+        {this.props.authenticated ? (
+          <SidebarComponent
           selectedNoteIndex={this.state.selectedNoteIndex}
           notes={this.state.notes}
           deleteNote={this.deleteNote}
           selectNote={this.selectNote}
           newNote={this.newNote}
-        ></SidebarComponent>
-
+        />
+        ) : (
+          <SignIn />
+        )}
         {
           this.state.selectedNote ?
             <EditorComponent
@@ -79,7 +83,42 @@ class App extends React.Component {
       })
   }
 
- 
+  newNote = async (title) => {
+    const note = {
+      title: title,
+      body: '',
+      timestamp: serverTimestamp()
+    };
+    const dbRef = collection(db, 'notes');
+
+
+    const newFromDB = await collection(db, 'notes')(
+      addDoc(dbRef, note)
+    );
+    const newID = newFromDB.id;
+    await this.setState({ notes: [...this.state.notes, note]});
+    const newNoteIndex = this.state.notes.indexOf(this.state.notes.filter(_note => _note.id === newID)[0]);
+    this.setState({ selectedNote: this.state.notes[newNoteIndex], selectedNoteIndex: newNoteIndex});
+  }
+
+  deleteNote = async (note) => {
+    const noteIndex = note.id;
+    await this.setState({notes: this.state.notes.filter(_note => _note !== note)});
+    if(this.state.selectedNoteIndex === noteIndex) {
+      this.setState({ selectedNoteIndex: null, selectedNote: null});
+    }else {
+      this.state.notes.length > 1 ?
+      this.selectNote(this.state.notes[this.state.selectedNoteIndex - 1], this.state.selectedNoteIndex - 1) :
+      this.setState({ selectedNoteIndex: null, selectedNote: null });
+    }
+
+    const docRef = doc(db, 'notes', noteIndex);
+    deleteDoc(docRef);
+
+
+  }
+
+ // selectNote = (note, index) => this.setState({ selectedNoteIndex: index, selectedNote: note });
   
 
 }
