@@ -2,7 +2,8 @@ import React from "react";
 import { withStyles } from '@mui/styles';
 import { Avatar, Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, Link, TextField, Typography } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
-import useStyles from "./styles";
+//import useStyles from "./styles";
+import "./style.css"
 
 class SignIn extends React.Component {
 
@@ -25,16 +26,18 @@ class SignIn extends React.Component {
 
         return (
             <Container component="main" maxWidth="xs">
-                 <CssBaseline />
-                <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
+                <CssBaseline />
+                <header>Final Note</header>
+
+                <div id="signin" className="form-container">
+                    <Avatar >
                         <LockOutlined />
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
                     <form
-                        className={classes.form}
+
                         noValidate
                         onSubmit={event => {
                             this.authWithEmailPassword(event);
@@ -43,34 +46,40 @@ class SignIn extends React.Component {
                             this.loginForm = form;
                         }}
                     >
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            inputRef={input => {
-                                this.emailInput = input;
-                            }}
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            inputRef={input => {
-                                this.passwordInput = input;
-                            }}
-                        />
+                        <div id='email' >
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus="true"
+                                inputRef={input => {
+                                    this.emailInput = input;
+                                }}
+                            />
+                        </div>
+
+                        <div id="password">
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                                inputRef={input => {
+                                    this.passwordInput = input;
+                                }}
+                            />
+
+                        </div>
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
@@ -80,7 +89,7 @@ class SignIn extends React.Component {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            className={classes.submit}
+
                         >
                             Sign In
                         </Button>
@@ -93,6 +102,8 @@ class SignIn extends React.Component {
                         </Grid>
                     </form>
                 </div>
+
+
             </Container>
         );
 
@@ -100,4 +111,4 @@ class SignIn extends React.Component {
 
 }
 
-export default withStyles(useStyles)(SignIn);
+export default SignIn;

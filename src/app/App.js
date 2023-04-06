@@ -43,6 +43,9 @@ class App extends React.Component {
     );
   }
 
+  // Função que roda toda vez que o component é criado na página
+  // Usando normalmente quando queremos fazer uma requisição para uma api recuperar dados que serão usados na aplicação
+  // no caso é necessário para buscar no firestore as notas que seram mostradas no nosso App
   componentDidMount = () => {
 
     const notesRef = collection(db, 'notes');
