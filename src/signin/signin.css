@@ -4,6 +4,13 @@ html {
     height: 100%;
 }
 
+@font-face {
+    font-family: "Gundaly";
+    src: local("Gundaly"),
+        url('../fonts/gundaly/Gundaly.ttf') format("truetype");
+    font-weight: bold;
+}
+
 body {
     background-image: url('bg.jpg');
     -webkit-background-size: cover;
@@ -13,6 +20,8 @@ body {
 }
 
 header {
+    font-family: 'Gundaly';
+    margin-top: 50px;
     font-size: 70px;
     display: flex;
     align-items: center;

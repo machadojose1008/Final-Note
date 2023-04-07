@@ -6,6 +6,7 @@ import SignIn from "./signin/signIn";
 import SignUp from "./signup/signUp";
 import App from './app/App';
 import Login from './login/login';
+import './fonts/gundaly/Gundaly.ttf'
 
 
 

@@ -1,9 +1,8 @@
 import React from "react";
-import { withStyles } from '@mui/styles';
 import { Avatar, Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, Link, TextField, Typography } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
 //import useStyles from "./styles";
-import "./style.css"
+import "./signin.css"
 
 class SignIn extends React.Component {
 
@@ -22,7 +21,6 @@ class SignIn extends React.Component {
 
     render() {
 
-        const { classes } = this.props;
 
         return (
             <Container component="main" maxWidth="xs">
@@ -30,11 +28,8 @@ class SignIn extends React.Component {
                 <header>Final Note</header>
 
                 <div id="signin" className="form-container">
-                    <Avatar >
-                        <LockOutlined />
-                    </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Entre já
                     </Typography>
                     <form
 
@@ -53,7 +48,7 @@ class SignIn extends React.Component {
                                 required
                                 fullWidth
                                 id="email"
-                                label="Email Address"
+                                label="Endereço de Email"
                                 name="email"
                                 autoComplete="email"
                                 autoFocus="true"
@@ -70,7 +65,7 @@ class SignIn extends React.Component {
                                 required
                                 fullWidth
                                 name="password"
-                                label="Password"
+                                label="Senha"
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
@@ -82,7 +77,7 @@ class SignIn extends React.Component {
                         </div>
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
+                            label="Lembrar-me"
                         />
                         <Button
                             type="submit"
@@ -91,12 +86,12 @@ class SignIn extends React.Component {
                             color="primary"
 
                         >
-                            Sign In
+                            Entrar
                         </Button>
                         <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                    {"Não possui uma conta? Crie agora"}
                                 </Link>
                             </Grid>
                         </Grid>
