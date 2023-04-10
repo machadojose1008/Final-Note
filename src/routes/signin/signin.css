@@ -7,12 +7,11 @@ html {
 @font-face {
     font-family: "Gundaly";
     src: local("Gundaly"),
-        url('../fonts/gundaly/Gundaly.ttf') format("truetype");
+        url('../../fonts/gundaly/Gundaly.ttf') format("truetype");
     font-weight: bold;
 }
 
 body {
-    background-image: url('bg.jpg');
     -webkit-background-size: cover;
     background-size: cover;
     -moz-background-size: cover;
@@ -48,26 +47,8 @@ header {
     color:black;
 }
 
-#next-button:disabled {
-    cursor: not-allowed;
-}
-
 .invalid {
     border: 2px solid red !important;
-}
-
-#next-button {
-    width: 100%;
-}
-
-#back-button {
-    font-size: 40px;
-    display: inline-block;
-    cursor: pointer;
-}
-
-#back-button:hover {
-    color: lightblue;
 }
 
 .password-requirements {

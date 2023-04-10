@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactQuill from 'react-quill';
-import debounce from '../helpers';
+import debounce from '../../helpers';
 import { BorderColor } from '@mui/icons-material';
 import { withStyles } from '@mui/styles';
 import styles from './styles'

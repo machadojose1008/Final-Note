@@ -1,6 +1,7 @@
 import React from "react";
-import { Avatar, Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, Link, TextField, Typography } from "@mui/material";
+import { Avatar, Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, TextField, Typography } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
+import { Link } from "react-router-dom"
 //import useStyles from "./styles";
 import "./signin.css"
 
@@ -32,7 +33,6 @@ class SignIn extends React.Component {
                         Entre já
                     </Typography>
                     <form
-
                         noValidate
                         onSubmit={event => {
                             this.authWithEmailPassword(event);
@@ -88,17 +88,18 @@ class SignIn extends React.Component {
                         >
                             Entrar
                         </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
+                        <Grid container> 
+                            <Grid item xs={10}>
+                                <Link 
+                                href="#" 
+                                variant="body2" 
+                                to="/signup">
                                     {"Não possui uma conta? Crie agora"}
                                 </Link>
                             </Grid>
                         </Grid>
                     </form>
                 </div>
-
-
             </Container>
         );
 

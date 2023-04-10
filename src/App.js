@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
-import SidebarComponent from '../sidebar/sidebar';
-import EditorComponent from '../editor/editor';
+import SidebarComponent from './components/sidebar/sidebar';
+import EditorComponent from './components/editor/editor';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
-import db from '../firebase-config.js';
+import db from './firebase-config.js';
 
 // Required for side-effects
 require("firebase/firestore");
