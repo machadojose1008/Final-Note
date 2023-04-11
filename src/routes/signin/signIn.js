@@ -2,6 +2,7 @@ import React from "react";
 import { Avatar, Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, TextField, Typography } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
 import { Link } from "react-router-dom"
+import { signInWithGooglePopup, createUserDocumentFromAuth } from "../../utils/firebase/firebase-config";
 //import useStyles from "./styles";
 import "./signin.css"
 
@@ -10,6 +11,8 @@ class SignIn extends React.Component {
     constructor(props) {
         super(props);
         this.authWithEmailPassword = this.authWithEmailPassword.bind(this);
+        
+
     }
 
     authWithEmailPassword(event) {
@@ -22,6 +25,11 @@ class SignIn extends React.Component {
 
     render() {
 
+        const logGoogleUser = async () => {
+            const {user}= await signInWithGooglePopup();
+            const userDocRef = await createUserDocumentFromAuth(user);
+
+        }
 
         return (
             <Container component="main" maxWidth="xs">
@@ -88,6 +96,9 @@ class SignIn extends React.Component {
                         >
                             Entrar
                         </Button>
+                        <button onClick={logGoogleUser}>
+                            Entrar com Google
+                        </button>
                         <Grid container> 
                             <Grid item xs={10}>
                                 <Link 

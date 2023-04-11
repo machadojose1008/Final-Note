@@ -1,15 +1,15 @@
 import React from 'react';
 import './App.css';
-import SidebarComponent from './components/sidebar/sidebar';
-import EditorComponent from './components/editor/editor';
+import SidebarComponent from '../../components/sidebar/sidebar';
+import EditorComponent from '../../editor/editor';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
-import { db }  from './utils/firebase/firebase-config.js';
+import db from '../../utils/firebase/firebase-config.js';
 
 // Required for side-effects
 require("firebase/firestore");
 
 
-class App extends React.Component {
+class Home extends React.Component {
 
   constructor() {
     super();
@@ -120,4 +120,4 @@ class App extends React.Component {
 
 }
 
-export default App;
+export default Home;
