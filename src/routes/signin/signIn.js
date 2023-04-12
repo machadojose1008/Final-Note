@@ -1,10 +1,11 @@
 import React from "react";
-import { Avatar, Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, TextField, Typography } from "@mui/material";
-import { LockOutlined } from "@mui/icons-material";
-import { Link } from "react-router-dom"
-import { signInWithGooglePopup, createUserDocumentFromAuth } from "../../utils/firebase/firebase-config";
+import { useEffect } from "react";
+import { getRedirectResult } from "firebase/auth";
+import { Checkbox, CssBaseline, Button, Grid, Container, FormControlLabel, TextField, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import { auth, signInWithGooglePopup, createUserDocumentFromAuth, signInWithGoogleRedirect } from "../../utils/firebase/firebase-config";
 //import useStyles from "./styles";
-import "./signin.css"
+import "./signin.css";
 
 class SignIn extends React.Component {
 
@@ -29,7 +30,15 @@ class SignIn extends React.Component {
             const {user}= await signInWithGooglePopup();
             const userDocRef = await createUserDocumentFromAuth(user);
 
-        }
+        };
+
+        // Pega a resposta do redirecionamento feito baseado no auth quando o componente for montado denovo 
+        /*
+        useEffect(async () => {
+           const response = await getRedirectResult(auth);
+           console.log(response);
+        }, [])
+        */
 
         return (
             <Container component="main" maxWidth="xs">
