@@ -1,7 +1,9 @@
 import React from 'react';
 import './App.css';
 import SidebarComponent from './components/sidebar/sidebar';
+//import SidebarComponent from './components/sidebar/sidebar.component';
 import EditorComponent from './components/editor/editor';
+//import EditorComponent from './components/editor/editor.component';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
 import { db }  from './utils/firebase/firebase-config.js';
 

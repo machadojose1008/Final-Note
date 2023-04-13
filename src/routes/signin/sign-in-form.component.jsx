@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router'
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import "./signin.css";
@@ -14,12 +13,12 @@ const defaultFormFields = {
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
+
+    // A tag useState seta um estado de um objeto de forma que se quisermos controlar a re-renderização 
+    // do componente podemos usar a tar useEffect que vai executar um callback function toda vez que o valor do useState mudar
     const [redirectToApp, setRedirectToApp] = useState(false);
     const navigate = useNavigate();
 
-    const resetFormFields = () => {
-        setFormFields(defaultFormFields);
-    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
