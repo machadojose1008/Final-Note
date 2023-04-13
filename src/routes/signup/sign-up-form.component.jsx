@@ -29,6 +29,8 @@ const SignUpForm = () => {
             return;
         }
 
+        // TODO: COnfirmação do esitlo sendo email e do tipo de senha aceita.
+
         try {
             const result = await createAuthUserWithEmailAndPassword(
                 email,
