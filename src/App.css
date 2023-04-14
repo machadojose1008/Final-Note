@@ -1,39 +1,43 @@
 html, body {
   height: 100vh;
   width: 100%;
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-}
-#evernote-container {
-  height: 100%;
-  box-sizing: border-box;
 }
 .app-container {
-  height: 100%;
-  box-sizing: border-box;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
-.quill {
-  height: 100%;
-  box-sizing: border-box;
-  width: calc(100% - 300px);
-  float: left;
-}
+/*
+  Estilo do container inteiro do React-quill
+*/
 .ql-container {
-  box-sizing: border-box;
-  height: calc(100% - 42px);
-  overflow-y: scroll;
+  border-bottom-right-radius: 0.5em;
+  border-bottom-left-radius: 0.5em;
 }
+/*
+  Estilo do toolbar do React Quill
+*/
+.ql-toolbar {
+  background-color: #eaecec;
+}
+
+/*
+  Estilo do editor do React Quill
+*/
 .ql-editor {
   cursor: text;
+  width: 100%;
+  min-height: 10rem;
 }
-.MuiListItem-root.Mui-selected {
-  background-color: #d4d8e8 !important;
-}
-.no-note-selected {
-  font-size: 48px;
-  position: absolute;
-  top: 50px;
-  left: calc(50% - 165px);
+
+/*
+  Estilo do botão de nova nota
+*/
+.MuiButton-root {
+  width: 100%;
+  position: fixed;
 }

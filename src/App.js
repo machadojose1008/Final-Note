@@ -1,125 +1,115 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import SidebarComponent from './components/sidebar/sidebar';
-//import SidebarComponent from './components/sidebar/sidebar.component';
-import EditorComponent from './components/editor/editor';
-//import EditorComponent from './components/editor/editor.component';
+import { useLocation } from 'react-router-dom'
+import SidebarComponent from './components/sidebar/sidebar.component';
+import EditorComponent from './components/editor/editor.component';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
-import { db }  from './utils/firebase/firebase-config.js';
+import { db } from './utils/firebase/firebase-config.js';
 
 // Required for side-effects
 require("firebase/firestore");
 
+function App() {
+  const [selectedNoteIndex, setSelectedNoteIndex] = useState(null);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [notes, setNotes] = useState(null);
+  const [user, setUser] = useState(null);
+  const location = useLocation();
 
-class App extends React.Component {
-
-  constructor() {
-    super();
-    this.state = {
-      selectedNoteIndex: null,
-      selectedNote: null,
-      notes: null
-    };
-  }
-
-  render() {
-    return (
-      <div className="app-container">
-        <SidebarComponent
-          selectedNoteIndex={this.state.selectedNoteIndex}
-          notes={this.state.notes}
-          deleteNote={this.deleteNote}
-          selectNote={this.selectNote}
-          newNote={this.newNote}
-        />
-        {
-          this.state.selectedNote ? (
-            <EditorComponent
-              selectedNote={this.state.selectedNote}
-              selectedNoteIndex={this.state.selectedNoteIndex}
-              notes={this.newNote}
-              noteUpdate={this.noteUpdate}/>
-            ) : null
-        }
-      </div>
-    );
-  }
-
-  // Função que roda toda vez que o component é criado na página
-  // Usando normalmente quando queremos fazer uma requisição para uma api recuperar dados que serão usados na aplicação
-  // no caso é necessário para buscar no firestore as notas que seram mostradas no nosso App
-  componentDidMount = () => {
-
+  // Roda somente quando o progrmaa renderiza a primeira vez
+  useEffect(() => {
     const notesRef = collection(db, 'notes');
+    const userRef = collection(db, 'users');
+    setUser(location.state);
 
-    onSnapshot(notesRef, (serverUpdate) => {
+    const unsubscribe = onSnapshot(notesRef, (serverUpdate) => {
       const notes = serverUpdate.docs.map((_doc) => {
         const data = _doc.data();
         data['id'] = _doc.id;
         return data;
       });
-      console.log(notes);
-      this.setState({ notes: notes });
+      setNotes(notes);
+  
     });
-  }
 
-  selectNote = (note, index) => this.setState({ selectedNoteIndex: index, selectedNote: note });
+    return () => unsubscribe();
+  }, []);
 
-  noteUpdate = (id, noteObj) => {
+  const selectNote = (note, index) => {
+    setSelectedNoteIndex(index);
+    setSelectedNote(note);
+  };
+
+  const noteUpdate = (id, noteObj) => {
     const noteRef = doc(db, 'notes', id);
     const data = {
       title: noteObj.title,
       body: noteObj.body,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
     };
 
     updateDoc(noteRef, data)
-      .then(docRef => {
+      .then((docRef) => {
         console.log('Documento atualizado1');
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
-      })
-  }
+      });
+  };
 
-  newNote = async (title) => {
+  const newNote = async (title) => {
     const note = {
       title: title,
       body: '',
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
     };
     const dbRef = collection(db, 'notes');
 
-
-    const newFromDB = await collection(db, 'notes')(
-      addDoc(dbRef, note)
-    );
+    const newFromDB = await addDoc(dbRef, note);
     const newID = newFromDB.id;
-    await this.setState({ notes: [...this.state.notes, note] });
-    const newNoteIndex = this.state.notes.indexOf(this.state.notes.filter(_note => _note.id === newID)[0]);
-    this.setState({ selectedNote: this.state.notes[newNoteIndex], selectedNoteIndex: newNoteIndex });
-  }
+    await setNotes([...notes, note]);
+    const newNoteIndex = notes.indexOf(notes.filter((_note) => _note.id === newID)[0]);
+    setSelectedNoteIndex(newNoteIndex);
+    setSelectedNote(notes[newNoteIndex]);
+  };
 
-  deleteNote = async (note) => {
+  const deleteNote = async (note) => {
     const noteIndex = note.id;
-    await this.setState({ notes: this.state.notes.filter(_note => _note !== note) });
-    if (this.state.selectedNoteIndex === noteIndex) {
-      this.setState({ selectedNoteIndex: null, selectedNote: null });
+    await setNotes(notes.filter((_note) => _note !== note));
+    if (selectedNoteIndex === noteIndex) {
+      setSelectedNoteIndex(null);
+      setSelectedNote(null);
     } else {
-      this.state.notes.length > 1 ?
-        this.selectNote(this.state.notes[this.state.selectedNoteIndex - 1], this.state.selectedNoteIndex - 1) :
-        this.setState({ selectedNoteIndex: null, selectedNote: null });
+      notes.length > 1 ?
+        selectNote(notes[selectedNoteIndex - 1], selectedNoteIndex - 1) :
+        setSelectedNoteIndex(null);
+      setSelectedNote(null);
     }
 
     const docRef = doc(db, 'notes', noteIndex);
     deleteDoc(docRef);
+  };
 
-
-  }
-
-  // selectNote = (note, index) => this.setState({selectedNoteIndex: index, selectedNote: note });
-
-
+  return (
+    <div className="app-container">
+      <SidebarComponent
+        selectedNoteIndex={selectedNoteIndex}
+        notes={notes}
+        deleteNote={deleteNote}
+        selectNote={selectNote}
+        newNote={newNote}
+        user={user}
+      />
+      {selectedNote ? (
+        <EditorComponent
+          selectedNote={selectedNote}
+          selectedNoteIndex={selectedNoteIndex}
+          notes={notes}
+          noteUpdate={noteUpdate}
+        />
+      ) : null}
+    </div>
+  );
 }
 
 export default App;

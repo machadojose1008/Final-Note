@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import { Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import "./signin.css";
 import { signInAuthUserWithEmailAndPassword } from '../../utils/firebase/firebase-config';
@@ -13,6 +13,9 @@ const defaultFormFields = {
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
+    const [ loggedEmail, setLoggedEmail] = useState('');
+    
+
 
     // A tag useState seta um estado de um objeto de forma que se quisermos controlar a re-renderização 
     // do componente podemos usar a tar useEffect que vai executar um callback function toda vez que o valor do useState mudar
@@ -31,8 +34,11 @@ const SignInForm = () => {
                 email,
                 password
             );
+            console.log(response);
             setFormFields(defaultFormFields);
             setRedirectToApp(true);
+            setLoggedEmail(response.user.email);
+
         } catch (error) {
             switch (error.code) {
                 case 'auth/wrong-password':
@@ -48,7 +54,7 @@ const SignInForm = () => {
     };
 
     if(redirectToApp){
-        return navigate('/app')
+        return navigate('/app', {state:{email: loggedEmail}});
     }
 
     const handleChange = (event) => {

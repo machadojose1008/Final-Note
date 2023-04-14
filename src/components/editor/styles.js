@@ -1,34 +1,49 @@
 const styles = theme => ({
-  root: {
-    backgroundColor: '#fff',
-    height: 'calc(100% - 35px)',
-    position: 'absolute',
-    left: '0',
-    width: '300px',
-    boxShadow: '0px 0px 2px black'
+  editorNavbar: {
+    display: "inline-block",
+    backgroundColor: "#1e90ff",
+    color: "white",
+    borderTopRightRadius: "0.5em",
+    flexDirection: "column"
   },
   titleInput: {
-    height: '50px',
-    boxSizing: 'border-box',
-    border: 'none',
-    padding: '5px',
-    fontSize: '24px',
-    width: 'calc(100% - 300px)',
-    backgroundColor: '#29487d',
-    color: 'white',
-    paddingLeft: '50px'
+    borderStyle: "solid",
+    fontSize: "24px",
+    backgroundColor: "#1e90ff",
+    color: "white",
+    alignSelf: "center",
+    textAlign: 'left',
+    "@media only screen and (max-width: 768px)": {
+      textAlign: "center",
+      width: "96%"
+    }
+
   },
   editIcon: {
-    position: 'absolute',
-    left: '310px',
-    top: '12px',
-    color: 'white',
-    width: '10',
-    height: '10'
+    paddingLeft: "10px",
+    alignSelf: "flex-start",
+    "@media only screen and (max-width: 768px)": {
+      alignSelf: "center",
+      textAlign: "center"
+    }
   },
   editorContainer: {
-    height: '600px',
-    boxSizing: 'border-box',
+    width: "81%",
+    paddingLeft: "1%",
+    paddingRight: "1%",
+    marginTop: "1%",
+    "@media only screen and (max-width: 768px)": {
+      width: "100%"
+    }
+  },
+  inputContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: "5px",
+    marginLeft: "5px",
+    "@media only screen and (max-width: 768px)": {
+      flexDirection: "column"
+    }
   }
 });
 

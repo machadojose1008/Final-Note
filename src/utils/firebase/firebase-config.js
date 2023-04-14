@@ -1,7 +1,7 @@
 // Arquivo de configuração do Firebase
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, collection } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, GoogleAuthProvider, createUserWithEmailAndPassword} from 'firebase/auth'
 
 const firebaseConfig = {
@@ -49,8 +49,6 @@ export const db = getFirestore(app);
 */
 
 
-
-
 export const createUserDocumentFromAuth = async (
   userAuth, 
   additionalInformation = {}
@@ -81,6 +79,20 @@ export const createUserDocumentFromAuth = async (
   }
   return userDocRef;
 };
+/*
+export const getUserEmail = async (id) => {
+  if(!id) return;
+
+  return await {
+    db.collection("users")
+      .doc(id)
+      .get()
+      .then(doc => {
+        console.log(doc.data())
+      })
+  }
+};
+*/
 
 export const createAuthUserWithEmailAndPassword = async (email, password)  => {
 
@@ -93,5 +105,9 @@ export const createAuthUserWithEmailAndPassword = async (email, password)  => {
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if(!email || !password) return;
 
-  return await signInWithEmailAndPassword(auth, email, password);
+    return await signInWithEmailAndPassword(auth, email,password);
+  
+    
+
 };
+
