@@ -7,42 +7,25 @@ const styles = theme => ({
     flexDirection: "column"
   },
   titleInput: {
-    borderStyle: "solid",
+    width: "100%",
+    border: 'none',
+    padding: '20px 30px 30px',
     fontSize: "24px",
-    backgroundColor: "#1e90ff",
-    color: "white",
-    alignSelf: "center",
+    color: "black",
     textAlign: 'left',
     "@media only screen and (max-width: 768px)": {
       textAlign: "center",
       width: "96%"
     }
-
-  },
-  editIcon: {
-    paddingLeft: "10px",
-    alignSelf: "flex-start",
-    "@media only screen and (max-width: 768px)": {
-      alignSelf: "center",
-      textAlign: "center"
-    }
   },
   editorContainer: {
-    width: "81%",
+    width: "100%",
     paddingLeft: "1%",
     paddingRight: "1%",
     marginTop: "1%",
+    gridArea: "1/ 2/ 2/ 6",
     "@media only screen and (max-width: 768px)": {
       width: "100%"
-    }
-  },
-  inputContainer: {
-    display: "flex",
-    alignItems: "center",
-    marginTop: "5px",
-    marginLeft: "5px",
-    "@media only screen and (max-width: 768px)": {
-      flexDirection: "column"
     }
   }
 });

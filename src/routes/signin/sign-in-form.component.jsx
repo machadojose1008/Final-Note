@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation} from 'react-router-dom';
 import { Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import "./signin.css";
 import { signInAuthUserWithEmailAndPassword } from '../../utils/firebase/firebase-config';
@@ -14,6 +14,17 @@ const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
     const [ loggedEmail, setLoggedEmail] = useState('');
+    const [ cadastroRecente, setCadastroRecente ] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        setCadastroRecente(location.state);
+        if(cadastroRecente){
+             alert('Email Cadastrado!');
+        }
+
+           
+    });
     
 
 
@@ -29,6 +40,11 @@ const SignInForm = () => {
         // TODO: Validação do tipo de de texto de email sendo válido.
         // TODO: Aviso quando capslock estiver ligado na senha ]
 
+        if(!email || !password) {
+            alert('Por favor, preencha os campos de email e senha');
+            return;
+        }
+
         try {
             const response = await signInAuthUserWithEmailAndPassword(
                 email,
@@ -36,6 +52,9 @@ const SignInForm = () => {
             );
             console.log(response);
             setFormFields(defaultFormFields);
+
+
+
             setRedirectToApp(true);
             setLoggedEmail(response.user.email);
 

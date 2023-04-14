@@ -29,7 +29,7 @@ function App() {
         return data;
       });
       setNotes(notes);
-  
+
     });
 
     return () => unsubscribe();
@@ -92,22 +92,27 @@ function App() {
 
   return (
     <div className="app-container">
-      <SidebarComponent
-        selectedNoteIndex={selectedNoteIndex}
-        notes={notes}
-        deleteNote={deleteNote}
-        selectNote={selectNote}
-        newNote={newNote}
-        user={user}
-      />
-      {selectedNote ? (
-        <EditorComponent
-          selectedNote={selectedNote}
+      <div className='sidebar-container'>
+        <SidebarComponent
           selectedNoteIndex={selectedNoteIndex}
           notes={notes}
-          noteUpdate={noteUpdate}
+          deleteNote={deleteNote}
+          selectNote={selectNote}
+          newNote={newNote}
+          user={user}
         />
-      ) : null}
+      </div>
+      <div className='editor-container'>
+        {selectedNote ? (
+          <EditorComponent
+            selectedNote={selectedNote}
+            selectedNoteIndex={selectedNoteIndex}
+            notes={notes}
+            noteUpdate={noteUpdate}
+          />
+        ) : null}
+      </div>
+
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Checkbox, Button, Container, CssBaseline, FormControlLabel, Grid, TextField, Typography } from "@mui/material";
 import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "../../utils/firebase/firebase-config";
 
@@ -13,8 +13,15 @@ const defaultFormFields = {
 
 const SignUpForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
+    const [redirectToSignIn, setRedirectToSignIn] = useState(false);
+    const [emailFormatConfirmation, setEmailFormatConfirmation] = useState(true);
+    const [passwordFormatConfirmation, setPasswordFormatConfirmation] = useState(true);
     const { displayName, email, password, confirmPassword } = formFields;
+    const mensagemErroSenha = "Senha não pode ter espaços,deve ter no mínimo 8 caracteres, deve conter pelo menos 1 número, deve ter pelo menos 1 letra maiúscula e 1 letra minúscula. Você pode usar os seguintes símbolos: !, @, #, $, & "
 
+
+    const navigate = useNavigate();
 
 
     const resetFormFields = () => {
@@ -24,10 +31,6 @@ const SignUpForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (password !== confirmPassword) {
-            alert('Senhas não coincidem');
-            return;
-        }
 
         // TODO: COnfirmação do esitlo sendo email e do tipo de senha aceita.
 
@@ -36,16 +39,14 @@ const SignUpForm = () => {
                 email,
                 password
             );
-
+            setFormFields(defaultFormFields);
+            setRedirectToSignIn(true);
             if (result.user) {
                 const { user } = result;
                 await createUserDocumentFromAuth(user, { displayName });
                 resetFormFields();
 
             }
-
-
-
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 alert('Não foi possível criar uma nova conta. Email já registrado!');
@@ -56,11 +57,38 @@ const SignUpForm = () => {
         }
     };
 
+    if(redirectToSignIn){
+        return navigate('/signin', {state:{cadastrado: true}});
+    }
+
 
     const handleChange = (event) => {
         const { name, value } = event.target;
 
         setFormFields({ ...formFields, [name]: value });
+
+        if(name === 'password') {
+            setPasswordFormatConfirmation(false);
+            if(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9@$&!]{8,}/.test(value)){
+                setPasswordFormatConfirmation(true);
+            }
+        }
+
+        if (name === 'confirmPassword') {
+            setPasswordsMatch(false);
+            if(password === value){
+                setPasswordsMatch(true);
+            }
+            
+        }
+
+        if(name === 'email'){
+            setEmailFormatConfirmation(false);
+            if(/\S+@\S+\.\S+/.test(value)){
+                setEmailFormatConfirmation(true);
+            }
+        }
+        
     };
 
     return (
@@ -97,6 +125,7 @@ const SignUpForm = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                error={!emailFormatConfirmation}
                                 style={{ color: "#ffffff" }}
                                 variant="outlined"
                                 required={true}
@@ -106,10 +135,12 @@ const SignUpForm = () => {
                                 name="email"
                                 autoComplete="email"
                                 onChange={handleChange}
+                                helperText={emailFormatConfirmation ? '' : "Email Inválido"}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                error={!passwordFormatConfirmation}
                                 variant="outlined"
                                 required={true}
                                 fullWidth
@@ -119,10 +150,12 @@ const SignUpForm = () => {
                                 id="password"
                                 autoComplete="current-password"
                                 onChange={handleChange}
+                                helperText={passwordFormatConfirmation ? '' : mensagemErroSenha}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                error={!passwordsMatch}
                                 variant="outlined"
                                 required={true}
                                 fullWidth
@@ -131,25 +164,21 @@ const SignUpForm = () => {
                                 type="password"
                                 id="confirmPassword"
                                 onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox value="allowExtraEmails" color="primary" />
-                                }
-                                label="Quero receber emails de novidades."
+                                helperText={passwordsMatch ? '' : "senhas não coincidem"}
                             />
                         </Grid>
                     </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                    >
-                        Inscreva-se
-                    </Button>
+                    <Grid item xs={12}>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                        >
+                            Inscreva-se
+                        </Button>
+                    </Grid>
+
                     <Grid container>
                         <Grid item xs={10}>
                             <Link

@@ -1,28 +1,42 @@
-html, body {
-  height: 100vh;
+html,
+body {
+  height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
 }
+
 .app-container {
-  height: 100vh;
-  display: flex;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
 }
+
 /*
   Estilo do container inteiro do React-quill
 */
 .ql-container {
+  display: block;
   border-bottom-right-radius: 0.5em;
   border-bottom-left-radius: 0.5em;
 }
+
 /*
   Estilo do toolbar do React Quill
 */
 .ql-toolbar {
-  background-color: #eaecec;
+  background-color: #ffffff;
+  border: none;
+}
+
+.ql-snow {
+  border:none;
 }
 
 /*
@@ -31,7 +45,8 @@ html, body {
 .ql-editor {
   cursor: text;
   width: 100%;
-  min-height: 10rem;
+  min-height: 40rem;
+  padding: 30px 20px 30px;
 }
 
 /*
@@ -40,4 +55,12 @@ html, body {
 .MuiButton-root {
   width: 100%;
   position: fixed;
+}
+
+.sidebar-container {
+  grid-area: 1 / 1 / 6 / 2;
+}
+
+.editor-container {
+  grid-area: 1 / 2 / 2 / 6;
 }

@@ -11,7 +11,7 @@ const EditorComponent = ({ classes, selectedNote, noteUpdate }) => {
 
     const modules = {
         toolbar: [
-            [{ 'header': [1, 2, false] }],
+            [{ 'header': [1, 2,3, false] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }]
         ],
@@ -59,9 +59,10 @@ const EditorComponent = ({ classes, selectedNote, noteUpdate }) => {
 
 
     return (
-        <div className={classes.EditorComponent}>
+        <div className={classes.editorContainer}>
             <div className={classes.editorNavbar}>
                 <input
+                    theme= 'null'
                     className={classes.titleInput}
                     placeholder="Note title..."
                     value={title ? title : ''}
@@ -69,12 +70,13 @@ const EditorComponent = ({ classes, selectedNote, noteUpdate }) => {
                 />
             </div>
             <ReactQuill
-                theme={'snow'}
+
                 modules={modules}
                 formats={formats}
                 value={text}
                 onChange={updateBody}
             />
+          
         </div>
     );
 };
