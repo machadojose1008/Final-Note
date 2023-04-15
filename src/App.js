@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { useLocation } from 'react-router-dom'
-import SidebarComponent from './components/sidebar/sidebar.component';
-import EditorComponent from './components/editor/editor.component';
+import SidebarComponent from './components/sidebar.component';
+import EditorComponent from './components/editor.component';
+import { Grid } from '@mui/material';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
 
@@ -92,27 +93,29 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className='sidebar-container'>
-        <SidebarComponent
-          selectedNoteIndex={selectedNoteIndex}
-          notes={notes}
-          deleteNote={deleteNote}
-          selectNote={selectNote}
-          newNote={newNote}
-          user={user}
-        />
-      </div>
-      <div className='editor-container'>
-        {selectedNote ? (
-          <EditorComponent
-            selectedNote={selectedNote}
-            selectedNoteIndex={selectedNoteIndex}
-            notes={notes}
-            noteUpdate={noteUpdate}
-          />
-        ) : null}
-      </div>
-
+      {/* Spacing é a distância entre os elementos do grid */}
+      <Grid container spacing={2}>
+        <Grid item xs={1.5}>
+            <SidebarComponent
+              selectedNoteIndex={selectedNoteIndex}
+              notes={notes}
+              deleteNote={deleteNote}
+              selectNote={selectNote}
+              newNote={newNote}
+              user={user}
+            />
+        </Grid>
+        <Grid item xs={10}>
+            {selectedNote ? (
+              <EditorComponent
+                selectedNote={selectedNote}
+                selectedNoteIndex={selectedNoteIndex}
+                notes={notes}
+                noteUpdate={noteUpdate}
+              />
+            ) : null}
+        </Grid>
+      </Grid>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactQuill from 'react-quill';
-import debounce from '../../helpers';
+import debounce from '../helpers';
 import { withStyles } from '@mui/styles';
-import styles from './styles';
+import { Paper } from '@mui/material';
+import { EditorContainer, EditorNavBar, TitleInput } from './componentStyles';
 
 const EditorComponent = ({ classes, selectedNote, noteUpdate }) => {
     const [text, setText] = useState('');
@@ -11,7 +12,7 @@ const EditorComponent = ({ classes, selectedNote, noteUpdate }) => {
 
     const modules = {
         toolbar: [
-            [{ 'header': [1, 2,3, false] }],
+            [{ 'header': [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }]
         ],
@@ -59,26 +60,27 @@ const EditorComponent = ({ classes, selectedNote, noteUpdate }) => {
 
 
     return (
-        <div className={classes.editorContainer}>
-            <div className={classes.editorNavbar}>
-                <input
-                    theme= 'null'
-                    className={classes.titleInput}
+        <EditorContainer>
+            <EditorNavBar>
+                <TitleInput
+                    theme='null'
                     placeholder="Note title..."
                     value={title ? title : ''}
-                    onChange={(e) => updateTitle(e.target.value)}
+                    onChange={(e) => updateTitle(e.target.value)}>
+                </TitleInput>
+            </EditorNavBar>
+            <Paper elevation={3}>
+                <ReactQuill
+                    modules={modules}
+                    formats={formats}
+                    value={text}
+                    onChange={updateBody}
                 />
-            </div>
-            <ReactQuill
+            </Paper>
+        </EditorContainer>
 
-                modules={modules}
-                formats={formats}
-                value={text}
-                onChange={updateBody}
-            />
-          
-        </div>
+
     );
 };
 
-export default withStyles(styles)(EditorComponent);
+export default EditorComponent;

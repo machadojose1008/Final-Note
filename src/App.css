@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "Gundaly";
+  src: local("Gundaly"),
+      url('../src/fonts/gundaly/Gundaly.ttf') format("truetype");
+  font-weight: bold;
+}
+
 html,
 body {
   height: 100%;
@@ -8,11 +15,6 @@ body {
 
 .app-container {
   height: 100%;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -36,7 +38,7 @@ body {
 }
 
 .ql-snow {
-  border:none;
+  border: none;
 }
 
 /*
@@ -45,7 +47,7 @@ body {
 .ql-editor {
   cursor: text;
   width: 100%;
-  min-height: 40rem;
+  min-height: 45rem;
   padding: 30px 20px 30px;
 }
 
@@ -55,12 +57,4 @@ body {
 .MuiButton-root {
   width: 100%;
   position: fixed;
-}
-
-.sidebar-container {
-  grid-area: 1 / 1 / 6 / 2;
-}
-
-.editor-container {
-  grid-area: 1 / 2 / 2 / 6;
 }

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { withStyles } from '@mui/styles';
-import styles from './styles';
 import List from '@mui/material/List';
-import { Button, Chip } from '@mui/material';
+import { Button } from '@mui/material';
 import { Face } from "@mui/icons-material"
-import SidebarItemComponent from '../sidebarItem/sidebar-item.component';
+import SidebarItemComponent from './sidebar-item.component';
+import { SidebarContainer, UserIcon, NewNoteInput } from './componentStyles'
+import NestedList from './nested-list.component';
 
 function SidebarComponent(props) {
     const { notes, classes, selectedNoteIndex } = props;
@@ -34,52 +35,61 @@ function SidebarComponent(props) {
         props.deleteNote(n, i);
     }
 
-    return(
-        <div className={classes.sidebarContainer}>
-            <Chip icon={<Face />} label={props.user?.email} className={classes.chip} />
+    return (
+
+
+        <SidebarContainer>
+            <UserIcon icon={<Face />} label={props.user?.email} />
             <Button
                 variant="contained"
                 color={addingNote ? "secondary" : "primary"}
                 onClick={newNoteBtnClick}
-                className={classes.newNoteBtn}
             >
-                {addingNote ? "Cancel" : "New Note"}
+                {addingNote ? "Cancelar" : "Nova nota"}
             </Button>
+
+            <NestedList>
+                {notes && (
+                    <List>
+                        {notes.map((_note, _index) => (
+                            <div key={_index}>
+                                <SidebarItemComponent
+                                    _note={_note}
+                                    _index={_index}
+                                    selectedNoteIndex={selectedNoteIndex}
+                                    selectNote={selectNote}
+                                    deleteNote={deleteNote}
+                                />
+                            </div>
+                        ))}
+                    </List>
+                )}
+
+            </NestedList>
             {addingNote && (
                 <div>
-                    <input
+                    <NewNoteInput
                         type='text'
-                        className={classes.newNoteInput}
-                        placeholder='Enter note title'
+                        placeholder='Título da nota'
                         onKeyUp={(e) => updateTitle(e.target.value)}
                     />
                     <Button
                         variant='contained'
                         color='primary'
-                        className={classes.newNoteSubmitBtn}
                         onClick={newNote}
                     >
-                        Submit Note
+                        Criar Nota
                     </Button>
                 </div>
             )}
-            {notes && (
-                <List>
-                    {notes.map((_note, _index) => (
-                        <div key={_index}>
-                            <SidebarItemComponent
-                                _note={_note}
-                                _index={_index}
-                                selectedNoteIndex={selectedNoteIndex}
-                                selectNote={selectNote}
-                                deleteNote={deleteNote}
-                            />
-                        </div>
-                    ))}
-                </List>
-            )}
-        </div>
+
+
+        </SidebarContainer>
+
+
+
+
     );
 }
 
-export default withStyles(styles)(SidebarComponent);
+export default SidebarComponent;
