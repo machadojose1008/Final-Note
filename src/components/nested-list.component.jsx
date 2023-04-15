@@ -1,25 +1,32 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { List, ListItem, ListItemText, Collapse } from '@mui/material';
+import { List, ListItemText, Collapse } from '@mui/material';
 import { useState } from 'react';
+import { DropList, DescIcon } from './componentStyles';
 
-function NestedList({ children }) {
-    const [open, setOpen] = useState(true);
+function NestedListComponent({ children }) {
+  const [open, setOpen] = useState(false);
 
-    const handleClick = () => {
-        setOpen(!open);
-    };
+  const handleClick = () => {
+    setOpen(!open);
+  };
 
-    return (
-      <List>
-      <ListItem button onClick={handleClick}>
-        <ListItemText primary="Notas " />
+  return (
+    <List>
+      <DropList onClick={handleClick} dense={true}>
+        <DescIcon />
         {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
+        <ListItemText primary='Notas'/>
+      </DropList>
       <Collapse in={open} timeout="auto" unmountOnExit>
         {children}
       </Collapse>
     </List>
-    );
-  }
 
-  export default NestedList;
+
+
+  );
+}
+
+export default NestedListComponent;
+
+

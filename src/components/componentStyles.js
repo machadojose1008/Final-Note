@@ -1,6 +1,7 @@
 import { styled } from "@mui/system";
-import { Chip, ListItemButton, ListItemText} from "@mui/material";
+import { Chip, ListItemButton, ListItemText, ListItem } from "@mui/material";
 import { Delete } from '@mui/icons-material'
+import DescriptionIcon from '@mui/icons-material/Description'
 
 export const EditorContainer = styled('div')({
   width: "100%",
@@ -50,8 +51,8 @@ export const NewNoteInput = styled('input')({
 });
 
 export const NotesList = styled(ListItemButton, {})({
-    cursor: 'pointer',
-    maxWidth: '100%'
+  cursor: 'pointer',
+  maxWidth: '100%'
 });
 
 export const SelectNote = styled('div')({
@@ -62,11 +63,23 @@ export const NoteText = styled(ListItemText, {})({
 
 });
 
-export const DeleteIcon = styled(Delete,{})({
+export const DeleteIcon = styled(Delete, {})({
   position: "absolute",
   right: "5px",
   top: "calc(50% - 15px)",
   "&:hover": {
     color: "red"
   }
+});
+
+export const DropList = styled(ListItem, {})({
+  width: '20%',
+  cursor: 'pointer',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'left'
+});
+
+export const DescIcon = styled(DescriptionIcon, {})({
+  cursor: 'pointer'
 });

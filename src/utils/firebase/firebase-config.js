@@ -1,7 +1,7 @@
 // Arquivo de configuração do Firebase
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, setDoc, collection } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, GoogleAuthProvider, createUserWithEmailAndPassword} from 'firebase/auth'
 
 const firebaseConfig = {
@@ -79,20 +79,7 @@ export const createUserDocumentFromAuth = async (
   }
   return userDocRef;
 };
-/*
-export const getUserEmail = async (id) => {
-  if(!id) return;
 
-  return await {
-    db.collection("users")
-      .doc(id)
-      .get()
-      .then(doc => {
-        console.log(doc.data())
-      })
-  }
-};
-*/
 
 export const createAuthUserWithEmailAndPassword = async (email, password)  => {
 
@@ -107,7 +94,18 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 
     return await signInWithEmailAndPassword(auth, email,password);
   
-    
-
 };
 
+export const getCardsFromFirestore = async () => {
+  const cardsRef = collection(db, 'cards');
+  const unsubscribe = onSnapshot(cardsRef,(serverUpdate) => {
+    const cards = serverUpdate.docs.map((_doc) => {
+      const data = _doc.data();
+      data['id'] = _doc.id;
+      return data;
+    });
+    console.log(cards);
+
+  });
+  return () => unsubscribe();
+};

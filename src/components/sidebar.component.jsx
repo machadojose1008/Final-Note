@@ -1,16 +1,18 @@
 import { useState } from 'react';
-import { withStyles } from '@mui/styles';
 import List from '@mui/material/List';
 import { Button } from '@mui/material';
 import { Face } from "@mui/icons-material"
 import SidebarItemComponent from './sidebar-item.component';
 import { SidebarContainer, UserIcon, NewNoteInput } from './componentStyles'
-import NestedList from './nested-list.component';
+import NestedListComponent from './nested-list.component';
+import SidebarCardComonent from './sidebar-card.component';
 
 function SidebarComponent(props) {
-    const { notes, classes, selectedNoteIndex } = props;
+    const { notes, cards, selectedNoteIndex, selectedCardIndex } = props;
     const [addingNote, setAddingNote] = useState(false);
     const [title, setTitle] = useState(null);
+
+    console.log(cards);     
 
     const newNoteBtnClick = () => {
         setTitle(null);
@@ -31,6 +33,11 @@ function SidebarComponent(props) {
         props.selectNote(n, i);
     }
 
+    const selectCard = (n, i) => {
+        props.selectCard(n, i);
+    }
+
+
     const deleteNote = (n, i) => {
         props.deleteNote(n, i);
     }
@@ -48,7 +55,7 @@ function SidebarComponent(props) {
                 {addingNote ? "Cancelar" : "Nova nota"}
             </Button>
 
-            <NestedList>
+            <NestedListComponent>
                 {notes && (
                     <List>
                         {notes.map((_note, _index) => (
@@ -65,7 +72,22 @@ function SidebarComponent(props) {
                     </List>
                 )}
 
-            </NestedList>
+            </NestedListComponent>
+            <NestedListComponent>
+                {cards && (
+                    <List>
+                        {cards.map((_card, _index) => (
+                            <div key={_index}>
+                                <SidebarCardComonent
+                                    _card={_card}
+                                    _index={_index}
+                                    selectedCardIndex={selectedCardIndex}
+                                    selectCard={selectCard} />
+                            </div>
+                        ))}
+                    </List>
+                )}
+            </NestedListComponent>
             {addingNote && (
                 <div>
                     <NewNoteInput
