@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../helpers';
-import { withStyles } from '@mui/styles';
 import { Paper } from '@mui/material';
 import { EditorContainer, EditorNavBar, TitleInput } from './componentStyles';
 
-const EditorComponent = ({ classes, selectedNote, noteUpdate }) => {
+const EditorComponent = ({ selectedNote, noteUpdate }) => {
     const [text, setText] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
