@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import List from '@mui/material/List';
-import { Button } from '@mui/material';
+import { Button, Divider } from '@mui/material';
 import { Face } from "@mui/icons-material"
 import SidebarItemComponent from './sidebar-item.component';
 import { SidebarContainer, UserIcon, NewNoteInput } from './componentStyles'
 import NestedListComponent from './nested-list.component';
 import SidebarCardComonent from './sidebar-card.component';
+import NestedCardComponent from './nested-card.component';
+import SidebarButton from './sidebar-button.component';
 
 function SidebarComponent(props) {
     const { notes, cards, selectedNoteIndex, selectedCardIndex } = props;
     const [addingNote, setAddingNote] = useState(false);
     const [title, setTitle] = useState(null);
-
-    console.log(cards);     
 
     const newNoteBtnClick = () => {
         setTitle(null);
@@ -33,12 +33,16 @@ function SidebarComponent(props) {
         props.selectNote(n, i);
     }
 
-    const selectCard = (n, i) => {
-        props.selectCard(n, i);
+    const selectCard = (c, i) => {
+        props.selectCard(c, i);
     }
 
 
     const deleteNote = (n, i) => {
+        props.deleteNote(n, i);
+    }
+
+    const deleteCard = (n, i) => {
         props.deleteNote(n, i);
     }
 
@@ -47,13 +51,34 @@ function SidebarComponent(props) {
 
         <SidebarContainer>
             <UserIcon icon={<Face />} label={props.user?.email} />
-            <Button
+            <SidebarButton>
+
+
+            </SidebarButton>
+{/*             <Button
                 variant="contained"
                 color={addingNote ? "secondary" : "primary"}
                 onClick={newNoteBtnClick}
             >
                 {addingNote ? "Cancelar" : "Nova nota"}
             </Button>
+ */}
+            {addingNote && (
+                <div>
+                    <NewNoteInput
+                        type='text'
+                        placeholder='Título da nota'
+                        onKeyUp={(e) => updateTitle(e.target.value)}
+                    />
+                    <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={newNote}
+                    >
+                        Criar Nota
+                    </Button>
+                </div>
+            )}
 
             <NestedListComponent>
                 {notes && (
@@ -73,7 +98,7 @@ function SidebarComponent(props) {
                 )}
 
             </NestedListComponent>
-            <NestedListComponent>
+            <NestedCardComponent>
                 {cards && (
                     <List>
                         {cards.map((_card, _index) => (
@@ -82,28 +107,14 @@ function SidebarComponent(props) {
                                     _card={_card}
                                     _index={_index}
                                     selectedCardIndex={selectedCardIndex}
-                                    selectCard={selectCard} />
+                                    selectCard={selectCard}
+                                    deleteCard={deleteCard} />
                             </div>
                         ))}
                     </List>
                 )}
-            </NestedListComponent>
-            {addingNote && (
-                <div>
-                    <NewNoteInput
-                        type='text'
-                        placeholder='Título da nota'
-                        onKeyUp={(e) => updateTitle(e.target.value)}
-                    />
-                    <Button
-                        variant='contained'
-                        color='primary'
-                        onClick={newNote}
-                    >
-                        Criar Nota
-                    </Button>
-                </div>
-            )}
+            </NestedCardComponent>
+
 
 
         </SidebarContainer>

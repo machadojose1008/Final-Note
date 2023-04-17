@@ -8,6 +8,7 @@ const EditorComponent = ({ selectedNote, noteUpdate }) => {
     const [text, setText] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
+/*     const [front, setFront] = useState(''); */
 
     const modules = {
         toolbar: [
@@ -58,12 +59,13 @@ const EditorComponent = ({ selectedNote, noteUpdate }) => {
 
 
 
+
     return (
         <EditorContainer>
             <EditorNavBar>
                 <TitleInput
                     theme='null'
-                    placeholder="Note title..."
+                    placeholder="Título da nota"
                     value={title ? title : ''}
                     onChange={(e) => updateTitle(e.target.value)}>
                 </TitleInput>

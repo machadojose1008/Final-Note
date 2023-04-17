@@ -3,9 +3,10 @@ import './App.css';
 import { useLocation } from 'react-router-dom'
 import SidebarComponent from './components/sidebar.component';
 import EditorComponent from './components/editor.component';
+import CardEditorComponent from './components/card-editor.component';
 import { Grid } from '@mui/material';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
-import { db, getCardsFromFirestore } from './utils/firebase/firebase-config.js';
+import { db } from './utils/firebase/firebase-config.js';
 
 // Required for side-effects
 require("firebase/firestore");
@@ -21,6 +22,7 @@ function App() {
   const location = useLocation();
 
   // Roda somente quando o progrmaa renderiza a primeira vez
+  //Leitura inicial das notas no servidor
   useEffect(() => {
     const notesRef = collection(db, 'notes');
     setUser(location.state);
@@ -31,16 +33,14 @@ function App() {
         return data;
       });
       setNotes(notes);
-
-
-
     });
 
     return () => unsubscribe();
 
 
   }, []);
-  
+
+  //Leitura inicial dos cards no servidor  
   useEffect(() => {
     const cardsRef = collection(db, 'cards');
     const unsubscribe = onSnapshot(cardsRef, (serverUpdate) => {
@@ -74,8 +74,7 @@ function App() {
     const data = {
       title: cardObj.title,
       front: cardObj.front,
-      back: cardObj.back,
-      timestamp: serverTimestamp()
+      back: cardObj.back
     };
 
     updateDoc(cardRef, data)
@@ -138,6 +137,23 @@ function App() {
     deleteDoc(docRef);
   };
 
+  const deleteCard = async (card) => {
+    const cardIndex = card.id;
+    await setCards(cards.filter((_card) => _card !== card));
+    if (selectedCardIndex === cardIndex) {
+      setSelectedCardIndex(null);
+      setSelectedCard(null);
+    } else {
+      cards.length > 1 ?
+        selectCard(cards[selectedCardIndex - 1], selectedCardIndex - 1) :
+        setSelectedCardIndex(null);
+      setSelectedCard(null);
+    }
+
+    const cardRef = doc(db, 'cards', cardIndex);
+    deleteDoc(cardRef);
+  }
+
   return (
     <div className="app-container">
       {/* Spacing é a distância entre os elementos do grid */}
@@ -153,15 +169,27 @@ function App() {
             cards={cards}
             selectCard={selectCard}
             user={user}
+            deleteCard={deleteCard}
           />
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={7}>
           {selectedNote ? (
             <EditorComponent
               selectedNote={selectedNote}
+              selectedCard={selectedCard}
               selectedNoteIndex={selectedNoteIndex}
               notes={notes}
               noteUpdate={noteUpdate}
+              cardUpdate={cardUpdate}
+            />
+          ) : null}
+
+        </Grid>
+        <Grid item xs={3} >
+          {selectedCard ? (
+            <CardEditorComponent
+              selectedCard={selectedCard}
+              cardUpdate={cardUpdate}
             />
           ) : null}
         </Grid>

@@ -1,16 +1,18 @@
-import { styled } from "@mui/system";
+import { styled as styles } from "@mui/system";
 import { Chip, ListItemButton, ListItemText, ListItem } from "@mui/material";
 import { Delete } from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
+import ReactQuill from "react-quill";
+import styled  from '@emotion/styled'
 
-export const EditorContainer = styled('div')({
+export const EditorContainer = styles('div')({
   width: "100%",
   paddingLeft: "1%",
   paddingRight: "1%",
   marginTop: "1%",
 });
 
-export const EditorNavBar = styled('div')({
+export const EditorNavBar = styles('div')({
   display: "inline-block",
   backgroundColor: "#1e90ff",
   color: "white",
@@ -18,29 +20,27 @@ export const EditorNavBar = styled('div')({
   flexDirection: "column"
 });
 
-export const TitleInput = styled('input')({
+export const TitleInput = styles('input')({
   width: "100%",
-  border: 'none',
   padding: '20px 30px 30px',
   fontSize: "24px",
   color: "black",
   textAlign: 'left',
-
+  border:'none'
 });
 
-export const SidebarContainer = styled('div')({
+export const SidebarContainer = styles('div')({
   width: "100%",
   marginTop: "5%",
   paddingLeft: "5%",
-  paddingRight: "1%",
 });
 
-export const UserIcon = styled(Chip, {})({
+export const UserIcon = styles(Chip, {})({
   width: "100%",
   marginBottom: "5px"
 });
 
-export const NewNoteInput = styled('input')({
+export const NewNoteInput = styles('input')({
   position: "sticky",
   width: "99%",
   margin: "0px",
@@ -50,20 +50,20 @@ export const NewNoteInput = styled('input')({
   paddingLeft: "5px",
 });
 
-export const NotesList = styled(ListItemButton, {})({
+export const NotesList = styles(ListItemButton, {})({
   cursor: 'pointer',
   maxWidth: '100%'
 });
 
-export const SelectNote = styled('div')({
+export const SelectNote = styles('div')({
   maxWidth: "100%"
 });
 
-export const NoteText = styled(ListItemText, {})({
+export const NoteText = styles(ListItemText, {})({
 
 });
 
-export const DeleteIcon = styled(Delete, {})({
+export const DeleteIcon = styles(Delete, {})({
   position: "absolute",
   right: "5px",
   top: "calc(50% - 15px)",
@@ -72,14 +72,20 @@ export const DeleteIcon = styled(Delete, {})({
   }
 });
 
-export const DropList = styled(ListItem, {})({
+export const DropList = styles(ListItem, {})({
   width: '20%',
   cursor: 'pointer',
   display: 'flex',
-  justifyContent: 'space-between',
   alignItems: 'left'
 });
 
-export const DescIcon = styled(DescriptionIcon, {})({
+export const DescIcon = styles(DescriptionIcon, {})({
   cursor: 'pointer'
 });
+
+export const CardEditArea = styled.div`
+  .ql-editor{
+    min-height: 20rem;
+  }
+
+`;

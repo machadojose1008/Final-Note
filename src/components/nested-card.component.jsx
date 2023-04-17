@@ -2,8 +2,9 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { List, ListItemText, Collapse } from '@mui/material';
 import { useState } from 'react';
 import { DropList, DescIcon } from './componentStyles';
+import BookIcon from '@mui/icons-material/Book';
 
-function NestedListComponent({ children }) {
+function NestedCardComponent({ children }) {
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
@@ -13,9 +14,9 @@ function NestedListComponent({ children }) {
   return (
     <List>
       <DropList onClick={handleClick} dense={true}>
-        <DescIcon />
+        <BookIcon />
         {open ? <ExpandLess /> : <ExpandMore />}
-        <ListItemText primary='Notas'/>
+        <ListItemText primary='Cards'/>
       </DropList>
       <Collapse in={open} timeout="auto" unmountOnExit>
         {children}
@@ -29,6 +30,6 @@ function NestedListComponent({ children }) {
 
 
 
-export default NestedListComponent;
+export default NestedCardComponent;
 
 

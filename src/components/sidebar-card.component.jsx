@@ -19,7 +19,7 @@ function SidebarCardComonent(props) {
     return (
         <div key={_index}>
             <NotesList
-                selectCard={selectedCardIndex=== _index}
+                selected={selectedCardIndex === _index}
                 alignItems='flex-start'
                 onClick={handleSelectCard}
             >
