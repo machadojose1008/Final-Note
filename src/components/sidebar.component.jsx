@@ -52,7 +52,10 @@ function SidebarComponent(props) {
         <SidebarContainer>
             <UserIcon icon={<Face />} label={props.user?.email} />
             <SidebarButton>
-
+                <ul>
+                    <li>Item 1</li>
+                    <li>Item 2</li>
+                </ul>
 
             </SidebarButton>
 {/*             <Button
