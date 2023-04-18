@@ -1,8 +1,8 @@
 import { styled as styles } from "@mui/system";
-import { Chip, ListItemButton, ListItemText, ListItem } from "@mui/material";
+import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial } from "@mui/material";
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import { Delete } from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
-import ReactQuill from "react-quill";
 import styled  from '@emotion/styled'
 
 export const EditorContainer = styles('div')({
@@ -30,6 +30,7 @@ export const TitleInput = styles('input')({
 });
 
 export const SidebarContainer = styles('div')({
+  position: 'relative',
   width: "100%",
   marginTop: "5%",
   paddingLeft: "5%",
@@ -63,6 +64,16 @@ export const NoteText = styles(ListItemText, {})({
 
 });
 
+export const AddingButton = styles(SpeedDial, {})({
+  position: 'relative',
+  bottom: 0,
+  left: 0.5
+});
+
+export const SpeedDialIconButton = styles(SpeedDialIcon, {})({
+  fontSize: '20px',
+});
+
 export const DeleteIcon = styles(Delete, {})({
   position: "absolute",
   right: "5px",
@@ -70,6 +81,10 @@ export const DeleteIcon = styles(Delete, {})({
   "&:hover": {
     color: "red"
   }
+});
+
+export const ActionList = styles('div') ({
+    backgroundColor: 'black'
 });
 
 export const DropList = styles(ListItem, {})({

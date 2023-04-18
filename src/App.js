@@ -7,6 +7,7 @@ import CardEditorComponent from './components/card-editor.component';
 import { Grid } from '@mui/material';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
+import BasicSpeedDial from './components/speed-dial.component';
 
 // Required for side-effects
 require("firebase/firestore");
@@ -194,6 +195,7 @@ function App() {
           ) : null}
         </Grid>
       </Grid>
+
     </div>
   );
 }

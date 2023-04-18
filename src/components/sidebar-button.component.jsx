@@ -15,7 +15,7 @@ const SideBarButton = ({ children }) => {
     };
 
     return (
-        <Box sx={{ position: "relative" }}>
+        <Box sx={{ position: "relative", padding: '20px 5px'}}>
           <Button
             onClick={handleClick}
             sx={{

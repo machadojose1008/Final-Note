@@ -1,7 +1,7 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { List, ListItemText, Collapse } from '@mui/material';
 import { useState } from 'react';
-import { DropList, DescIcon } from './componentStyles';
+import { DropList } from './componentStyles';
 import BookIcon from '@mui/icons-material/Book';
 
 function NestedCardComponent({ children }) {
