@@ -69,6 +69,10 @@ function App() {
     setSelectedCardIndex(index);
   }
 
+  useEffect(() => {
+      selectNote(selectedNote, selectedNoteIndex);
+      console.log(selectedNote, selectedNoteIndex);
+  }, [selectedNote]);
 
   const cardUpdate = (id, cardObj) => {
     const cardRef = doc(db, 'cards', id);
@@ -115,7 +119,8 @@ function App() {
 
     const newFromDB = await addDoc(dbRef, note);
     const newID = newFromDB.id;
-    await setNotes([...notes, note]);
+    const updatedNotes = [...notes, note];
+    await setNotes(updatedNotes);
     const newNoteIndex = notes.indexOf(notes.filter((_note) => _note.id === newID)[0]);
     setSelectedNoteIndex(newNoteIndex);
     setSelectedNote(notes[newNoteIndex]);
@@ -177,11 +182,7 @@ function App() {
           {selectedNote ? (
             <EditorComponent
               selectedNote={selectedNote}
-              selectedCard={selectedCard}
-              selectedNoteIndex={selectedNoteIndex}
-              notes={notes}
               noteUpdate={noteUpdate}
-              cardUpdate={cardUpdate}
             />
           ) : null}
 
