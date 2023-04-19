@@ -1,5 +1,5 @@
 import { styled as styles } from "@mui/system";
-import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial } from "@mui/material";
+import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog } from "@mui/material";
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import { Delete } from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
@@ -98,9 +98,14 @@ export const DescIcon = styles(DescriptionIcon, {})({
   cursor: 'pointer'
 });
 
+export const AddDialog = styles(Dialog, {}) ({
+
+});
+
 export const CardEditArea = styled.div`
   .ql-editor{
     min-height: 20rem;
   }
 
 `;
+

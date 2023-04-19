@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import { Button } from '@mui/material';
 import { Face } from "@mui/icons-material"
 import SidebarItemComponent from './sidebar-item.component';
-import { SidebarContainer, UserIcon, NewNoteInput, ActionList } from './componentStyles'
+import { SidebarContainer, UserIcon, NewNoteInput, ActionList, TitleInput } from './componentStyles'
 import NestedListComponent from './nested-list.component';
 import SidebarCardComonent from './sidebar-card.component';
 import NestedCardComponent from './nested-card.component';
@@ -25,8 +25,8 @@ function SidebarComponent(props) {
         setTitle(txt);
     }
 
-    const newNote = () => {
-        props.newNote(title);
+    const newNote = (txt) => {
+        props.newNote(txt);
         setTitle(null);
         setAddingNote(false);
     }
@@ -51,12 +51,15 @@ function SidebarComponent(props) {
     return (
         <SidebarContainer>
             <UserIcon icon={<Face />} label={props.user?.email} />
-            {/* <SpeedDialComponent /> */}
             <SidebarButton>
                 <ActionList />
-                
+
             </SidebarButton>
-            <AddNote />
+            <AddNote
+                newNote = {newNote}
+            >
+                
+            </AddNote>
             <NestedListComponent>
                 {notes && (
                     <List>
