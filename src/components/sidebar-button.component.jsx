@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Box, Button, Collapse, IconButton } from "@mui/material";
+import { Box, Button, Collapse, IconButton, List } from "@mui/material";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExapandMoreIcon from '@mui/icons-material/ExpandMore';
+import { DropList } from "./componentStyles";
 
 const SideBarButton = ({ children }) => {
     const [open, setOpen] = useState(false);
@@ -15,7 +16,7 @@ const SideBarButton = ({ children }) => {
     };
 
     return (
-        <Box sx={{ position: "relative", padding: '20px 5px'}}>
+        <List sx={{}}>
           <Button
             onClick={handleClick}
             sx={{
@@ -41,7 +42,7 @@ const SideBarButton = ({ children }) => {
               {open ? <ExpandLessIcon sx={{color:'white'}} /> : <ExapandMoreIcon sx={{color:'white'}}/>}
             </IconButton>
           </Button>
-          <Collapse in={open} sx={{ position: "absolute", top: "100%" }}>
+          <Collapse in={open} sx={{top: "100%" }}>
             <Box
               sx={{
                 p: "10px",
@@ -52,19 +53,7 @@ const SideBarButton = ({ children }) => {
               {children}
             </Box>
           </Collapse>
-          {open && (
-            <div
-              style={{
-                position: "fixed",
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-              }}
-              onClick={handleBlur}
-            ></div>
-          )}
-        </Box>
+        </List>
       );
     };
     

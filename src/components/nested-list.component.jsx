@@ -1,5 +1,5 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { List, ListItemText, Collapse } from '@mui/material';
+import { List, ListItemText, Collapse, Box } from '@mui/material';
 import { useState } from 'react';
 import { DropList, DescIcon } from './componentStyles';
 
@@ -17,10 +17,18 @@ function NestedListComponent({ children }) {
       <DropList onClick={handleClick} dense={true}>
         <DescIcon />
         {open ? <ExpandLess /> : <ExpandMore />}
-        <ListItemText primary='Notas'/>
+        <ListItemText primary='Notas' />
       </DropList>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        {children}
+        <Box
+          sx={{
+            p: "10px",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            bgcolor: "white",
+          }}>
+          {children}
+        </Box>
+
       </Collapse>
     </List>
 

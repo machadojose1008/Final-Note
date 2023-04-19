@@ -121,9 +121,27 @@ function App() {
     const newID = newFromDB.id;
     const updatedNotes = [...notes, note];
     await setNotes(updatedNotes);
-    const newNoteIndex = notes.indexOf(notes.filter((_note) => _note.id === newID)[0]);
+    const newNoteIndex = notes.indexof(notes.filter((_note) => _note.id === newID)[0]);
     setSelectedNoteIndex(newNoteIndex);
     setSelectedNote(notes[newNoteIndex]);
+  };
+
+  const newCard = async (title) => {
+    const card = {
+      title: title,
+      front: '',
+      back: '',
+    };
+
+    const cardRef = collection(db, 'cards');
+
+    const newFromDB = await addDoc(cardRef, card);
+    const newID = newFromDB.id;
+    const updatedCards = [...cards, card];
+    setCards(updatedCards);
+    const newCardIndex = cards.indexof(cards.filter((_card) => _card.id === newID)[0]);
+    setSelectedCardIndex(newCardIndex);
+    setSelectedCard(cards[newCardIndex]);
   };
 
   const deleteNote = async (note) => {
@@ -163,9 +181,9 @@ function App() {
   return (
     <div className="app-container">
       {/* Spacing é a distância entre os elementos do grid */}
-      <Grid container spacing={2}>
+      <Grid container spacing={2}   >
         <Grid item xs={1.5}>
-          <SidebarComponent
+          <SidebarComponent 
             selectedNoteIndex={selectedNoteIndex}
             selectedCardIndex={selectedCardIndex}
             notes={notes}
@@ -176,6 +194,7 @@ function App() {
             selectCard={selectCard}
             user={user}
             deleteCard={deleteCard}
+            newCard={newCard}
           />
         </Grid>
         <Grid item xs={7}>

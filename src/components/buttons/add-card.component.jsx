@@ -1,14 +1,14 @@
-import { Box, Button, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Box, Button, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { useState } from "react";
 import { AddDialog, SideButton } from "../componentStyles";
 
-function AddNote(props) {
+function AddCard(props) {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
 
 
-    const newNote = () => {
-        props.newNote(title);
+    const newCard = () => {
+        props.newCard(title);
         setOpen(false);
     };
 
@@ -36,19 +36,19 @@ function AddNote(props) {
                         '&:hover': { bgcolor: 'black' }
                     }}
                 >
-                    Nova nota
+                    Novo Card
                 </Button>
 
             </Box>
 
             <AddDialog open={open} onClose={handleClose}>
-                <DialogTitle>Insira um título para a nota</DialogTitle>
+                <DialogTitle>Insira um título para o seu card</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin='dense'
                         id='titulo'
-                        label='Título da Nota'
+                        label='Título do Card'
                         type='text'
                         fullWidth
                         variant="standard"
@@ -56,7 +56,7 @@ function AddNote(props) {
                     />
                 </DialogContent>
                 <Button onClick={handleClose} sx={{color:'black', }}>Cancelar</Button>
-                <Button onClick={newNote}>Pronto</Button>
+                <Button onClick={newCard}>Pronto</Button>
             </AddDialog>
         </SideButton>
             
@@ -65,4 +65,4 @@ function AddNote(props) {
     );
 }
 
-export default AddNote;
+export default AddCard;
