@@ -60,9 +60,15 @@ export const SelectNote = styles('div')({
   maxWidth: "100%"
 });
 
+export const SideButton = styles('div') ({
+    padding: '5px 2px 1px'
+});
+
 export const NoteText = styles(ListItemText, {})({
 
 });
+
+
 
 export const AddingButton = styles(SpeedDial, {})({
   position: 'relative',

@@ -3,18 +3,20 @@ import List from '@mui/material/List';
 import { Button } from '@mui/material';
 import { Face } from "@mui/icons-material"
 import SidebarItemComponent from './sidebar-item.component';
-import { SidebarContainer, UserIcon, NewNoteInput, ActionList, TitleInput } from './componentStyles'
+import { SidebarContainer, UserIcon, ActionList } from './componentStyles'
 import NestedListComponent from './nested-list.component';
 import SidebarCardComonent from './sidebar-card.component';
 import NestedCardComponent from './nested-card.component';
 import SidebarButton from './sidebar-button.component';
 import SpeedDialComponent from './speed-dial.component';
 import AddNote from './buttons/add-note.component';
+import AddCard from './buttons/add-card.component';
 
 function SidebarComponent(props) {
     const { notes, cards, selectedNoteIndex, selectedCardIndex } = props;
     const [addingNote, setAddingNote] = useState(false);
     const [title, setTitle] = useState(null);
+    const [cardTitle, setCardTitle] = useState(null);
 
     const newNoteBtnClick = () => {
         setTitle(null);
@@ -31,6 +33,11 @@ function SidebarComponent(props) {
         setAddingNote(false);
     }
 
+    const newCard = (txt) => {
+        props.newCard(txt);
+        setCardTitle(null);
+    }
+
     const selectNote = (n, i) => {
         props.selectNote(n, i);
     }
@@ -45,7 +52,7 @@ function SidebarComponent(props) {
     }
 
     const deleteCard = (n, i) => {
-        props.deleteNote(n, i);
+        props.deleteCard(n, i);
     }
 
     return (
@@ -53,13 +60,9 @@ function SidebarComponent(props) {
             <UserIcon icon={<Face />} label={props.user?.email} />
             <SidebarButton>
                 <ActionList />
-
+                <AddNote newNote={newNote} />
+                <AddCard newCard={newCard} />
             </SidebarButton>
-            <AddNote
-                newNote = {newNote}
-            >
-                
-            </AddNote>
             <NestedListComponent>
                 {notes && (
                     <List>
