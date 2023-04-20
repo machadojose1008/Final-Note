@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import List from '@mui/material/List';
-import { Button } from '@mui/material';
 import { Face } from "@mui/icons-material"
-import SidebarItemComponent from './sidebar-item.component';
-import { SidebarContainer, UserIcon, ActionList } from './componentStyles'
-import NestedListComponent from './nested-list.component';
-import SidebarCardComonent from './sidebar-card.component';
-import NestedCardComponent from './nested-card.component';
-import SidebarButton from './sidebar-button.component';
-import SpeedDialComponent from './speed-dial.component';
-import AddNote from './buttons/add-note.component';
-import AddCard from './buttons/add-card.component';
+import SidebarItemComponent from './sidebar-notes';
+import { SidebarContainer, UserIcon, ActionList } from '../componentStyles'
+import NestedListComponent from './nested-lists/notes-list';
+import SidebarCardComonent from './sidebar-card';
+import NestedCardComponent from './nested-lists/cards-list';
+import SidebarButton from './nested-lists/sidebar-button';
+import AddNote from './buttons/add-card';
+import AddCard from './buttons/add-card';
 
 function SidebarComponent(props) {
     const { notes, cards, selectedNoteIndex, selectedCardIndex } = props;
@@ -18,14 +16,6 @@ function SidebarComponent(props) {
     const [title, setTitle] = useState(null);
     const [cardTitle, setCardTitle] = useState(null);
 
-    const newNoteBtnClick = () => {
-        setTitle(null);
-        setAddingNote(!addingNote);
-    }
-
-    const updateTitle = (txt) => {
-        setTitle(txt);
-    }
 
     const newNote = (txt) => {
         props.newNote(txt);

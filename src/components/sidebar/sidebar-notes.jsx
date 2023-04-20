@@ -1,6 +1,6 @@
 import React from 'react';
-import { removeHTMLTags } from '../helpers';
-import { NotesList, SelectNote, NoteText, DeleteIcon } from './componentStyles'
+import { removeHTMLTags } from '../../helpers';
+import { NotesList, SelectNote, NoteText, DeleteIcon } from '../componentStyles'
 
 
 function SidebarItemComponent(props) {

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { useLocation } from 'react-router-dom'
-import SidebarComponent from './components/sidebar.component';
-import EditorComponent from './components/editor.component';
-import CardEditorComponent from './components/card-editor.component';
+import SidebarComponent from './components/sidebar/sidebar';
+import EditorComponent from './components/editors/editor';
+import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
-import BasicSpeedDial from './components/speed-dial.component';
 
 // Required for side-effects
 require("firebase/firestore");

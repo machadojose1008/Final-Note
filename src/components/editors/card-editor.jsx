@@ -1,8 +1,8 @@
 import ReactQuill from 'react-quill';
-import { CardEditArea, EditorContainer, EditorNavBar, TitleInput } from './componentStyles';
+import { CardEditArea, EditorContainer, EditorNavBar, TitleInput } from '../componentStyles';
 import { useCallback, useState, useEffect } from 'react';
 import { Paper, Stack } from '@mui/material';
-import debounce from '../helpers';
+import debounce from '../../helpers';
 
 const CardEditorComponent = ({ selectedCard, cardUpdate }) => {
     const [front, setFront] = useState('');
