@@ -61,7 +61,6 @@ function App() {
   const selectNote = (note, index) => {
     setSelectedNoteIndex(index);
     setSelectedNote(note);
-    console.log(note,index);
   };
 
   const selectCard = (card, index) => {
@@ -69,17 +68,12 @@ function App() {
     setSelectedCardIndex(index);
   }
 
-  useEffect(() => {
-      selectNote(selectedNote, selectedNoteIndex);
-      console.log(selectedNote, selectedNoteIndex);
-  }, [selectedNote]);
-
   const cardUpdate = (id, cardObj) => {
     const cardRef = doc(db, 'cards', id);
     const data = {
       title: cardObj.title,
       front: cardObj.front,
-      back: cardObj.back
+      back: cardObj.back,
     };
 
     updateDoc(cardRef, data)
@@ -96,8 +90,7 @@ function App() {
     const noteRef = doc(db, 'notes', id);
     const data = {
       title: noteObj.title,
-      body: noteObj.body,
-      timestamp: serverTimestamp(),
+      body: noteObj.body
     };
 
     updateDoc(noteRef, data)
@@ -108,6 +101,8 @@ function App() {
         console.log(error);
       });
   };
+
+
 
   const newNote = async (title) => {
     const note = {
@@ -126,7 +121,9 @@ function App() {
     const newNoteIndex = updatedNotes.findIndex((_note) => _note.id === newID);
     
     // selecione a nova nota automaticamente
-    selectNote(updatedNotes[newNoteIndex], newNoteIndex);
+    selectNote(notes, newFromDB.id);
+    setSelectedNote(note);
+    setSelectedNoteIndex(newFromDB.id);
   };
 
   const newCard = async (title) => {
@@ -142,9 +139,10 @@ function App() {
     const newID = newFromDB.id;
     const updatedCards = [...cards, card];
     setCards(updatedCards);
-    const newCardIndex = cards.indexof(cards.filter((_card) => _card.id === newID)[0]);
+    const newCardIndex = updatedCards.findIndex((_card) => _card.id === newID);
+    selectCard(cards, newFromDB.id);
+    setSelectedCard(card);
     setSelectedCardIndex(newCardIndex);
-    setSelectedCard(cards[newCardIndex]);
   };
 
   const deleteNote = async (note) => {

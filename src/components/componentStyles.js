@@ -14,7 +14,6 @@ export const EditorContainer = styles('div')({
 
 export const EditorNavBar = styles('div')({
   display: "inline-block",
-  backgroundColor: "#1e90ff",
   color: "white",
   borderTopRightRadius: "0.5em",
   flexDirection: "column"
@@ -26,7 +25,12 @@ export const TitleInput = styles('input')({
   fontSize: "24px",
   color: "black",
   textAlign: 'left',
-  border:'none'
+  border:'solid',
+  borderWidth: '0.05em',
+  WebkitBorderBottomRightRadius: '0.5em',
+  WebkitBorderBottomLeftRadius: '0.5em',
+  WebkitBorderTopRightRadius: '0.5em',
+  WebkitBorderTopLeftRadius: '0.5em',
 });
 
 export const SidebarContainer = styles('div')({
