@@ -61,6 +61,7 @@ function App() {
   const selectNote = (note, index) => {
     setSelectedNoteIndex(index);
     setSelectedNote(note);
+    console.log(note,index);
   };
 
   const selectCard = (card, index) => {
@@ -115,14 +116,17 @@ function App() {
       timestamp: serverTimestamp(),
     };
     const dbRef = collection(db, 'notes');
-
+  
     const newFromDB = await addDoc(dbRef, note);
     const newID = newFromDB.id;
     const updatedNotes = [...notes, note];
-    await setNotes(updatedNotes);
-    const newNoteIndex = notes.indexof(notes.filter((_note) => _note.id === newID)[0]);
-    setSelectedNoteIndex(newNoteIndex);
-    setSelectedNote(notes[newNoteIndex]);
+    setNotes(updatedNotes);
+    
+    // encontre o índice da nova nota
+    const newNoteIndex = updatedNotes.findIndex((_note) => _note.id === newID);
+    
+    // selecione a nova nota automaticamente
+    selectNote(updatedNotes[newNoteIndex], newNoteIndex);
   };
 
   const newCard = async (title) => {

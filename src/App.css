@@ -56,5 +56,5 @@ body {
 */
 .MuiButton-root {
   width: 100%;
-  position: fixed;
+  position: relative;
 }

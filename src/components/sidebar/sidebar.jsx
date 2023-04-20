@@ -7,7 +7,7 @@ import NestedListComponent from './nested-lists/notes-list';
 import SidebarCardComonent from './sidebar-card';
 import NestedCardComponent from './nested-lists/cards-list';
 import SidebarButton from './nested-lists/sidebar-button';
-import AddNote from './buttons/add-card';
+import AddNote from './buttons/add-note';
 import AddCard from './buttons/add-card';
 
 function SidebarComponent(props) {

@@ -1,6 +1,6 @@
-import { Box, Button, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Box, Button, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { useState } from "react";
-import { AddDialog, SideButton } from "../componentStyles";
+import { AddDialog, SideButton } from "../../componentStyles";
 
 function AddNote(props) {
     const [open, setOpen] = useState(false);

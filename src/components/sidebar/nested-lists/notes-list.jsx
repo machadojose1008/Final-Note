@@ -20,12 +20,7 @@ function NestedListComponent({ children }) {
         <ListItemText primary='Notas' />
       </DropList>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <Box
-          sx={{
-            p: "10px",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-            bgcolor: "white",
-          }}>
+        <Box>
           {children}
         </Box>
 

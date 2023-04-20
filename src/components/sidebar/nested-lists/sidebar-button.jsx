@@ -43,11 +43,6 @@ const SideBarButton = ({ children }) => {
           </Button>
           <Collapse in={open} sx={{top: "100%" }}>
             <Box
-              sx={{
-                p: "10px",
-                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                bgcolor: "white",
-              }}
             >
               {children}
             </Box>

@@ -34,6 +34,10 @@ export const SidebarContainer = styles('div')({
   width: "100%",
   marginTop: "5%",
   paddingLeft: "5%",
+  backgroundColor: "#Ececec",
+  maxWidth: '100%',
+  borderTopRightRadius: '1em',
+  borderBottomRightRadius: '1em'
 });
 
 export const UserIcon = styles(Chip, {})({
