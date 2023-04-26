@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
-//import "./signin.css";
 import { HeaderLogo, SignInComponent, SignInContainer } from './signStyles';
 import { signInAuthUserWithEmailAndPassword } from '../../utils/firebase/firebase-config';
 

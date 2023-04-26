@@ -7,11 +7,13 @@ import NestedListComponent from './nested-lists/notes-list';
 import SidebarCardComonent from './sidebar-card';
 import NestedCardComponent from './nested-lists/cards-list';
 import SidebarButton from './nested-lists/sidebar-button';
+import NestedNotebookComponent from './nested-lists/notebooks-list';
+import SidebarNotebookComponent from './sidebar-notebooks';
 import AddNote from './buttons/add-note';
 import AddCard from './buttons/add-card';
 
 function SidebarComponent(props) {
-    const { notes, cards, selectedNoteIndex, selectedCardIndex } = props;
+    const { notes, cards, notebooks, selectedNotebookIndex, selectedNoteIndex, selectedCardIndex } = props;
     const [addingNote, setAddingNote] = useState(false);
     const [title, setTitle] = useState(null);
     const [cardTitle, setCardTitle] = useState(null);
@@ -36,6 +38,13 @@ function SidebarComponent(props) {
         props.selectCard(c, i);
     }
 
+    const selectNotebook = (c, i) => {
+        props.selectNotebook(c, i);
+    }
+
+    const deleteNotebook = (n, i) => {
+        props.deleteNotebook(n, i);
+    }
 
     const deleteNote = (n, i) => {
         props.deleteNote(n, i);
@@ -53,6 +62,23 @@ function SidebarComponent(props) {
                 <AddNote newNote={newNote} />
                 <AddCard newCard={newCard} />
             </SidebarButton>
+            <NestedNotebookComponent>
+                {notebooks && (
+                    <List>
+                        {notebooks.map((_notebook, _index) => (
+                            <div key={_index}>
+                                <SidebarNotebookComponent
+                                    _index={_index}
+                                    _notebook={_notebook}
+                                    selectedNotebookIndex={selectedNotebookIndex}
+                                    selectNotebook={selectNotebook}
+                                    deleteNotebook={deleteNotebook}
+                                />
+                            </div>
+                        ))}
+                    </List>
+                )}
+            </NestedNotebookComponent>
             <NestedListComponent>
                 {notes && (
                     <List>
