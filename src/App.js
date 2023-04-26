@@ -26,23 +26,18 @@ function App() {
   const location = useLocation();
 
   
-  const getIdFromEmail = async (email) => {
+  const findUserIdByEmail = async (email) => {
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('email', '==', email));
-  
-
-    await getDocs(q).then((QuerySnapshot) => {
-      QuerySnapshot.forEach((doc) => {
-        setUserId(doc.id);
-      });
+    const querySnapshot = await getDocs(q);
+    let userId = null;
+    querySnapshot.forEach((doc) => {
+      userId = doc.id;
     });
-    console.log(userId);
-
     return userId;
-
   };
 
-  const fetchNotes = () => {
+/*   const fetchNotes = () => {
     const notesRef = collection(db, 'notes');
     const unsubscribe = onSnapshot(notesRef, (serverUpdate) => {
       const notes = serverUpdate.docs.map((_doc) => {
@@ -55,9 +50,9 @@ function App() {
 
   
     return () => unsubscribe();
-  }
+  } */
 
-  const fetchCards = () => {
+/*   const fetchCards = () => {
     const location = 'cards'
     const cardsRef = collection(db, location);
     const unsubscribe = onSnapshot(cardsRef, (serverUpdate) => {
@@ -70,35 +65,33 @@ function App() {
       return () => unsubscribe();
     });
   };
+ */
 
-
-    const fetchNotebooks = async (userId) => {
-      const notebooksRef = collection(db, 'users', userId, 'notebooks');
-      const notebooksSnapshot = await getDocs(notebooksRef);
-
-      const notebooks = {};
-      notebooksSnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data && data.notebooks) {
-          notebooks[doc.id] = data.notebooks;
-        }
-      });
-
-      console.log(notebooks);
-    }
 
     useEffect(() => {
       setUser(location.state);
-      console.log(location.state.email);
-      getIdFromEmail(location.state.email).then((_userId) => {
-        if (_userId){
-          fetchNotebooks(_userId);
-        }else {
-          console.log('usuario nao encontrado');
-        }
-        
-      }); 
+      const fetchNotebooks = async (userId) => {
+        const notebooksRef = collection(db, `users/${userId}/notebooks`);
+        const q = query(notebooksRef);
+        const querySnapshot = await getDocs(q);
+        const fetchedNotebooks = [];
+        querySnapshot.forEach((doc) => {
+          fetchedNotebooks.push({ id: doc.id, title: doc.data().title});
+        });
+        setNotebooks(fetchedNotebooks);
+        console.log(fetchedNotebooks);
+      };
 
+      const userEmail = location.state.email;
+      console.log(userEmail);
+      const fetchUserId = async () => {
+        const userId = await findUserIdByEmail(userEmail);
+        if(userId){
+          fetchNotebooks(userId);
+        }
+      };
+
+        fetchUserId();
     }, []);
 
 
