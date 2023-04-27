@@ -21,10 +21,11 @@ function SidebarComponent(props) {
     const [title, setTitle] = useState(null);
     const [cardTitle, setCardTitle] = useState(null);
     const [notes, setNotes] = useState([]);
+    const [notebooksTitles, setNotebookTitles] = useState([]);
 
 
-    const newNote = (txt) => {
-        props.newNote(txt);
+    const newNote = (txt, notebookTitle) => {
+        props.newNote(txt,notebookTitle);
         setTitle(null);
         setAddingNote(false);
     }
@@ -60,14 +61,20 @@ function SidebarComponent(props) {
     }
 
     useEffect(() => {
+        
 
-        //notebooks.notes.map(el => console.log(el));
 
         const settingNotes = async () => {
             const fetchNotes = await notebooks.map(el => el.notes);
             setNotes(fetchNotes);
         }
+
+        const settingTitles = async () => {
+            const fetchTitle = await notebooks.map(el => el.title);
+            setNotebookTitles(fetchTitle);
+        }
         settingNotes();
+        settingTitles();
 
 
 
@@ -83,7 +90,7 @@ function SidebarComponent(props) {
                     <UserIcon icon={<Face />} label={props.user?.email} />
                     <SidebarButton>
                         <ActionList />
-                        <AddNote newNote={newNote} />
+                        <AddNote notebooksTitles={notebooksTitles} newNote={newNote} />
                         <AddCard newCard={newCard} />
                     </SidebarButton>
 
@@ -93,16 +100,8 @@ function SidebarComponent(props) {
                         sx={{ maxWidth: 200 }}
                     >
                         <TreeItem nodeId='notebooks' label='Notebooks' >
-                            {notebooks.map((notebook, notebookIndex) => (
+                            {notebooks.map((notebook) => (
                                 <TreeItem nodeId={notebook.id} label={notebook.title} > 
-                                    {/*  {notebook.notes.map((note) => (
-                                        <TreeItem
-                                            key={note.id}
-                                            noteId={`${notebook.id}-${note.id}`}
-                                            label={note.title}
-                                            onClick={handleClick(note, note.id)}
-                                        />
-                                    ))} */}
                                     {notes && (
                                         <List>
                                             {notebook.notes.map((_note, _noteIndex) => (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { findNotebookPosition } from './helpers';
 import { useLocation } from 'react-router-dom'
 import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
@@ -37,22 +38,6 @@ function App() {
     return userId;
   };
 
-  /*   const fetchNotes = () => {
-      const notesRef = collection(db, 'notes');
-      const unsubscribe = onSnapshot(notesRef, (serverUpdate) => {
-        const notes = serverUpdate.docs.map((_doc) => {
-          const data = _doc.data();
-          data['id'] = _doc.id;
-          return data;
-        });
-        setNotes(notes);
-  
-      });
-  
-      console.log(typeof(notes));
-    
-      return () => unsubscribe();
-    }   */
 
   /*   const fetchCards = () => {
       const location = 'cards'
@@ -92,7 +77,6 @@ function App() {
         setNotes(fetchedNotes);
       });
 
-      /* console.log(fetchedNotebooks); */
     };
 
     const userEmail = location.state.email;
@@ -106,7 +90,7 @@ function App() {
 
 
     fetchUserId();
-    /*  fetchNotes(); */
+    console.log(notebooks);
   }, []);
 
 
@@ -117,7 +101,7 @@ function App() {
   };
 
   const noteUpdate = (id, selectedNotebookId, noteObj) => {
-    const noteRef = doc(db,  `users/${userId}/notebooks/${selectedNotebookId}/notes`, id);
+    const noteRef = doc(db, `users/${userId}/notebooks/${selectedNotebookId}/notes`, id);
     const data = {
       title: noteObj.title,
       body: noteObj.body
@@ -132,6 +116,65 @@ function App() {
       });
   };
 
+
+
+
+
+  const newNote = async (noteTitle, notebookTitle) => {
+    const note = {
+      title: noteTitle,
+      body: '',
+      timestamp: serverTimestamp(),
+    };
+    console.log(noteTitle, notebookTitle);
+
+    const findNotebookIndex = async (userId, _title) => {
+      const notebookRef = collection(db, 'users', userId, 'notebooks');
+      const q = query(notebookRef, where('title', '==', _title));
+      console.log(q);
+      const querySnapshot = await getDocs(q);
+      let notebookId = null;
+      querySnapshot.forEach((doc) => {
+        notebookId = doc.id;
+      });
+      console.log(notebookId);
+      return notebookId;
+
+    }
+
+    const notebookId = await findNotebookIndex(userId, notebookTitle);
+    console.log(notebookId);
+    if(!notebookId) {
+      console.log('notebook não encontrado');
+      return;
+    }
+
+    
+
+    const updateNotes = async (newNote) => {
+        const notebookPosition = await findNotebookPosition(notebooks, notebookId);
+        notebooks[notebookPosition].notes.push(newNote);
+
+    }
+
+    const dbRef = collection(db, `users/${userId}/notebooks/${notebookId}/notes`);
+
+    const newFromDB = await addDoc(dbRef, note);
+    const newID = newFromDB.id;
+
+    updateNotes(note);
+    
+    
+
+
+    // encontre o índice da nova nota
+    //const newNoteIndex = updatedNotes.findIndex((_note) => _note.id === newID);
+
+    // selecione a nova nota automaticamente
+    selectNote(notes, newFromDB.id);
+    setSelectedNote(note);
+    setSelectedNoteIndex(newFromDB.id);
+  };
 
 
 
@@ -164,27 +207,6 @@ function App() {
 
 
 
-  const newNote = async (title) => {
-    const note = {
-      title: title,
-      body: '',
-      timestamp: serverTimestamp(),
-    };
-    const dbRef = collection(db, '/notebooks/48XKBU5WgiJCAaHjWQOI/notes');
-
-    const newFromDB = await addDoc(dbRef, note);
-    const newID = newFromDB.id;
-    const updatedNotes = [...notes, note];
-    setNotes(updatedNotes);
-
-    // encontre o índice da nova nota
-    const newNoteIndex = updatedNotes.findIndex((_note) => _note.id === newID);
-
-    // selecione a nova nota automaticamente
-    selectNote(notes, newFromDB.id);
-    setSelectedNote(note);
-    setSelectedNoteIndex(newFromDB.id);
-  };
 
   const newCard = async (title) => {
     const card = {
@@ -241,7 +263,7 @@ function App() {
 
   return (
     <div className="app-container">
-      {notebooks.length  === 0 ? (
+      {notebooks.length === 0 ? (
         <p>Carregando...</p>
       ) : (
         <Grid container spacing={2}   >

@@ -13,3 +13,12 @@ export default function debounce(a,b,c){
   export function removeHTMLTags (str) {
     return str.replace(/<[^>]*>?/gm, '');
   };
+
+  export function findNotebookPosition(notebooks, id) {
+    for (let i = 0; i < notebooks.length; i++) {
+      if(notebooks[i].id === id){
+        return i;
+      }
+    }
+    return -1;
+  }
