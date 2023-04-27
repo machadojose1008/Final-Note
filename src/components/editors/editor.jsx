@@ -4,7 +4,7 @@ import debounce from '../../helpers';
 import { Paper } from '@mui/material';
 import { EditorContainer, EditorNavBar, TitleInput } from '../componentStyles';
 
-const EditorComponent = ({ selectedNote, noteUpdate }) => {
+const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex }) => {
     const [text, setText] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
@@ -46,7 +46,7 @@ const EditorComponent = ({ selectedNote, noteUpdate }) => {
 
     const update = useCallback(
         debounce(({ title, body }) => {
-            noteUpdate(id, { title, body });
+            noteUpdate(id, selectedNotebookIndex, { title, body });
         }, 1500),
         [id]
     );

@@ -4,10 +4,10 @@ import { NotesList, SelectNote, NoteText, DeleteIcon } from '../componentStyles'
 
 
 function SidebarItemComponent(props) {
-    const { _index, _note, selectedNoteIndex, selectNote, deleteNote } = props;
+    const { _noteIndex, _note, notebookIndex, selectedNoteIndex, selectNote, deleteNote } = props;
 
     const handleSelectNote = () => {
-        selectNote(_note, _index);
+        selectNote(_note, notebookIndex, _noteIndex);
     };
 
     const handleDeleteNote = () => {
@@ -17,9 +17,9 @@ function SidebarItemComponent(props) {
     };
 
     return (
-        <div key={_index}>
+        <div key={_noteIndex}>
             <NotesList
-                selected={selectedNoteIndex === _index}
+                selected={selectedNoteIndex === _noteIndex}
                 alignItems='flex-start'
                 onClick={handleSelectNote}
             >
