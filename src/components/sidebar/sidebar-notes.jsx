@@ -12,7 +12,7 @@ function SidebarItemComponent(props) {
 
     const handleDeleteNote = () => {
         if (window.confirm(`Tem certeza que deseja deletar: ${_note.title}`)) {
-            deleteNote(_note);
+            deleteNote(_note, notebookIndex);
         }
     };
 

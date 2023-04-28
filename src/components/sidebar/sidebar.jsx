@@ -25,7 +25,7 @@ function SidebarComponent(props) {
 
 
     const newNote = (txt, notebookTitle) => {
-        props.newNote(txt,notebookTitle);
+        props.newNote(txt, notebookTitle);
         setTitle(null);
         setAddingNote(false);
     }
@@ -37,7 +37,7 @@ function SidebarComponent(props) {
 
 
     const selectNote = (note, notebookIndex, noteIndex) => {
-        props.selectNote(note, notebookIndex,noteIndex);
+        props.selectNote(note, notebookIndex, noteIndex);
     }
 
     const selectCard = (c, i) => {
@@ -52,8 +52,8 @@ function SidebarComponent(props) {
         props.deleteNotebook(n, i);
     }
 
-    const deleteNote = (n, i) => {
-        props.deleteNote(n, i);
+    const deleteNote = (note, notebookIndex) => {
+        props.deleteNote(note, notebookIndex);
     }
 
     const deleteCard = (n, i) => {
@@ -61,7 +61,7 @@ function SidebarComponent(props) {
     }
 
     useEffect(() => {
-        
+
 
 
         const settingNotes = async () => {
@@ -101,7 +101,7 @@ function SidebarComponent(props) {
                     >
                         <TreeItem nodeId='notebooks' label='Notebooks' >
                             {notebooks.map((notebook) => (
-                                <TreeItem nodeId={notebook.id} label={notebook.title} > 
+                                <TreeItem nodeId={notebook.id} label={notebook.title} key={notebook.id}>
                                     {notes && (
                                         <List>
                                             {notebook.notes.map((_note, _noteIndex) => (
@@ -124,6 +124,35 @@ function SidebarComponent(props) {
 
                     </TreeView>
 
+                    <TreeView
+                        defaultCollapseIcon={<ExpandMoreIcon />}
+                        defaultExpandIcon={<ChevronRightIcon />}
+                        sx={{ maxWidth: 200 }}
+                    >
+                        <TreeItem nodeId='decks' label='Notebooks' >
+                            {notebooks.map((notebook) => (
+                                <TreeItem nodeId={notebook.id} label={notebook.title} key={notebook.id}>
+                                    {notes && (
+                                        <List>
+                                            {notebook.notes.map((_note, _noteIndex) => (
+                                                <div key={_noteIndex}>
+                                                    <SidebarItemComponent
+                                                        _note={_note}
+                                                        _index={_noteIndex}
+                                                        selectedNoteIndex={selectedNoteIndex}
+                                                        notebookIndex={notebook.id}
+                                                        selectNote={selectNote}
+                                                        deleteNote={deleteNote}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </List>
+                                    )}
+                                </TreeItem>
+                            ))}
+                        </TreeItem>
+
+                    </TreeView>
 
 
 

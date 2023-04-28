@@ -39,22 +39,6 @@ function App() {
   };
 
 
-  /*   const fetchCards = () => {
-      const location = 'cards'
-      const cardsRef = collection(db, location);
-      const unsubscribe = onSnapshot(cardsRef, (serverUpdate) => {
-        const cards = serverUpdate.docs.map((_doc) => {
-          const data = _doc.data();
-          data['id'] = _doc.id;
-          return data;
-        });
-        setCards(cards);
-        return () => unsubscribe();
-      });
-    };
-   */
-
-
   useEffect(() => {
     setUser(location.state);
     const fetchNotebooks = async (userId) => {
@@ -144,16 +128,16 @@ function App() {
 
     const notebookId = await findNotebookIndex(userId, notebookTitle);
     console.log(notebookId);
-    if(!notebookId) {
+    if (!notebookId) {
       console.log('notebook não encontrado');
       return;
     }
 
-    
+
 
     const updateNotes = async (newNote) => {
-        const notebookPosition = await findNotebookPosition(notebooks, notebookId);
-        notebooks[notebookPosition].notes.push(newNote);
+      const notebookPosition = await findNotebookPosition(notebooks, notebookId);
+      notebooks[notebookPosition].notes.push(newNote);
 
     }
 
@@ -163,19 +147,60 @@ function App() {
     const newID = newFromDB.id;
 
     updateNotes(note);
-    
-    
 
-
-    // encontre o índice da nova nota
-    //const newNoteIndex = updatedNotes.findIndex((_note) => _note.id === newID);
-
-    // selecione a nova nota automaticamente
     selectNote(notes, newFromDB.id);
     setSelectedNote(note);
     setSelectedNoteIndex(newFromDB.id);
   };
 
+
+
+  const deleteNote = async (note, notebookIndex) => {
+    const noteIndex = note.id;
+    const noteRef = await doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, noteIndex);
+    deleteDoc(noteRef);
+
+    const notebookPosition = await findNotebookPosition(notebooks, notebookIndex);
+
+    if(selectedNoteIndex === noteIndex){
+      setSelectedNoteIndex(null);
+      setSelectedNote(null);
+    }else{
+      notebooks[notebookPosition].notes.length > 1 ?
+        selectNote(notebooks[notebookPosition].notes[selectedNoteIndex - 1], selectedNoteIndex - 1 ) :
+        setSelectedNoteIndex(null);
+      setSelectedNote(null);
+    }
+
+    setNotebooks(prevState => {
+      const updatedNotebooks = [...prevState];
+      const updatedNotes = [...updatedNotebooks[notebookPosition].notes];
+      updatedNotes.splice(updatedNotes.indexOf(note), 1);
+      updatedNotebooks[notebookPosition].notes = updatedNotes;
+      return updatedNotebooks;
+    });
+
+    console.log(notebookPosition);
+    
+  };
+
+
+
+
+  /*   const fetchCards = () => {
+      const location = 'cards'
+      const cardsRef = collection(db, location);
+      const unsubscribe = onSnapshot(cardsRef, (serverUpdate) => {
+        const cards = serverUpdate.docs.map((_doc) => {
+          const data = _doc.data();
+          data['id'] = _doc.id;
+          return data;
+        });
+        setCards(cards);
+        return () => unsubscribe();
+      });
+    };
+   */
 
 
 
@@ -205,9 +230,6 @@ function App() {
   }
 
 
-
-
-
   const newCard = async (title) => {
     const card = {
       title: title,
@@ -227,22 +249,6 @@ function App() {
     setSelectedCardIndex(newCardIndex);
   };
 
-  const deleteNote = async (note) => {
-    const noteIndex = note.id;
-    await setNotes(notes.filter((_note) => _note !== note));
-    if (selectedNoteIndex === noteIndex) {
-      setSelectedNoteIndex(null);
-      setSelectedNote(null);
-    } else {
-      notes.length > 1 ?
-        selectNote(notes[selectedNoteIndex - 1], selectedNoteIndex - 1) :
-        setSelectedNoteIndex(null);
-      setSelectedNote(null);
-    }
-
-    const docRef = doc(db, '/notebooks/48XKBU5WgiJCAaHjWQOI/notes', noteIndex);
-    deleteDoc(docRef);
-  };
 
   const deleteCard = async (card) => {
     const cardIndex = card.id;
