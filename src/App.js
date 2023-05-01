@@ -23,6 +23,7 @@ function App() {
   const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(null);
+  const [notesUpdated, setNotesUpdated] = useState(false);
 
   // Decks States
   const [decks, setDecks] = useState([]);
@@ -33,13 +34,12 @@ function App() {
   const [cards, setCards] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
-
+  const [cardsUpdated, setCardsUpdated] = useState(false);
 
   // Logged user States
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
-
-
+  const [showEditor, setShowEditor] = useState(false);
 
   const location = useLocation();
 
@@ -87,13 +87,14 @@ function App() {
     }
   };
 
-  const selectNote = (note, notebookIndex, noteIndex) => {
+  const selectNote = async (note, notebookIndex, noteIndex) => {
     setSelectedNoteIndex(noteIndex);
     setSelectedNote(note);
     setSelectedNotebookIndex(notebookIndex);
   };
 
-  const noteUpdate = (id, selectedNotebookId, noteObj) => {
+  const noteUpdate = async (id, selectedNotebookId, noteObj) => {
+    
     const noteRef = doc(db, `users/${userId}/notebooks/${selectedNotebookId}/notes`, id);
     const data = {
       title: noteObj.title,
@@ -103,6 +104,7 @@ function App() {
     updateDoc(noteRef, data)
       .then((docRef) => {
         console.log('Documento atualizado');
+        setNotesUpdated(true);
       })
       .catch((error) => {
         console.log(error);
@@ -140,17 +142,16 @@ function App() {
       const notebookPosition = await findNotebookPosition(notebooks, notebookId);
       notebooks[notebookPosition].notes.push(newNote);
 
-    }
+    } 
 
     const dbRef = collection(db, `users/${userId}/notebooks/${notebookId}/notes`);
 
     const newFromDB = await addDoc(dbRef, note);
 
-    updateNotes(note);
+    updateNotes(note); 
+    setNotesUpdated(false);
 
     selectNote(notes, newFromDB.id);
-    setSelectedNote(note);
-    setSelectedNoteIndex(newFromDB.id);
   };
 
 
@@ -219,6 +220,7 @@ function App() {
     updateDoc(cardRef, data)
       .then((docRef) => {
         console.log('Card atualizado');
+        setCardsUpdated(true);
       })
       .catch((error) => {
         console.log(error);
@@ -300,8 +302,17 @@ function App() {
     setUser(location.state);
     fetchUserId();
 
-    console.log(notebooks);
-  }, []);
+    if(notesUpdated) {
+      fetchNotebooks(userId);
+      setNotesUpdated(false);
+    };
+
+    if(cardsUpdated) {
+      fetchDecks(userId);
+      setCardsUpdated(false);
+    };
+
+  }, [notesUpdated, cardsUpdated, userId]);
 
   return (
     <div className="app-container">
@@ -312,7 +323,7 @@ function App() {
           <Grid item xs={1.5}>
             <SidebarComponent
               user={user}
-              
+
               notebooks={notebooks}
               notes={notes}
               newNote={newNote}
