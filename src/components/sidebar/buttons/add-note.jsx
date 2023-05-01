@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AddDialog, SideButton } from "../../componentStyles";
 
 function AddNote(props) {
-    const {notebooksTitles} = props;
+    const {notebooksTitle} = props;
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [selectedNotebookTitle, setSelectedNotebookTitle] = useState('');
@@ -16,7 +16,6 @@ function AddNote(props) {
 
     const handleClick = () => {
         setOpen(true);
-        console.log(notebooksTitles);
     };
 
     const handleClose = () => {
@@ -29,7 +28,6 @@ function AddNote(props) {
 
     const handleNotebook =  (event) => {
          setSelectedNotebookTitle(event.target.value);
-        console.log(selectedNotebookTitle);
     }
 
 
@@ -46,7 +44,6 @@ function AddNote(props) {
                 >
                     Nova nota
                 </Button>
-
             </Box>
 
             <AddDialog open={open} onClose={handleClose} >
@@ -73,13 +70,11 @@ function AddNote(props) {
                             value={selectedNotebookTitle}
                             onChange={handleNotebook}
                         >
-                            {notebooksTitles.map((title) => (
+                            {notebooksTitle.map((title) => (
                                 <MenuItem key={title} value={title}>{title}</MenuItem>
                             ))} 
-
                         </Select>
                     </FormControl>
-
                 </DialogContent>
                 <Button onClick={handleClose} sx={{ color: 'black', }}>Cancelar</Button>
                 <Button onClick={newNote}>Pronto</Button>

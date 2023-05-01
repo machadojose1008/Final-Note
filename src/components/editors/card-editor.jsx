@@ -4,7 +4,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { Paper, Stack } from '@mui/material';
 import debounce from '../../helpers';
 
-const CardEditorComponent = ({ selectedCard, cardUpdate }) => {
+const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex }) => {
     const [front, setFront] = useState('');
     const [back, setBack] = useState('');
     const [title, setTitle] = useState('');
@@ -57,7 +57,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate }) => {
 
     const update = useCallback(
         debounce(({ title, front, back }) => {
-            cardUpdate(id, { title, front, back });
+            cardUpdate(id, selectedDeckIndex, { title, front, back });
 
         }, 1500),
         [id]

@@ -22,3 +22,12 @@ export default function debounce(a,b,c){
     }
     return -1;
   }
+
+  export function findDeckPosition(decks, id) {
+    for (let i = 0; i < decks.length; i++) {
+      if(decks[i].id === id){
+        return i;
+      }
+    }
+    return -1;
+  }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { findNotebookPosition } from './helpers';
+import { findNotebookPosition, findDeckPosition } from './helpers';
 import { useLocation } from 'react-router-dom'
 import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
@@ -13,17 +13,34 @@ import { db } from './utils/firebase/firebase-config.js';
 require("firebase/firestore");
 
 function App() {
-  const [selectedNoteIndex, setSelectedNoteIndex] = useState(null);
-  const [selectedNote, setSelectedNote] = useState(null);
+
+  // Notebooks States
+  const [notebooks, setNotebooks] = useState([]);
+  const [selectedNotebook, setSelectedNotebook] = useState(null);
+  const [selectedNotebookIndex, setSelectedNotebookIndex] = useState(null);
+
+  // Notes States
   const [notes, setNotes] = useState([]);
-  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
-  const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [selectedNoteIndex, setSelectedNoteIndex] = useState(null);
+
+  // Decks States
+  const [decks, setDecks] = useState([]);
+  const [selectedDeck, setSelectedDeck] = useState(null);
+  const [selectedDeckIndex, setSelectedDeckIndex] = useState(null);
+
+  // Cards States
   const [cards, setCards] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
+
+
+  // Logged user States
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [notebooks, setNotebooks] = useState([]);
-  const [selectedNotebookIndex, setSelectedNotebookIndex] = useState(null);
-  const [selectedNotebook, setSelectedNotebook] = useState(null);
+
+
+
   const location = useLocation();
 
 
@@ -38,45 +55,37 @@ function App() {
     return userId;
   };
 
-
-  useEffect(() => {
-    setUser(location.state);
-    const fetchNotebooks = async (userId) => {
-      const notebooksRef = collection(db, `users/${userId}/notebooks`);
-      const q = query(notebooksRef);
-      const querySnapshot = await getDocs(q);
-      const fetchedNotebooks = [];
-      querySnapshot.forEach(async (doc) => {
-        const notebookId = doc.id;
-        const notebookData = doc.data();
-        const notesRef = collection(db, `users/${userId}/notebooks/${notebookId}/notes`);
-        const notesQuery = query(notesRef);
-        const notesQuerySnapshot = await getDocs(notesQuery);
-        const fetchedNotes = [];
-        notesQuerySnapshot.forEach((noteDoc) => {
-          fetchedNotes.push({ id: noteDoc.id, ...noteDoc.data() });
-        });
-        fetchedNotebooks.push({ id: notebookId, title: notebookData.title, notes: fetchedNotes });
-        setNotebooks(fetchedNotebooks);
-        setNotes(fetchedNotes);
+  const fetchNotebooks = async (userId) => {
+    const notebooksRef = collection(db, `users/${userId}/notebooks`);
+    const q = query(notebooksRef);
+    const querySnapshot = await getDocs(q);
+    const fetchedNotebooks = [];
+    querySnapshot.forEach(async (doc) => {
+      const notebookId = doc.id;
+      const notebookData = doc.data();
+      const notesRef = collection(db, `users/${userId}/notebooks/${notebookId}/notes`);
+      const notesQuery = query(notesRef);
+      const notesQuerySnapshot = await getDocs(notesQuery);
+      const fetchedNotes = [];
+      notesQuerySnapshot.forEach((noteDoc) => {
+        fetchedNotes.push({ id: noteDoc.id, ...noteDoc.data() });
       });
+      fetchedNotebooks.push({ id: notebookId, title: notebookData.title, notes: fetchedNotes });
+      setNotebooks(fetchedNotebooks);
+      setNotes(fetchedNotes);
+    });
 
-    };
+  };
 
+  const fetchUserId = async () => {
     const userEmail = location.state.email;
-    const fetchUserId = async () => {
-      const fetchednUserId = await findUserIdByEmail(userEmail);
-      if (fetchednUserId) {
-        fetchNotebooks(fetchednUserId);
-        setUserId(fetchednUserId);
-      }
-    };
-
-
-    fetchUserId();
-    console.log(notebooks);
-  }, []);
-
+    const fetchednUserId = await findUserIdByEmail(userEmail);
+    if (fetchednUserId) {
+      fetchNotebooks(fetchednUserId);
+      fetchDecks(fetchednUserId);
+      setUserId(fetchednUserId);
+    }
+  };
 
   const selectNote = (note, notebookIndex, noteIndex) => {
     setSelectedNoteIndex(noteIndex);
@@ -100,34 +109,26 @@ function App() {
       });
   };
 
-
-
-
-
   const newNote = async (noteTitle, notebookTitle) => {
     const note = {
       title: noteTitle,
       body: '',
       timestamp: serverTimestamp(),
     };
-    console.log(noteTitle, notebookTitle);
 
     const findNotebookIndex = async (userId, _title) => {
       const notebookRef = collection(db, 'users', userId, 'notebooks');
       const q = query(notebookRef, where('title', '==', _title));
-      console.log(q);
       const querySnapshot = await getDocs(q);
       let notebookId = null;
       querySnapshot.forEach((doc) => {
         notebookId = doc.id;
       });
-      console.log(notebookId);
       return notebookId;
 
     }
 
     const notebookId = await findNotebookIndex(userId, notebookTitle);
-    console.log(notebookId);
     if (!notebookId) {
       console.log('notebook não encontrado');
       return;
@@ -144,7 +145,6 @@ function App() {
     const dbRef = collection(db, `users/${userId}/notebooks/${notebookId}/notes`);
 
     const newFromDB = await addDoc(dbRef, note);
-    const newID = newFromDB.id;
 
     updateNotes(note);
 
@@ -154,7 +154,6 @@ function App() {
   };
 
 
-
   const deleteNote = async (note, notebookIndex) => {
     const noteIndex = note.id;
     const noteRef = await doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, noteIndex);
@@ -162,12 +161,12 @@ function App() {
 
     const notebookPosition = await findNotebookPosition(notebooks, notebookIndex);
 
-    if(selectedNoteIndex === noteIndex){
+    if (selectedNoteIndex === noteIndex) {
       setSelectedNoteIndex(null);
       setSelectedNote(null);
-    }else{
+    } else {
       notebooks[notebookPosition].notes.length > 1 ?
-        selectNote(notebooks[notebookPosition].notes[selectedNoteIndex - 1], selectedNoteIndex - 1 ) :
+        selectNote(notebooks[notebookPosition].notes[selectedNoteIndex - 1], selectedNoteIndex - 1) :
         setSelectedNoteIndex(null);
       setSelectedNote(null);
     }
@@ -179,40 +178,38 @@ function App() {
       updatedNotebooks[notebookPosition].notes = updatedNotes;
       return updatedNotebooks;
     });
-
-    console.log(notebookPosition);
-    
   };
 
 
-
-
-  /*   const fetchCards = () => {
-      const location = 'cards'
-      const cardsRef = collection(db, location);
-      const unsubscribe = onSnapshot(cardsRef, (serverUpdate) => {
-        const cards = serverUpdate.docs.map((_doc) => {
-          const data = _doc.data();
-          data['id'] = _doc.id;
-          return data;
-        });
-        setCards(cards);
-        return () => unsubscribe();
+  const fetchDecks = async (userId) => {
+    const decksRef = collection(db, `users/${userId}/decks`);
+    const q = query(decksRef);
+    const querySnapshot = await getDocs(q);
+    const fetchedDecks = [];
+    querySnapshot.forEach(async (doc) => {
+      const deckId = doc.id;
+      const deckData = doc.data();
+      const cardsRef = collection(db, `users/${userId}/decks/${deckId}/cards`);
+      const cardsQuery = query(cardsRef);
+      const cardsQuerySnapshot = await getDocs(cardsQuery);
+      const fetchedCards = [];
+      cardsQuerySnapshot.forEach((cardDoc) => {
+        fetchedCards.push({ id: cardDoc.id, ...cardDoc.data() });
       });
-    };
-   */
+      fetchedDecks.push({ id: deckId, title: deckData.title, cards: fetchedCards });
+      setDecks(fetchedDecks);
+      setCards(fetchedCards);
+    });
+  };
 
-
-
-  const selectCard = (card, index) => {
+  const selectCard = (card, deckIndex, cardIndex) => {
+    setSelectedCardIndex(cardIndex);
     setSelectedCard(card);
-    setSelectedCardIndex(index);
+    setSelectedDeckIndex(deckIndex);
   }
 
-
-
-  const cardUpdate = (id, cardObj) => {
-    const cardRef = doc(db, 'cards', id);
+  const cardUpdate = (id, selectedDeckId, cardObj) => {
+    const cardRef = doc(db, `users/${userId}/decks/${selectedDeckId}/cards`, id);
     const data = {
       title: cardObj.title,
       front: cardObj.front,
@@ -230,63 +227,106 @@ function App() {
   }
 
 
-  const newCard = async (title) => {
+  const newCard = async (cardTitle, deckTitle) => {
     const card = {
-      title: title,
+      title: cardTitle,
       front: '',
       back: '',
     };
 
-    const cardRef = collection(db, 'cards');
+    const findDeckIndex = async (userId, _title) => {
+      const deckRef = collection(db, 'users', userId, 'decks');
+      const q = query(deckRef, where('title', '==', _title));
+      const querySnapshot = await getDocs(q);
+      let deckId = null;
+      querySnapshot.forEach((doc) => {
+        deckId = doc.id;
+      });
+      return deckId;
+    }
 
-    const newFromDB = await addDoc(cardRef, card);
-    const newID = newFromDB.id;
-    const updatedCards = [...cards, card];
-    setCards(updatedCards);
-    const newCardIndex = updatedCards.findIndex((_card) => _card.id === newID);
-    selectCard(cards, newFromDB.id);
+    const deckId = await findDeckIndex(userId, deckTitle);
+    if (!deckId) {
+      console.log('deck não encontrado');
+      return;
+    }
+
+    const updateCards = async (newCard) => {
+      const deckPosition = await findDeckPosition(decks, deckId);
+      decks[deckPosition].cards.push(newCard);
+    }
+
+    const cardsRef = collection(db, `users/${userId}/decks/${deckId}/cards`);
+
+    const newFromDB = await addDoc(cardsRef, card);
+
+    updateCards(card);
+
+    selectCard(card, newFromDB.id);
     setSelectedCard(card);
-    setSelectedCardIndex(newCardIndex);
+    setSelectedCardIndex(newFromDB.id);
   };
 
 
-  const deleteCard = async (card) => {
+  const deleteCard = async (card, deckIndex) => {
     const cardIndex = card.id;
-    await setCards(cards.filter((_card) => _card !== card));
+    const cardRef = await doc(db, `users/${userId}/decks/${deckIndex}/cards`, cardIndex);
+    deleteDoc(cardRef);
+
+    const deckPosition = await findDeckPosition(decks, deckIndex);
+
     if (selectedCardIndex === cardIndex) {
       setSelectedCardIndex(null);
       setSelectedCard(null);
     } else {
-      cards.length > 1 ?
-        selectCard(cards[selectedCardIndex - 1], selectedCardIndex - 1) :
+      decks[deckPosition].cards.length > 1 ?
+        selectCard(decks[deckPosition].cards[selectedCardIndex - 1], selectedCardIndex - 1) :
         setSelectedCardIndex(null);
       setSelectedCard(null);
     }
 
-    const cardRef = doc(db, 'cards', cardIndex);
-    deleteDoc(cardRef);
-  }
+    setDecks(prevState => {
+      const updatedDecks = [...prevState];
+      const updatedCards = [...updatedDecks[deckPosition].cards];
+      updatedCards.splice(updatedCards.indexOf(card), 1);
+      updatedDecks[deckPosition].cards = updatedCards;
+      return updatedCards;
+    });
+  };
+
+
+
+  useEffect(() => {
+    setUser(location.state);
+    fetchUserId();
+
+    console.log(notebooks);
+  }, []);
 
   return (
     <div className="app-container">
-      {notebooks.length === 0 ? (
+      {(notebooks.length || decks.length) === 0 ? (
         <p>Carregando...</p>
       ) : (
         <Grid container spacing={2}   >
           <Grid item xs={1.5}>
             <SidebarComponent
-              selectedNoteIndex={selectedNoteIndex}
-              selectedCardIndex={selectedCardIndex}
-              notes={notes}
-              deleteNote={deleteNote}
-              selectNote={selectNote}
-              newNote={newNote}
-              cards={cards}
-              selectCard={selectCard}
               user={user}
-              deleteCard={deleteCard}
-              newCard={newCard}
+              
               notebooks={notebooks}
+              notes={notes}
+              newNote={newNote}
+              selectNote={selectNote}
+              deleteNote={deleteNote}              
+              selectedNoteIndex={selectedNoteIndex}
+
+              decks={decks}
+              cards={cards}
+              newCard={newCard}
+              selectCard={selectCard}
+              deleteCard={deleteCard}              
+              selectedCardIndex={selectedCardIndex}
+
             />
           </Grid>
           <Grid item xs={7}>
@@ -301,9 +341,10 @@ function App() {
           </Grid>
           <Grid item xs={3} >
             {selectedCard ? (
-              <CardEditorComponent
+              <CardEditorComponent  
                 selectedCard={selectedCard}
                 cardUpdate={cardUpdate}
+                selectedDeckIndex={selectedDeckIndex}
               />
             ) : null}
           </Grid>

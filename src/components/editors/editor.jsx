@@ -8,7 +8,6 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex }) =>
     const [text, setText] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
-/*     const [front, setFront] = useState(''); */
 
     const modules = {
         toolbar: [

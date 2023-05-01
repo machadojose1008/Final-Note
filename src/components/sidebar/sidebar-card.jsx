@@ -3,23 +3,23 @@ import { removeHTMLTags } from '../../helpers';
 import { NotesList, SelectNote, NoteText, DeleteIcon } from '../componentStyles'
 
 
-function SidebarCardComonent(props) {
-    const { _index, _card, selectedCardIndex, selectCard, deleteCard } = props;
+function SidebarCardComponent(props) {
+    const { _cardIndex, _card, deckIndex, selectedCardIndex, selectCard, deleteCard } = props;
 
     const handleSelectCard = () => {
-        selectCard(_card, _index);
+        selectCard(_card, deckIndex, _cardIndex);
     };
 
     const handleDeleteCard = () => {
         if (window.confirm(`Tem certeza que deseja deletar: ${_card.title}`)) {
-            deleteCard(_card);
+            deleteCard(_card, deckIndex);
         }
     };
 
     return (
-        <div key={_index}>
+        <div key={_cardIndex}>
             <NotesList
-                selected={selectedCardIndex === _index}
+                selected={selectedCardIndex === _cardIndex}
                 alignItems='flex-start'
                 onClick={handleSelectCard}
             >
@@ -34,4 +34,4 @@ function SidebarCardComonent(props) {
     );
 }
 
-export default SidebarCardComonent;
+export default SidebarCardComponent;
