@@ -19,6 +19,11 @@ export const EditorNavBar = styles('div')({
   flexDirection: "column"
 });
 
+export const StudyComponentDiv = styles('div')({
+  marginTop:'2%',
+  marginLeft:'5%'
+});
+
 export const TitleInput = styles('input')({
   width: "100%",
   padding: '20px 30px 30px',

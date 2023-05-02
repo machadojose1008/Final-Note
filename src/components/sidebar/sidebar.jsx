@@ -12,9 +12,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddNotebook from './buttons/add-notebook';
 import AddDeck from './buttons/add-deck';
+import SelectStudy from './buttons/select-study';
 
 function SidebarComponent(props) {
-    const { decks,  notebooks, selectedNotebookIndex, selectedDeckIndex, selectedNoteIndex, selectedCardIndex } = props;
+    const { decks,  notebooks, selectedNotebookIndex, selectedDeckIndex, selectedNoteIndex, selectedCardIndex, selectStudy } = props;
     const [addingNote, setAddingNote] = useState(false);
     const [title, setTitle] = useState(null);
     const [cardTitle, setCardTitle] = useState(null);
@@ -108,6 +109,7 @@ function SidebarComponent(props) {
                         <AddDeck newDeck={newDeck} />
                         <AddCard decksTitle={decksTitle} newCard={newCard} />
                     </SidebarButton>
+                    <SelectStudy selectStudy={selectStudy} />
 
                     <TreeView
                         defaultCollapseIcon={<ExpandMoreIcon />}

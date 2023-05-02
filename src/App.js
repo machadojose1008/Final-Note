@@ -8,6 +8,7 @@ import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
 import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, QuerySnapshot } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
+import SrsComponent from './components/srs/srs';
 
 // Required for side-effects
 require("firebase/firestore");
@@ -43,8 +44,10 @@ function App() {
 
   const location = useLocation();
 
+  // Display setters
   const [showCard, setShowCard] = useState(null);
   const [showNote, setShowNote] = useState(null);
+  const [showStudy, setShowStudy] = useState(null);
 
 
   const findUserIdByEmail = async (email) => {
@@ -95,6 +98,7 @@ function App() {
     setSelectedNote(note);
     setSelectedNotebookIndex(notebookIndex);
     setShowNote(true);
+    setShowStudy(false);
   };
 
   const noteUpdate = async (id, selectedNotebookId, noteObj) => {
@@ -222,6 +226,7 @@ function App() {
     setSelectedCard(card);
     setSelectedDeckIndex(deckIndex);
     setShowCard(true);
+    setShowStudy(false);
   }
 
   const cardUpdate = (id, selectedDeckId, cardObj) => {
@@ -330,6 +335,11 @@ function App() {
     setShowNote(!showNote);
   }
 
+  const selectStudy = () => {
+    setShowCard(false);
+    setShowNote(false);
+    setShowStudy(true);
+  }
 
 
   useEffect(() => {
@@ -351,7 +361,7 @@ function App() {
   return (
     <div className="app-container">
       {(notebooks.length || decks.length) === 0 ? (
-        <p>Carregando...</p>
+        <p></p>
       ) : (
         /* Spacing é a distância entre os elementos do grid */
         <Grid container spacing={2}   >
@@ -375,6 +385,8 @@ function App() {
               selectedCardIndex={selectedCardIndex}
               newDeck={newDeck}
 
+              selectStudy={selectStudy}
+
             />
           </Grid>
           {(selectedNote && showNote) ? (
@@ -384,6 +396,13 @@ function App() {
                 noteUpdate={noteUpdate}
                 selectedNotebookIndex={selectedNotebookIndex}
                 closeNote={closeNote}
+              />
+            </Grid>
+          ) : null}
+          {(showStudy) ? (
+            <Grid item xs={7}>
+              <SrsComponent 
+                decks={decks}
               />
             </Grid>
           ) : null}
@@ -402,7 +421,7 @@ function App() {
 
         </Grid>
       )}
-      
+
     </div>
   );
 };
