@@ -1,10 +1,11 @@
 import ReactQuill from 'react-quill';
 import { CardEditArea, EditorContainer, EditorNavBar, TitleInput } from '../componentStyles';
 import { useCallback, useState, useEffect } from 'react';
-import { Paper, Stack } from '@mui/material';
+import { IconButton, Paper, Stack } from '@mui/material';
 import debounce from '../../helpers';
+import CloseIcon from '@mui/icons-material/Close';
 
-const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex }) => {
+const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, closeCard }) => {
     const [front, setFront] = useState('');
     const [back, setBack] = useState('');
     const [title, setTitle] = useState('');
@@ -63,6 +64,8 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex }) =>
         [id]
     );
 
+  
+
     useEffect(() => {
         setFront(selectedCard.front || '');
         setBack(selectedCard.back || '');
@@ -73,14 +76,20 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex }) =>
 
     return (
         <EditorContainer>
-            <EditorNavBar>
+            <EditorNavBar> 
+                <IconButton>
+                    <CloseIcon sx={{color:'black'}} onClick={closeCard}/>  
+                </IconButton>
+                
                 <TitleInput
                     sx={{paddingTop: '25px'}}
                     theme='null'
                     placeholder='Título do cartão'
                     value={title ? title : ''}
                     onChange={(e) => updateTitle(e.target.value)}>
+                     
                 </TitleInput>
+                
             </EditorNavBar>
 
                 <Paper elevation={3}>

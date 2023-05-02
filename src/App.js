@@ -43,6 +43,9 @@ function App() {
 
   const location = useLocation();
 
+  const [showCard, setShowCard] = useState(null);
+  const [showNote, setShowNote] = useState(null);
+
 
   const findUserIdByEmail = async (email) => {
     const usersRef = collection(db, 'users');
@@ -91,10 +94,11 @@ function App() {
     setSelectedNoteIndex(noteIndex);
     setSelectedNote(note);
     setSelectedNotebookIndex(notebookIndex);
+    setShowNote(true);
   };
 
   const noteUpdate = async (id, selectedNotebookId, noteObj) => {
-    
+
     const noteRef = doc(db, `users/${userId}/notebooks/${selectedNotebookId}/notes`, id);
     const data = {
       title: noteObj.title,
@@ -142,13 +146,13 @@ function App() {
       const notebookPosition = await findNotebookPosition(notebooks, notebookId);
       notebooks[notebookPosition].notes.push(newNote);
 
-    } 
+    }
 
     const dbRef = collection(db, `users/${userId}/notebooks/${notebookId}/notes`);
 
     const newFromDB = await addDoc(dbRef, note);
 
-    updateNotes(note); 
+    updateNotes(note);
     setNotesUpdated(false);
 
     selectNote(notes, newFromDB.id);
@@ -186,7 +190,7 @@ function App() {
       title: notebookTitle
     }
     const notebookRef = collection(db, `users/${userId}/notebooks`);
-    const newNotebook = await addDoc(notebookRef, _notebook );
+    const newNotebook = await addDoc(notebookRef, _notebook);
     setNotesUpdated(true);
 
   }
@@ -217,6 +221,7 @@ function App() {
     setSelectedCardIndex(cardIndex);
     setSelectedCard(card);
     setSelectedDeckIndex(deckIndex);
+    setShowCard(true);
   }
 
   const cardUpdate = (id, selectedDeckId, cardObj) => {
@@ -306,15 +311,23 @@ function App() {
     });
   };
 
-  
+
   const newDeck = async (deckTitle) => {
     const _deck = {
       title: deckTitle
     }
     const deckRef = collection(db, `users/${userId}/decks`);
-    const newDeck = await addDoc(deckRef, _deck );
+    const newDeck = await addDoc(deckRef, _deck);
     setNotesUpdated(true);
 
+  }
+
+  const closeCard = () => {
+    setShowCard(!showCard);
+  }
+
+  const closeNote = () => {
+    setShowNote(!showNote);
   }
 
 
@@ -323,12 +336,12 @@ function App() {
     setUser(location.state);
     fetchUserId();
 
-    if(notesUpdated) {
+    if (notesUpdated) {
       fetchNotebooks(userId);
       setNotesUpdated(false);
     };
 
-    if(cardsUpdated) {
+    if (cardsUpdated) {
       fetchDecks(userId);
       setCardsUpdated(false);
     };
@@ -349,7 +362,7 @@ function App() {
               notes={notes}
               newNote={newNote}
               selectNote={selectNote}
-              deleteNote={deleteNote}              
+              deleteNote={deleteNote}
               selectedNoteIndex={selectedNoteIndex}
               newNotebook={newNotebook}
 
@@ -357,28 +370,30 @@ function App() {
               cards={cards}
               newCard={newCard}
               selectCard={selectCard}
-              deleteCard={deleteCard}              
+              deleteCard={deleteCard}
               selectedCardIndex={selectedCardIndex}
               newDeck={newDeck}
 
             />
           </Grid>
           <Grid item xs={7}>
-            {selectedNote ? (
+            {(selectedNote && showNote) ?  (
               <EditorComponent
                 selectedNote={selectedNote}
                 noteUpdate={noteUpdate}
                 selectedNotebookIndex={selectedNotebookIndex}
+                closeNote={closeNote}
               />
             ) : null}
 
           </Grid>
           <Grid item xs={3} >
-            {selectedCard ? (
-              <CardEditorComponent  
+            {(selectedCard && showCard) ? (
+              <CardEditorComponent
                 selectedCard={selectedCard}
                 cardUpdate={cardUpdate}
                 selectedDeckIndex={selectedDeckIndex}
+                closeCard={closeCard}
               />
             ) : null}
           </Grid>

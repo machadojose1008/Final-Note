@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../../helpers';
-import { Paper } from '@mui/material';
+import { IconButton, Paper } from '@mui/material';
 import { EditorContainer, EditorNavBar, TitleInput } from '../componentStyles';
+import CloseIcon from '@mui/icons-material/Close';
 
-const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex }) => {
+const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote }) => {
     const [text, setText] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
@@ -62,6 +63,9 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex }) =>
     return (
         <EditorContainer>
             <EditorNavBar>
+                <IconButton>
+                    <CloseIcon sx={{ color: 'black' }} onClick={closeNote} />
+                </IconButton>
                 <TitleInput
                     theme='null'
                     placeholder="Título da nota"
