@@ -10,6 +10,8 @@ import AddCard from './buttons/add-card';
 import { TreeItem, TreeView } from '@mui/lab';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import AddNotebook from './buttons/add-notebook';
+import AddDeck from './buttons/add-deck';
 
 function SidebarComponent(props) {
     const { decks,  notebooks, selectedNotebookIndex, selectedDeckIndex, selectedNoteIndex, selectedCardIndex } = props;
@@ -28,9 +30,17 @@ function SidebarComponent(props) {
         //setAddingNote(false);
     }
 
+    const newNotebook = (notebookTitle) => {
+        props.newNotebook(notebookTitle);
+    }
+
     const newCard = (txt, deckTitle) => {
         props.newCard(txt, deckTitle);
         setCardTitle(null);
+    }
+
+    const newDeck = (deckTitle) => {
+        props.newDeck(deckTitle);
     }
 
 
@@ -93,7 +103,9 @@ function SidebarComponent(props) {
                     <UserIcon icon={<Face />} label={props.user?.email} />
                     <SidebarButton>
                         <ActionList />
+                        <AddNotebook newNotebook={newNotebook} />
                         <AddNote notebooksTitle={notebooksTitle} newNote={newNote} /> 
+                        <AddDeck newDeck={newDeck} />
                         <AddCard decksTitle={decksTitle} newCard={newCard} />
                     </SidebarButton>
 

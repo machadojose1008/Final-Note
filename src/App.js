@@ -181,6 +181,16 @@ function App() {
     });
   };
 
+  const newNotebook = async (notebookTitle) => {
+    const _notebook = {
+      title: notebookTitle
+    }
+    const notebookRef = collection(db, `users/${userId}/notebooks`);
+    const newNotebook = await addDoc(notebookRef, _notebook );
+    setNotesUpdated(true);
+
+  }
+
 
   const fetchDecks = async (userId) => {
     const decksRef = collection(db, `users/${userId}/decks`);
@@ -296,6 +306,17 @@ function App() {
     });
   };
 
+  
+  const newDeck = async (deckTitle) => {
+    const _deck = {
+      title: deckTitle
+    }
+    const deckRef = collection(db, `users/${userId}/decks`);
+    const newDeck = await addDoc(deckRef, _deck );
+    setNotesUpdated(true);
+
+  }
+
 
 
   useEffect(() => {
@@ -330,6 +351,7 @@ function App() {
               selectNote={selectNote}
               deleteNote={deleteNote}              
               selectedNoteIndex={selectedNoteIndex}
+              newNotebook={newNotebook}
 
               decks={decks}
               cards={cards}
@@ -337,6 +359,7 @@ function App() {
               selectCard={selectCard}
               deleteCard={deleteCard}              
               selectedCardIndex={selectedCardIndex}
+              newDeck={newDeck}
 
             />
           </Grid>
