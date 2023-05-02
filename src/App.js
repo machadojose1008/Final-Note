@@ -353,6 +353,7 @@ function App() {
       {(notebooks.length || decks.length) === 0 ? (
         <p>Carregando...</p>
       ) : (
+        /* Spacing é a distância entre os elementos do grid */
         <Grid container spacing={2}   >
           <Grid item xs={1.5}>
             <SidebarComponent
@@ -376,30 +377,32 @@ function App() {
 
             />
           </Grid>
-          <Grid item xs={7}>
-            {(selectedNote && showNote) ?  (
+          {(selectedNote && showNote) ? (
+            <Grid item xs={(showCard) ? 7 : 10}>
               <EditorComponent
                 selectedNote={selectedNote}
                 noteUpdate={noteUpdate}
                 selectedNotebookIndex={selectedNotebookIndex}
                 closeNote={closeNote}
               />
-            ) : null}
+            </Grid>
+          ) : null}
+          {(selectedCard && showCard) ? (
 
-          </Grid>
-          <Grid item xs={3} >
-            {(selectedCard && showCard) ? (
+            <Grid item xs={(showNote) ? 3 : 7} >
+
               <CardEditorComponent
                 selectedCard={selectedCard}
                 cardUpdate={cardUpdate}
                 selectedDeckIndex={selectedDeckIndex}
                 closeCard={closeCard}
               />
-            ) : null}
-          </Grid>
+            </Grid>
+          ) : null}
+
         </Grid>
       )}
-      {/* Spacing é a distância entre os elementos do grid */}
+      
     </div>
   );
 };
