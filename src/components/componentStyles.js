@@ -1,7 +1,7 @@
 import { styled as styles } from "@mui/system";
-import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog } from "@mui/material";
+import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog, CardContent } from "@mui/material";
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import { Delete } from '@mui/icons-material'
+import { Delete, HeightTwoTone } from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
 import styled  from '@emotion/styled'
 
@@ -21,9 +21,19 @@ export const EditorNavBar = styles('div')({
 
 export const StudyComponentDiv = styles('div')({
   marginTop:'2%',
-  marginLeft:'5%'
+  marginLeft:'5%',
 });
 
+export const StyledCardContent = styles(CardContent, {})({
+  paddingTop:'30px',
+  overflowY: 'auto',
+  height: 'calc(100%-48px)',
+  maxHeight: '300px',
+});
+
+export const cardList = styles('li')({
+  
+});
 export const TitleInput = styles('input')({
   width: "100%",
   padding: '20px 30px 30px',

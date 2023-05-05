@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AddDialog, SideButton } from "../../componentStyles";
 import { Box, Button, DialogContent, DialogTitle, TextField } from "@mui/material";
 
 function AddDeck(props) {
     const [title, setTitle] = useState('');
     const [open, setOpen] = useState(false);
+    const [keyPressed, setKeyPressed] = useState(false);
 
     const newDeck = () => {
         props.newDeck(title);
@@ -22,6 +23,13 @@ function AddDeck(props) {
     const handleTitle = (txt) => {
         setTitle(txt);
     };
+
+    useEffect(() => {
+        if (keyPressed && title) {
+            newDeck();
+        }
+        setKeyPressed(false);
+    }, [keyPressed]);
 
     return (
         <SideButton>
@@ -51,6 +59,11 @@ function AddDeck(props) {
                         fullWidth
                         variant="standard"
                         onChange={(e) => handleTitle(e.target.value)}
+                        onKeyDown={(event) => {
+                            if(event.key === 'Enter') {
+                                setKeyPressed(true);
+                            }
+                        }}
                     />
                 </DialogContent>
                 <Button onClick={handleClose} sx={{ color: 'black', }}>Cancelar</Button>

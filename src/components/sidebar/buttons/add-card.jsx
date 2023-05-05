@@ -1,5 +1,5 @@
 import { Box, Button, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AddDialog, SideButton } from "../../componentStyles";
 
 function AddCard(props) {
@@ -7,6 +7,7 @@ function AddCard(props) {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [selectedDeckTitle, setSelectedDeckTitle] = useState('');
+    const [keyPressed, setKeyPressed] = useState(false);
 
 
     const newCard = () => {
@@ -30,7 +31,14 @@ function AddCard(props) {
         setSelectedDeckTitle(event.target.value);
     }
 
+    useEffect(() => {
+        if (keyPressed && title && selectedDeckTitle) {
+          newCard();
+        }
+        setKeyPressed(false);
+      }, [keyPressed]);
 
+   
     return (
         <SideButton>
             <Box sx={{ paddingX: '20px' }}>
@@ -59,6 +67,11 @@ function AddCard(props) {
                         fullWidth
                         variant="standard"
                         onChange={(e) => handleTitle(e.target.value)}
+                        onKeyDown={(event) => {
+                            if(event.key === 'Enter') {
+                                setKeyPressed(true);
+                            }
+                        }}
                     />
                     <FormControl fullWidth >
                         <InputLabel id='deck-select-label'>Selecione um Deck</InputLabel>

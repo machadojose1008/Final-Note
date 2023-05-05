@@ -1,5 +1,5 @@
 import { Box, Button, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AddDialog, SideButton } from "../../componentStyles";
 
 function AddNote(props) {
@@ -7,7 +7,7 @@ function AddNote(props) {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [selectedNotebookTitle, setSelectedNotebookTitle] = useState('');
-
+    const [keyPressed, setKeyPressed] = useState(false);
 
     const newNote = () => {
         props.newNote(title, selectedNotebookTitle);
@@ -30,6 +30,12 @@ function AddNote(props) {
          setSelectedNotebookTitle(event.target.value);
     }
 
+    useEffect(() => {
+        if (keyPressed && title && selectedNotebookTitle) {
+            newNote();
+        }
+        setKeyPressed(false);
+      }, [keyPressed]);
 
     return (
         <SideButton>
@@ -58,8 +64,12 @@ function AddNote(props) {
                         type='text'
                         fullWidth
                         variant="standard"
-                        onChange={(e) => handleTitle(e.target.value)
-                        }
+                        onChange={(e) => handleTitle(e.target.value)}
+                        onKeyDown={(event) => {
+                            if(event.key === 'Enter') {
+                                setKeyPressed(true);
+                            }
+                        }}
                     />
                     <FormControl fullWidth >
                         <InputLabel id='notebook-select-label'>Selecione um caderno</InputLabel>

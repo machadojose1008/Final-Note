@@ -400,7 +400,7 @@ function App() {
             </Grid>
           ) : null}
           {(showStudy) ? (
-            <Grid item xs={7}>
+            <Grid item xs={10.2} sx={{marginRight:'30px'}}>
               <SrsComponent 
                 decks={decks}
               />

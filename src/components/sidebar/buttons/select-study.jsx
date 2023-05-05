@@ -21,7 +21,7 @@ function SelectStudy(props) {
                         '&:hover': { bgcolor: 'blue' }
                     }}
                 >
-                    Estudar
+                    Revisar
                 </Button>
             </Box>
         </SideButton>
