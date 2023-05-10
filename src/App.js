@@ -403,6 +403,7 @@ function App() {
             <Grid item xs={10.2} sx={{marginRight:'30px'}}>
               <SrsComponent 
                 decks={decks}
+                userId={userId}
               />
             </Grid>
           ) : null}

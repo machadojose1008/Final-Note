@@ -1,5 +1,5 @@
 import { styled as styles } from "@mui/system";
-import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog, CardContent } from "@mui/material";
+import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog, CardContent, Box } from "@mui/material";
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import { Delete, HeightTwoTone } from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
@@ -22,6 +22,27 @@ export const EditorNavBar = styles('div')({
 export const StudyComponentDiv = styles('div')({
   marginTop:'2%',
   marginLeft:'5%',
+});
+
+export const ButtonContainer = styles('div')({
+  display: 'flex',
+  justifyContent: 'center',
+  marginTop: '5px',
+})
+
+export const SrsReview = styles(Box, {})({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  height: 400,
+  background:'white',
+  justifyContent:'center',
+  WebkitBorderBottomRightRadius: '1em',
+  WebkitBorderBottomLeftRadius: '1em',
+  WebkitBorderTopRightRadius: '1em',
+  WebkitBorderTopLeftRadius: '1em',
 });
 
 export const StyledCardContent = styles(CardContent, {})({

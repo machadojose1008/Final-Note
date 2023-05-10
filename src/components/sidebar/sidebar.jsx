@@ -88,6 +88,7 @@ function SidebarComponent(props) {
         settingTitles();
         settingCards();
         settingCardTitles();
+        
 
 
 
