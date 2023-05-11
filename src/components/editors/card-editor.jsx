@@ -77,8 +77,8 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
     return (
         <EditorContainer>
             <EditorNavBar> 
-                <IconButton>
-                    <CloseIcon sx={{color:'black'}} onClick={closeCard}/>  
+                <IconButton onClick={closeCard}>
+                    <CloseIcon sx={{color:'black'}}/>  
                 </IconButton>
                 
                 <TitleInput
@@ -93,7 +93,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
             </EditorNavBar>
 
                 <Paper elevation={3}>
-                    <CardEditArea>
+                   <CardEditArea>
                     <Stack direction='column' spacing={1}>
                             <ReactQuill
                             modules={modules}
@@ -113,7 +113,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                         />
                         
             </Stack>
-                    </CardEditArea>
+                    </CardEditArea> 
                 </Paper>
 
 

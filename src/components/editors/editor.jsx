@@ -44,12 +44,14 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
         [text]
     );
 
-    const update = useCallback(
+    const update = () => {
         debounce(({ title, body }) => {
             noteUpdate(id, selectedNotebookIndex, { title, body });
-        }, 1500),
-        [id]
-    );
+        }, 1500);
+    };
+
+
+
 
     useEffect(() => {
         setText(selectedNote.body || '');
@@ -63,8 +65,8 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     return (
         <EditorContainer>
             <EditorNavBar>
-                <IconButton>
-                    <CloseIcon sx={{ color: 'black' }} onClick={closeNote} />
+                <IconButton onClick={closeNote}>
+                    <CloseIcon sx={{ color: 'black' }} />
                 </IconButton>
                 <TitleInput
                     theme='null'

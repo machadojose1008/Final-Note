@@ -1,6 +1,7 @@
 import React from 'react';
 import { removeHTMLTags } from '../../helpers';
 import { NotesList, SelectNote, NoteText, DeleteIcon } from '../componentStyles'
+import { ListItemText } from '@mui/material';
 
 
 function SidebarItemComponent(props) {
@@ -24,11 +25,12 @@ function SidebarItemComponent(props) {
                 onClick={handleSelectNote}
             >
                 <SelectNote onClick={handleSelectNote}>
-                    <NoteText primary={_note.title}
-                        secondary={removeHTMLTags(_note.body.substring(0, 30)) + '...'}
+                    <ListItemText
+                        primary={_note.title}
+                        primaryTypographyProps={{fontSize: 14, fontWeight:'medium'}}
                     />
                 </SelectNote>
-                <DeleteIcon  onClick={handleDeleteNote} />
+                <DeleteIcon onClick={handleDeleteNote} />
             </NotesList>
         </div >
     );

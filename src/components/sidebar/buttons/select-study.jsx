@@ -12,14 +12,11 @@ function SelectStudy(props) {
    
     return (
         <SideButton>
-            <Box sx={{ paddingX: '20px' }}>
+            <Box sx={{ paddingX: '20px', paddingY:'10px' }}>
                 <Button
                     onClick={handleClick}
-                    sx={{
-                        color: 'white',
-                        backgroundColor: 'blue',
-                        '&:hover': { bgcolor: 'blue' }
-                    }}
+                    variant="contained"
+                    color="primary"
                 >
                     Revisar
                 </Button>

@@ -1,4 +1,4 @@
-import { Backdrop, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Fade, Grid, List, ListItem, Modal, Typography } from "@mui/material";
+import { Backdrop, Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Divider, Fade, Grid, List, ListItem, Modal, Typography } from "@mui/material";
 import { ButtonContainer, SrsReview, StudyComponentDiv, StyledCardContent } from "../componentStyles";
 import { useEffect, useState } from "react";
 import { collection, updateDoc, doc } from "firebase/firestore";
@@ -15,13 +15,11 @@ const SrsComponent = (props) => {
     const { decks, userId } = props
 
     const [openModal, setOpenModal] = useState(false);
-    const [currentEase, setCurrentEase] = useState(null);
     const [showBack, setShowBack] = useState(false);
-    const [selectedDeck, setSelectedDeck] = useState(null);
     const [currentCardIndex, setCurrentCardIndex] = useState(null);
-    const [currentCard, setCurrentCard] = useState(null);
     const [currentDeckIndex, setCurrentDeckIndex] = useState(null);
     const [cards, setCards] = useState([]);
+    const [showSrs, setShowSrs] = useState(false);
 
     const setReviewDate = (reviewDate) => {
         // Atualiza a data do card do formato em milisegundos do firestore para o formato date do javascript
@@ -49,7 +47,7 @@ const SrsComponent = (props) => {
                 ...updatedCard,
             });
         }
-
+        setShowSrs(true);
         return (updatedCards);
     };
 
@@ -62,7 +60,9 @@ const SrsComponent = (props) => {
             deck.cards = updatedCards;
         });
 
-        console.log(decks);
+
+
+        console.log();
 
     }, [decks]);
 
@@ -74,14 +74,19 @@ const SrsComponent = (props) => {
             };
         });
         setCurrentCardIndex(0);
-        setCards(filteredCards);
+        await setCards(filteredCards);
+       
         return filteredCards;
     }
 
+    const updateAfterReview = (decks) => {
+        props.updateAfterReview(decks);
+    }
 
     const handleReviewDeck = async (deck) => {
         // Quando abrir o modal 
-        await filterCards(deck).then(result => setCards(result));
+        const filteredCards = await filterCards(deck);
+        setCards(filteredCards);
         setOpenModal(true);
         setCurrentDeckIndex(findDeckPosition(decks, deck.id));
 
@@ -93,21 +98,23 @@ const SrsComponent = (props) => {
         const cardIndex = await findCardPosition(decks[currentDeckIndex].cards, cardId);
 
         decks[currentDeckIndex].cards[cardIndex].ease = newEase;
+        decks[currentDeckIndex].cards[cardIndex].reviewDate = Timestamp.now();
 
-        const nextCardIndex = currentCardIndex + 1;
+         const nextCardIndex = currentCardIndex + 1;
 
-        if (nextCardIndex < currentDeck.cards.length) {
+        if (nextCardIndex < cards.length) {
             setCurrentCardIndex(currentCardIndex + 1);
             setShowBack(false);
         } else {
-            handleCloseModal();
+           handleCloseModal();
         }
     };
 
     const handleCloseModal = () => {
-        console.log('modal fechado');
-        // TODO: ATUALIZAR REVIEWDATES E EASES NO FIRESTORE
-        setOpenModal(false);
+        // TODO: ATUALIZAR REVIEWDATES E EASES NO FIRESTORE 
+       setOpenModal(false);
+       updateAfterReview(decks);
+    
     }
 
     const handleShowBack = () => {
@@ -115,135 +122,134 @@ const SrsComponent = (props) => {
     }
 
     return (
+
         <StudyComponentDiv>
-            <Grid container spacing={1}>
-                <Grid item xs={12}>
-                    <Grid key='deckName'>
-                        <h1>Decks</h1>
+            {(showSrs) ? (
+                <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <Grid key='deckName'>
+                            <h1>Decks</h1>
+                        </Grid>
                     </Grid>
-                </Grid>
-                {decks.map((deck) => {
-                    if (deck.cards.length === 0) {
-                        return (
-                            <Grid item xs={2.4}>
-                                <Card raised sx={{ maxWidth: '300px', padding: '5px', minWidth: '200px' }}>
-                                    <CardContent >
-                                        <Typography variant="h4" color='black' gutterBottom>
+                    {decks.map((deck) => {
+                        if (deck.cards.length === 0) {
+                            return (
+                                <Grid item xs={2.4}>
+                                    <Card raised sx={{ maxWidth: '300px', padding: '5px', minWidth: '200px' }}>
+                                        <CardContent >
+                                            <Typography variant="h4" color='black' gutterBottom>
+                                                {deck.title}
+                                            </Typography>
+                                            <Typography sx={{ display: 'center' }}>Nenhum card criado!</Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )
+                        } else {
+                            return (
+                                <Grid item xs={2.4}>
+                                    <Card raised sx={{ maxWidth: '300px', padding: '5px', maxHeight: '320px', paddingBottom: '80px' }}>
+                                        <Typography variant="h4" color='black' sx={{ position: 'absolute', backgroundColor: 'white', minWidth: '200px' }} gutterBottom>
                                             {deck.title}
                                         </Typography>
-                                        <Typography sx={{ display: 'center' }}>Nenhum card criado!</Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        )
-                    } else {
-                        return (
-                            <Grid item xs={2.4}>
-                                <Card raised sx={{ maxWidth: '300px', padding: '5px', maxHeight: '320px', paddingBottom: '80px' }}>
-                                    <Typography variant="h4" color='black' sx={{ position: 'absolute', backgroundColor: 'white', minWidth: '200px' }} gutterBottom>
-                                        {deck.title}
-                                    </Typography>
-                                    <StyledCardContent >
-                                        {deck.cards.map((card) => (
-                                            <ul>
-                                                <li>
-                                                    {card.title} {card.ease}
-                                                </li>
-                                            </ul>
-                                        ))}
-                                    </StyledCardContent>
-                                    <CardActions sx={{ position: 'absolute' }}>
-                                        <Button size='small' onClick={() => handleReviewDeck(deck)}>Revisar Deck</Button>
-                                    </CardActions>
+                                        <StyledCardContent >
+                                            {deck.cards.map((card) => (
+                                                <ul>
+                                                    <li>
+                                                        {card.title} {card.ease}
+                                                    </li>
+                                                </ul>
+                                            ))}
+                                        </StyledCardContent>
+                                        <CardActions sx={{ position: 'absolute' }}>
+                                            <Button variant="contained" color="primary" size='small' onClick={() => handleReviewDeck(deck)}>Revisar Deck</Button>
+                                        </CardActions>
 
-                                    {openModal ? (
-                                        <Modal
-                                            open={openModal}
-                                            onClose={handleCloseModal}
-                                            closeAfterTransition
-                                            slots={{ backdrop: Backdrop }}
-                                            slotProps={{
-                                                backdrop: {
-                                                    TransitionComponent: Fade,
-                                                },
-                                            }}
-                                            sx={{
-                                                display: "flex",
-                                                alignItems: 'center',
-                                                justifyContent: 'center'
-                                            }}
-                                        >
+                                        {openModal ? (
+                                            <Modal
+                                                open={openModal}
+                                                onClose={handleCloseModal}
+                                                closeAfterTransition
+                                               
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    
+                                                }}
+                                            >
 
-                                            {cards.length > 0 ? (
-                                                <Fade in={openModal}>
-                                                    <Card
-                                                        sx={{
-                                                            maxWidth: 600,
-                                                            margin: 'auto'
-                                                        }}
-                                                    >
-                                                        <CardHeader title={cards[currentCardIndex].title} />
-                                                        <CardContent>
-                                                            <Typography variant="h5" component="h2" gutterBottom>
-                                                                {removeHTMLTags(cards[currentCardIndex].front)}
-                                                            </Typography>
-                                                            <Typography variant="h5" component="h2" gutterBottom>
-                                                                {showBack ? removeHTMLTags(cards[currentCardIndex].back) : null}
-                                                            </Typography>
-                                                            {showBack && (
-                                                                <ButtonContainer>
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        color="primary"
-                                                                        onClick={() => handleNextCard(3, cards[currentCardIndex].id, deck)}
-
-                                                                    >
-                                                                        Fácil
+                                                {cards.length > 0 ? (
+                                                    <Fade in={openModal}>
+                                                        <Card
+                                                            sx={{
+                                                                maxWidth: 600,
+                                                                minWidth:600,
+                                                                minHeight: 300,
+                                                                margin: 'auto',
+                                                                
+                                                            }}
+                                                        >
+                                                            <CardHeader title={cards[currentCardIndex].title} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}/>
+                                                            <CardContent sx={{ display: "flex", justifyContent: 'space-around', alignContent:'center', flexDirection:'column', alignItems:'center'}}>
+                                                                <Typography variant="h5" component="h2" gutterBottom sx={{paddingBottom: '10px',display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                                                    {removeHTMLTags(cards[currentCardIndex].front)}
+                                                                </Typography>
+                                                                <Divider />
+                                                                <Typography variant="h5" component="h2" gutterBottom sx={{paddingTop: '10px'}}>
+                                                                    {showBack ? removeHTMLTags(cards[currentCardIndex].back) : ''}
+                                                                </Typography>
+                                                                {showBack && (
+                                                                    <ButtonContainer>
+                                                                        <Button
+                                                                            variant="contained"
+                                                                            color="primary"
+                                                                            onClick={() => handleNextCard(3, cards[currentCardIndex].id, deck)}
+                                                                        >
+                                                                            Fácil
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="contained"
+                                                                            color="primary"
+                                                                            onClick={() => handleNextCard(2, cards[currentCardIndex].id, deck)}
+                                                                        >
+                                                                            Médio
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="contained"
+                                                                            color="primary"
+                                                                            onClick={() => handleNextCard(1, cards[currentCardIndex].id, deck)}
+                                                                        >
+                                                                            Difícil
+                                                                        </Button>
+                                                                    </ButtonContainer>
+                                                                )}
+                                                                {!showBack && (
+                                                                    <Button variant="contained" color="primary" size="small" sx={{maxWidth: '200px'}} onClick={handleShowBack}>
+                                                                        Mostrar resposta
                                                                     </Button>
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        color="primary"
-                                                                        onClick={() => handleNextCard(2, cards[currentCardIndex].id, deck)}
+                                                                )}
+                                                            </CardContent>
+                                                        </Card>
+                                                    </Fade>
 
-                                                                    >
-                                                                        Médio
-                                                                    </Button>
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        color="primary"
-                                                                        onClick={() => handleNextCard(1, cards[currentCardIndex].id, deck)}
+                                                ) : null}
+                                            </Modal>
 
-                                                                    >
-                                                                        Difícil
-                                                                    </Button>
+                                        ) : null}
 
-                                                                </ButtonContainer>
+                                    </Card>
 
-                                                            )}
-                                                            {!showBack && (
-                                                                <Button variant="contained" color="primary" onClick={handleShowBack}>
-                                                                    Mostrar resposta
-                                                                </Button>
-                                                            )}
-                                                        </CardContent>
-                                                    </Card>
-                                                </Fade>
-
-                                            ) : null}
-                                        </Modal>
-
-                                    ) : null}
-
-                                </Card>
-
-                            </Grid>
-                        )
-                    }
-                })}
-            </Grid>
-
+                                </Grid>
+                            )
+                        }
+                    })}
+                </Grid>
+            ) : <CircularProgress color="inherit" />}
 
         </StudyComponentDiv>
+
+
 
 
 

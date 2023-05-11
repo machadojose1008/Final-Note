@@ -1,6 +1,7 @@
 import React from 'react';
 import { removeHTMLTags } from '../../helpers';
 import { NotesList, SelectNote, NoteText, DeleteIcon } from '../componentStyles'
+import { ListItemText } from '@mui/material';
 
 
 function SidebarCardComponent(props) {
@@ -24,8 +25,9 @@ function SidebarCardComponent(props) {
                 onClick={handleSelectCard}
             >
                 <SelectNote onClick={handleSelectCard}>
-                    <NoteText primary={_card.title}
-                        secondary={removeHTMLTags(_card.front.substring(0, 30)) + '...'}
+                    <ListItemText 
+                        primary={_card.title}
+                        primaryTypographyProps={{fontSize: 14, fontWeight:'medium'}}
                     />
                 </SelectNote>
                 <DeleteIcon  onClick={handleDeleteCard} />

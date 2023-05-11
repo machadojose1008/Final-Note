@@ -6,7 +6,7 @@ import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
 import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
-import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, QuerySnapshot } from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, setDoc } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
 
@@ -321,10 +321,29 @@ function App() {
     const _deck = {
       title: deckTitle
     }
-    const deckRef = collection(db, `users/${userId}/decks`);
-    const newDeck = await addDoc(deckRef, _deck);
+    const deckRef = collection(db, `users/${userId}/decks`, id);
+    await addDoc(deckRef, _deck);
     setNotesUpdated(true);
 
+  }
+
+  const updateAfterReview = async (decks) => {
+    for (const _deck of decks) {
+      for (const _card of _deck.cards) {
+        const deckRef = doc(db, `users/${userId}/decks/${_deck.id}/cards`, _card.id);
+
+        updateDoc(deckRef, _card)
+          .then(docRef => {
+            console.log('Documento Adiconado com sucesso');
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
+
+
+
+    }
   }
 
   const closeCard = () => {
@@ -400,10 +419,11 @@ function App() {
             </Grid>
           ) : null}
           {(showStudy) ? (
-            <Grid item xs={10.2} sx={{marginRight:'30px'}}>
-              <SrsComponent 
+            <Grid item xs={10.2} sx={{ marginRight: '30px' }}>
+              <SrsComponent
                 decks={decks}
                 userId={userId}
+                updateAfterReview={updateAfterReview}
               />
             </Grid>
           ) : null}

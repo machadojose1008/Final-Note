@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import { Face } from "@mui/icons-material"
 import SidebarItemComponent from './sidebar-notes';
 import SidebarCardComponent from './sidebar-card';
-import { SidebarContainer, UserIcon, ActionList } from '../componentStyles'
+import { SidebarContainer, UserIcon, ActionList, StyledTreeItem } from '../componentStyles'
 import SidebarButton from './nested-lists/sidebar-button';
 import AddNote from './buttons/add-note';
 import AddCard from './buttons/add-card';
@@ -13,9 +13,15 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddNotebook from './buttons/add-notebook';
 import AddDeck from './buttons/add-deck';
 import SelectStudy from './buttons/select-study';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import BookIcon from '@mui/icons-material/Book';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import NoteIcon from '@mui/icons-material/Note';
+import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
 
 function SidebarComponent(props) {
-    const { decks,  notebooks, selectedNotebookIndex, selectedDeckIndex, selectedNoteIndex, selectedCardIndex, selectStudy } = props;
+    const { decks, notebooks, selectedNotebookIndex, selectedDeckIndex, selectedNoteIndex, selectedCardIndex, selectStudy } = props;
     const [addingNote, setAddingNote] = useState(false);
     const [title, setTitle] = useState(null);
     const [cardTitle, setCardTitle] = useState(null);
@@ -88,7 +94,7 @@ function SidebarComponent(props) {
         settingTitles();
         settingCards();
         settingCardTitles();
-        
+
 
 
 
@@ -106,20 +112,21 @@ function SidebarComponent(props) {
                     <SidebarButton>
                         <ActionList />
                         <AddNotebook newNotebook={newNotebook} />
-                        <AddNote notebooksTitle={notebooksTitle} newNote={newNote} /> 
+                        <AddNote notebooksTitle={notebooksTitle} newNote={newNote} />
                         <AddDeck newDeck={newDeck} />
                         <AddCard decksTitle={decksTitle} newCard={newCard} />
                     </SidebarButton>
                     <SelectStudy selectStudy={selectStudy} />
 
                     <TreeView
-                        defaultCollapseIcon={<ExpandMoreIcon />}
-                        defaultExpandIcon={<ChevronRightIcon />}
+                        defaultCollapseIcon={<ArrowDropDownIcon />}
+                        defaultExpandIcon={<ArrowRightIcon />}
+                        defaultEndIcon={<div style={{ width: 24 }} />}
                         sx={{ maxWidth: 200 }}
                     >
-                        <TreeItem nodeId='notebooks' label='Notebooks' >
+                        <StyledTreeItem nodeId='notebooks' labelText='Notebooks' labelIcon={BookIcon } >
                             {notebooks.map((notebook) => (
-                                <TreeItem nodeId={notebook.id} label={notebook.title} key={notebook.id}>
+                                <StyledTreeItem nodeId={notebook.id} labelText={notebook.title} key={notebook.id} labelIcon={TextSnippetIcon}  >
                                     {notes && (
                                         <List>
                                             {notebook.notes.map((_note, _noteIndex) => (
@@ -136,20 +143,24 @@ function SidebarComponent(props) {
                                             ))}
                                         </List>
                                     )}
-                                </TreeItem>
+                                </StyledTreeItem>
                             ))}
-                        </TreeItem>
+                        </StyledTreeItem>
+
+
+
 
                     </TreeView>
 
                     <TreeView
-                        defaultCollapseIcon={<ExpandMoreIcon />}
-                        defaultExpandIcon={<ChevronRightIcon />}
+                        defaultCollapseIcon={<ArrowDropDownIcon />}
+                        defaultExpandIcon={<ArrowRightIcon />}
+                        defaultEndIcon={<div style={{ width: 24 }} />}
                         sx={{ maxWidth: 200 }}
                     >
-                        <TreeItem nodeId='decks' label='Decks' >
+                        <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={NoteIcon}>
                             {decks.map((deck) => (
-                                <TreeItem nodeId={deck.id} label={deck.title} key={deck.id}>
+                                <StyledTreeItem nodeId={deck.id} labelText={deck.title} key={deck.id} labelIcon={TextSnippetRoundedIcon}>
                                     {cards && (
                                         <List>
                                             {deck.cards.map((_card, _cardIndex) => (
@@ -166,9 +177,9 @@ function SidebarComponent(props) {
                                             ))}
                                         </List>
                                     )}
-                                </TreeItem>
+                                </StyledTreeItem>
                             ))}
-                        </TreeItem>
+                        </StyledTreeItem>
 
                     </TreeView>
 
