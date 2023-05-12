@@ -1,6 +1,6 @@
 import { styled as styles } from "@mui/system";
 import * as React from 'react';
-import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog, CardContent, Box, Typography } from "@mui/material";
+import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog, CardContent, Box, Typography, IconButton, MenuItem, Menu } from "@mui/material";
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import { Delete, HeightTwoTone } from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 import TreeItem, { TreeItemProps, treeItemClasses } from '@mui/lab/TreeItem';
 import PropTypes from 'prop-types';
 import Label from '@mui/icons-material/Label';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export const EditorContainer = styles('div')({
   width: "100%",
@@ -67,6 +68,8 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   },
 }));
 
+
+
 export function StyledTreeItem(props) {
   const {
     bgColor,
@@ -74,8 +77,25 @@ export function StyledTreeItem(props) {
     labelIcon: LabelIcon,
     labelInfo,
     labelText,
+    showMenu,
     ...other
   } = props;
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+  const handleMenu = (event) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const renameMenu = (event) => {
+    props.renameMenu(props.nodeId);
+  }
+
   return (
     <StyledTreeItemRoot
       label={
@@ -87,6 +107,26 @@ export function StyledTreeItem(props) {
           <Typography variant="caption" color="inherit">
             {labelInfo}
           </Typography>
+          {(showMenu) ? (
+            <IconButton onClick={handleMenu}>
+              <MoreVertIcon />
+            </IconButton>
+          ) : null}
+          <Menu
+            id={labelText}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              'aria-labelledby': {labelText},
+            }}
+          >
+
+            <MenuItem onClick={(event) => renameMenu(event)}>primeiro item</MenuItem>
+            <MenuItem>segundo item</MenuItem>
+            
+          </Menu>
+
         </Box>
       }
       style={{
@@ -186,7 +226,7 @@ export const SideButton = styles('div')({
 });
 
 export const NoteText = styles(ListItemText, {})({
-    
+
 });
 
 
@@ -229,13 +269,12 @@ export const AddDialog = styles(Dialog, {})({
 
 });
 
- export const CardEditArea = styles('div')({
-  [`& .ql-editor`]:{
+export const CardEditArea = styles('div')({
+  [`& .ql-editor`]: {
     minHeight: '20rem'
   }
 
 
- });
-  
+});
 
- 
+

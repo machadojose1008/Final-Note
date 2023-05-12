@@ -8,8 +8,6 @@ import SidebarButton from './nested-lists/sidebar-button';
 import AddNote from './buttons/add-note';
 import AddCard from './buttons/add-card';
 import { TreeItem, TreeView } from '@mui/lab';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddNotebook from './buttons/add-notebook';
 import AddDeck from './buttons/add-deck';
 import SelectStudy from './buttons/select-study';
@@ -21,8 +19,7 @@ import NoteIcon from '@mui/icons-material/Note';
 import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
 
 function SidebarComponent(props) {
-    const { decks, notebooks, selectedNotebookIndex, selectedDeckIndex, selectedNoteIndex, selectedCardIndex, selectStudy } = props;
-    const [addingNote, setAddingNote] = useState(false);
+    const { decks, notebooks, selectedNoteIndex, selectedCardIndex, selectStudy } = props;
     const [title, setTitle] = useState(null);
     const [cardTitle, setCardTitle] = useState(null);
     const [notes, setNotes] = useState([]);
@@ -66,6 +63,14 @@ function SidebarComponent(props) {
 
     const deleteCard = (n, i) => {
         props.deleteCard(n, i);
+    }
+
+    const menuAnchor = (nodeId) => {
+        console.log(nodeId);
+    }
+
+    const renameMenu = (nodeId) => {
+        console.log(nodeId);
     }
 
     useEffect(() => {
@@ -124,9 +129,9 @@ function SidebarComponent(props) {
                         defaultEndIcon={<div style={{ width: 24 }} />}
                         sx={{ maxWidth: 200 }}
                     >
-                        <StyledTreeItem nodeId='notebooks' labelText='Notebooks' labelIcon={BookIcon } >
+                        <StyledTreeItem nodeId='notebooks' labelText='Notebooks' labelIcon={BookIcon} >
                             {notebooks.map((notebook) => (
-                                <StyledTreeItem nodeId={notebook.id} labelText={notebook.title} key={notebook.id} labelIcon={TextSnippetIcon}  >
+                                <StyledTreeItem renameMenu={renameMenu} nodeId={notebook.id} labelText={notebook.title} showMenu={true} key={notebook.id} labelIcon={TextSnippetIcon}  >
                                     {notes && (
                                         <List>
                                             {notebook.notes.map((_note, _noteIndex) => (
@@ -160,24 +165,30 @@ function SidebarComponent(props) {
                     >
                         <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={NoteIcon}>
                             {decks.map((deck) => (
-                                <StyledTreeItem nodeId={deck.id} labelText={deck.title} key={deck.id} labelIcon={TextSnippetRoundedIcon}>
-                                    {cards && (
-                                        <List>
-                                            {deck.cards.map((_card, _cardIndex) => (
-                                                <div key={_cardIndex}>
-                                                    <SidebarCardComponent
-                                                        _card={_card}
-                                                        _index={_cardIndex}
-                                                        selectedCardIndex={selectedCardIndex}
-                                                        deckIndex={deck.id}
-                                                        selectCard={selectCard}
-                                                        deleteCard={deleteCard}
-                                                    />
-                                                </div>
-                                            ))}
-                                        </List>
-                                    )}
-                                </StyledTreeItem>
+                                <div>
+                                    <StyledTreeItem nodeId={deck.id} showMenu={true} labelText={deck.title} key={deck.id} labelIcon={TextSnippetRoundedIcon}>
+                                        {cards && (
+                                            <List>
+                                                {deck.cards.map((_card, _cardIndex) => (
+                                                    <div key={_cardIndex}>
+                                                        <SidebarCardComponent
+                                                            _card={_card}
+                                                            _index={_cardIndex}
+                                                            selectedCardIndex={selectedCardIndex}
+                                                            deckIndex={deck.id}
+                                                            selectCard={selectCard}
+                                                            deleteCard={deleteCard}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </List>
+                                        )}
+
+
+                                    </StyledTreeItem>
+
+                                </div>
+
                             ))}
                         </StyledTreeItem>
 
