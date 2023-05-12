@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { findNotebookPosition, findDeckPosition } from './helpers';
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom';
 import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
 import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
-import { collection, onSnapshot, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, setDoc } from "firebase/firestore";
+import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
 
@@ -32,7 +32,7 @@ function App() {
   const [selectedDeckIndex, setSelectedDeckIndex] = useState(null);
 
   // Cards States
-  const [cards, setCards] = useState(null);
+  const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [cardsUpdated, setCardsUpdated] = useState(false);
@@ -111,7 +111,6 @@ function App() {
 
     updateDoc(noteRef, data)
       .then((docRef) => {
-        console.log('Documento atualizado');
         setNotesUpdated(true);
       })
       .catch((error) => {
@@ -164,13 +163,12 @@ function App() {
 
 
   const deleteNote = async (note, notebookIndex) => {
-    const noteIndex = note.id;
-    const noteRef = await doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, noteIndex);
-    deleteDoc(noteRef);
+    const noteRef =  doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, note.id);
+    await deleteDoc(noteRef);
 
     const notebookPosition = await findNotebookPosition(notebooks, notebookIndex);
 
-    if (selectedNoteIndex === noteIndex) {
+    if (selectedNoteIndex === note.id) {
       setSelectedNoteIndex(null);
       setSelectedNote(null);
     } else {
@@ -197,8 +195,42 @@ function App() {
     const newNotebook = await addDoc(notebookRef, _notebook);
     setNotesUpdated(true);
 
-  }
+  };
 
+  const renameNotebook = async (notebookId, newTitle) => {
+    const data = {
+      title: newTitle
+    }
+    const notebookRef = doc(db, `users/${userId}/notebooks`,notebookId);
+
+    updateDoc(notebookRef, data)
+      .then(notebookRef => {
+        setNotesUpdated(true);// atualiza o sidebar com os novos valores
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+  };
+
+  const deleteNotebook = async (notebookId) => {
+    const notebookRef = doc(db, `users/${userId}/notebooks`, notebookId);
+    const notebookPosition = await findNotebookPosition(notebooks, notebookId);
+    const notebookNotes = notebooks[notebookPosition].notes;
+
+     for (const note of notebookNotes){
+        await deleteNote(note, notebookId);
+    }
+
+    await deleteDoc(notebookRef)
+    .then(docRef => {
+      setNotesUpdated(true);
+    })
+    .catch(error => {
+      console.log(error);
+    })  
+
+  };
 
   const fetchDecks = async (userId) => {
     const decksRef = collection(db, `users/${userId}/decks`);
@@ -227,7 +259,7 @@ function App() {
     setSelectedDeckIndex(deckIndex);
     setShowCard(true);
     setShowStudy(false);
-  }
+  };
 
   const cardUpdate = (id, selectedDeckId, cardObj) => {
     const cardRef = doc(db, `users/${userId}/decks/${selectedDeckId}/cards`, id);
@@ -246,7 +278,7 @@ function App() {
         console.log(error);
       });
 
-  }
+  };
 
 
   const newCard = async (cardTitle, deckTitle) => {
@@ -283,21 +315,19 @@ function App() {
     const newFromDB = await addDoc(cardsRef, card);
 
     updateCards(card);
+    setCardsUpdated(false);
 
     selectCard(card, newFromDB.id);
-    setSelectedCard(card);
-    setSelectedCardIndex(newFromDB.id);
   };
 
 
   const deleteCard = async (card, deckIndex) => {
-    const cardIndex = card.id;
-    const cardRef = await doc(db, `users/${userId}/decks/${deckIndex}/cards`, cardIndex);
-    deleteDoc(cardRef);
+    const cardRef =  doc(db, `users/${userId}/decks/${deckIndex}/cards`, card.id);
+    await deleteDoc(cardRef);
 
     const deckPosition = await findDeckPosition(decks, deckIndex);
 
-    if (selectedCardIndex === cardIndex) {
+    if (selectedCardIndex === card.id) {
       setSelectedCardIndex(null);
       setSelectedCard(null);
     } else {
@@ -321,11 +351,49 @@ function App() {
     const _deck = {
       title: deckTitle
     }
-    const deckRef = collection(db, `users/${userId}/decks`, id);
+    const deckRef = collection(db, `users/${userId}/decks`);
     await addDoc(deckRef, _deck);
     setNotesUpdated(true);
 
+  };
+
+  const renameDeck = async (deckId, newTitle) => {
+    const data = {
+      title: newTitle
+    }
+    const deckRef = doc(db, `users/${userId}/decks`,deckId);
+
+    updateDoc(deckRef, data)
+      .then(deckRef => {
+        setNotesUpdated(true); // atualiza o sidebar com os novos valores
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+
   }
+
+  
+  const deleteDeck = async (deckId) => {
+    const deckRef = doc(db, `users/${userId}/decks`, deckId);
+    const deckPosition = await findDeckPosition(decks, deckId);
+    const deckCards= decks[deckPosition].cards;
+
+    for (const card of deckCards){
+        await deleteCard(card, deckId);
+    }
+
+    await deleteDoc(deckRef)
+    .then(docRef => {
+      setCardsUpdated(true);
+    })
+    .catch(error => {
+      console.log(error);
+    })
+
+  }
+
 
   const updateAfterReview = async (decks) => {
     for (const _deck of decks) {
@@ -340,9 +408,6 @@ function App() {
             console.log(error);
           })
       }
-
-
-
     }
   }
 
@@ -395,6 +460,8 @@ function App() {
               deleteNote={deleteNote}
               selectedNoteIndex={selectedNoteIndex}
               newNotebook={newNotebook}
+              renameNotebook={renameNotebook}
+              deleteNotebook={deleteNotebook}
 
               decks={decks}
               cards={cards}
@@ -403,6 +470,8 @@ function App() {
               deleteCard={deleteCard}
               selectedCardIndex={selectedCardIndex}
               newDeck={newDeck}
+              renameDeck={renameDeck}
+              deleteDeck={deleteDeck}
 
               selectStudy={selectStudy}
 

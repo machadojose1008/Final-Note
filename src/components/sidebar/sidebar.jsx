@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import { Face } from "@mui/icons-material"
 import SidebarItemComponent from './sidebar-notes';
 import SidebarCardComponent from './sidebar-card';
-import { SidebarContainer, UserIcon, ActionList, StyledTreeItem } from '../componentStyles'
+import { SidebarContainer, UserIcon, ActionList, AddDialog } from '../componentStyles'
 import SidebarButton from './nested-lists/sidebar-button';
 import AddNote from './buttons/add-note';
 import AddCard from './buttons/add-card';
@@ -17,6 +17,8 @@ import BookIcon from '@mui/icons-material/Book';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import NoteIcon from '@mui/icons-material/Note';
 import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
+import { StyledTreeItem } from './styled-tree-item';
+import { Button, DialogContent, DialogTitle, TextField } from '@mui/material';
 
 function SidebarComponent(props) {
     const { decks, notebooks, selectedNoteIndex, selectedCardIndex, selectStudy } = props;
@@ -24,8 +26,13 @@ function SidebarComponent(props) {
     const [cardTitle, setCardTitle] = useState(null);
     const [notes, setNotes] = useState([]);
     const [notebooksTitle, setNotebooksTitle] = useState([]);
+    const [notebookTitle, setNotebookTitle] = useState(null);
     const [decksTitle, setDecksTitle] = useState([]);
+    const [deckTitle, setDeckTitle] = useState(null);
     const [cards, setCards] = useState([]);
+    const [openNotebookDialog, setOpenNotebookDialog] = useState(false);
+    const [openDeckDialog, setOpenDeckDialog] = useState(false);
+    const [renameId, setRenameId] = useState(null);
 
 
     const newNote = (txt, notebookTitle) => {
@@ -65,16 +72,60 @@ function SidebarComponent(props) {
         props.deleteCard(n, i);
     }
 
-    const menuAnchor = (nodeId) => {
-        console.log(nodeId);
+
+    const renameMenu = (id, type) => {
+        // Abre o dialog para definir o novo título do menu lateral
+        setRenameId(id);
+        if (type === 'notebook') {
+            setOpenNotebookDialog(true);
+        } else if (type === 'deck') {
+            setOpenDeckDialog(true);
+        }
+    };
+
+    const deleteMenu = (id, type) => {
+        // Abre o dialog para confirmar se deseja deletar o item
+        if (type === 'notebook') {
+            if (window.confirm(`Tem certeza que deseja deletar o notebook?`)) {
+                props.deleteNotebook(id);
+            }
+        } else if (type === 'deck') {
+            if (window.confirm(`Tem certeza que deseja deletar o deck?`)) {
+                props.deleteDeck(id);
+            }
+        }
     }
 
-    const renameMenu = (nodeId) => {
-        console.log(nodeId);
+    const handleNotebookTitle = (txt) => {
+        setNotebookTitle(txt);
+    };
+
+    const closeRenameNotebook = () => {
+        setOpenNotebookDialog(false);
+    }
+
+    const handleDeckTitle = (txt) => {
+        setDeckTitle(txt);
+    };
+
+    const closeRenameDeck = () => {
+        setOpenDeckDialog(false);
+    }
+
+    const renameDeck = () => {
+        props.renameDeck(renameId, deckTitle);
+        setOpenDeckDialog(false);
+    };
+
+    const renameNotebook = () => {
+        props.renameNotebook(renameId, notebookTitle);
+        setOpenNotebookDialog(false);
     }
 
     useEffect(() => {
 
+        console.log('decks', decks);
+        console.log('notebooks', notebooks);
 
         const settingNotes = async () => {
             const fetchNotes = await notebooks.map(el => el.notes);
@@ -102,14 +153,12 @@ function SidebarComponent(props) {
 
 
 
-
-
-    }, [])
+    }, [decks, notebooks])
 
     return (
         <div>
-            {(notes.length || cards.length) === 0 ? (
-                <p>Carregando as notas...</p>
+            {(cards.length || notes.length || notebooks.length || decks.length) === 0 ? (
+                <p>Carregando...</p>
             ) : (
 
                 <SidebarContainer>
@@ -131,7 +180,16 @@ function SidebarComponent(props) {
                     >
                         <StyledTreeItem nodeId='notebooks' labelText='Notebooks' labelIcon={BookIcon} >
                             {notebooks.map((notebook) => (
-                                <StyledTreeItem renameMenu={renameMenu} nodeId={notebook.id} labelText={notebook.title} showMenu={true} key={notebook.id} labelIcon={TextSnippetIcon}  >
+                                <StyledTreeItem
+                                    renameMenu={renameMenu}
+                                    nodeId={notebook.id}
+                                    labelText={notebook.title}
+                                    showMenu={true}
+                                    key={notebook.id}
+                                    deleteMenu={deleteMenu}
+                                    labelIcon={TextSnippetIcon}
+                                    type={'notebook'}
+                                >
                                     {notes && (
                                         <List>
                                             {notebook.notes.map((_note, _noteIndex) => (
@@ -151,22 +209,29 @@ function SidebarComponent(props) {
                                 </StyledTreeItem>
                             ))}
                         </StyledTreeItem>
-
-
-
-
                     </TreeView>
 
-                    <TreeView
-                        defaultCollapseIcon={<ArrowDropDownIcon />}
-                        defaultExpandIcon={<ArrowRightIcon />}
-                        defaultEndIcon={<div style={{ width: 24 }} />}
-                        sx={{ maxWidth: 200 }}
-                    >
-                        <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={NoteIcon}>
-                            {decks.map((deck) => (
-                                <div>
-                                    <StyledTreeItem nodeId={deck.id} showMenu={true} labelText={deck.title} key={deck.id} labelIcon={TextSnippetRoundedIcon}>
+                    {decks.length > 0 && (
+
+                        <TreeView
+                            defaultCollapseIcon={<ArrowDropDownIcon />}
+                            defaultExpandIcon={<ArrowRightIcon />}
+                            defaultEndIcon={<div style={{ width: 24 }} />}
+                            sx={{ maxWidth: 200 }}
+                        >
+
+                            <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={NoteIcon}>
+                                {decks.map((deck) => (
+                                    <StyledTreeItem
+                                        nodeId={deck.id}
+                                        showMenu={true}
+                                        labelText={deck.title}
+                                        key={deck.id}
+                                        deleteMenu={deleteMenu}
+                                        labelIcon={TextSnippetRoundedIcon}
+                                        renameMenu={renameMenu}
+                                        type={'deck'}
+                                    >
                                         {cards && (
                                             <List>
                                                 {deck.cards.map((_card, _cardIndex) => (
@@ -183,24 +248,65 @@ function SidebarComponent(props) {
                                                 ))}
                                             </List>
                                         )}
-
-
                                     </StyledTreeItem>
+                                ))}
+                            </StyledTreeItem>
 
-                                </div>
 
-                            ))}
-                        </StyledTreeItem>
 
-                    </TreeView>
+
+
+                        </TreeView>
+                    )}
+
+
+                    <AddDialog open={openNotebookDialog} onClose={closeRenameNotebook} >
+                        <DialogTitle>Insira o novo nome do Notebook</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin=""
+                                id='Nome'
+                                sx={{ padding: '0px 0px 15px' }}
+                                label='Nome do Notebook'
+                                type='text'
+                                fullWidth
+                                variant="standard"
+                                onChange={(e) => handleNotebookTitle(e.target.value)}
+                            />
+                        </DialogContent>
+                        <Button onClick={closeRenameNotebook} sx={{ color: 'black', }}>Cancelar</Button>
+                        <Button onClick={renameNotebook}>Pronto</Button>
+                    </AddDialog>
+
+
+
+                    <AddDialog open={openDeckDialog} onClose={closeRenameDeck} >
+                        <DialogTitle>Insira o novo nome do Deck</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin=""
+                                id='Nome'
+                                sx={{ padding: '0px 0px 15px' }}
+                                label='Nome do Deck'
+                                type='text'
+                                fullWidth
+                                variant="standard"
+                                onChange={(e) => handleDeckTitle(e.target.value)}
+                            />
+                        </DialogContent>
+                        <Button onClick={closeRenameDeck} sx={{ color: 'black', }}>Cancelar</Button>
+                        <Button onClick={renameDeck}>Pronto</Button>
+                    </AddDialog>
+
+
 
                 </SidebarContainer>
 
 
             )}
-
         </div>
-
     );
 }
 

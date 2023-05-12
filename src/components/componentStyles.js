@@ -2,12 +2,11 @@ import { styled as styles } from "@mui/system";
 import * as React from 'react';
 import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog, CardContent, Box, Typography, IconButton, MenuItem, Menu } from "@mui/material";
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import { Delete, HeightTwoTone } from '@mui/icons-material'
+import { Delete} from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
 import { styled } from '@mui/material/styles';
-import TreeItem, { TreeItemProps, treeItemClasses } from '@mui/lab/TreeItem';
+import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem';
 import PropTypes from 'prop-types';
-import Label from '@mui/icons-material/Label';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export const EditorContainer = styles('div')({
@@ -34,118 +33,7 @@ export const ButtonContainer = styles('div')({
   justifyContent: 'center',
   alignItems: 'center',
   marginTop: '5px',
-})
-
-
-const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  [`& .${treeItemClasses.content}`]: {
-    color: theme.palette.text.secondary,
-    borderTopRightRadius: theme.spacing(2),
-    borderBottomRightRadius: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-    fontWeight: theme.typography.fontWeightMedium,
-    '&.Mui-expanded': {
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
-      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
-      color: 'var(--tree-view-color)',
-    },
-    [`& .${treeItemClasses.label}`]: {
-      fontWeight: 'inherit',
-      color: 'inherit',
-    },
-  },
-  [`& .${treeItemClasses.group}`]: {
-    marginLeft: 0,
-    [`& .${treeItemClasses.content}`]: {
-      paddingLeft: theme.spacing(2),
-    },
-  },
-}));
-
-
-
-export function StyledTreeItem(props) {
-  const {
-    bgColor,
-    color,
-    labelIcon: LabelIcon,
-    labelInfo,
-    labelText,
-    showMenu,
-    ...other
-  } = props;
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-
-  const handleMenu = (event) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
-
-  const renameMenu = (event) => {
-    props.renameMenu(props.nodeId);
-  }
-
-  return (
-    <StyledTreeItemRoot
-      label={
-        <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }}>
-          <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} />
-          <Typography variant="body2" sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
-            {labelText}
-          </Typography>
-          <Typography variant="caption" color="inherit">
-            {labelInfo}
-          </Typography>
-          {(showMenu) ? (
-            <IconButton onClick={handleMenu}>
-              <MoreVertIcon />
-            </IconButton>
-          ) : null}
-          <Menu
-            id={labelText}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': {labelText},
-            }}
-          >
-
-            <MenuItem onClick={(event) => renameMenu(event)}>primeiro item</MenuItem>
-            <MenuItem>segundo item</MenuItem>
-            
-          </Menu>
-
-        </Box>
-      }
-      style={{
-        '--tree-view-color': color,
-        '--tree-view-bg-color': bgColor,
-      }}
-      {...other}
-    />
-  );
-}
-
-StyledTreeItem.propTypes = {
-  bgColor: PropTypes.string,
-  color: PropTypes.string,
-  labelIcon: PropTypes.elementType.isRequired,
-  labelInfo: PropTypes.string,
-  labelText: PropTypes.string.isRequired,
-};
-
+});
 
 export const SrsReview = styles(Box, {})({
   position: 'absolute',
