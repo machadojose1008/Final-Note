@@ -21,7 +21,7 @@ import { StyledTreeItem } from './styled-tree-item';
 import { Button, DialogContent, DialogTitle, TextField } from '@mui/material';
 
 function SidebarComponent(props) {
-    const { decks, notebooks, selectedNoteIndex, selectedCardIndex, selectStudy } = props;
+    const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectStudy } = props;
     const [title, setTitle] = useState(null);
     const [cardTitle, setCardTitle] = useState(null);
     const [notes, setNotes] = useState([]);
@@ -124,8 +124,6 @@ function SidebarComponent(props) {
 
     useEffect(() => {
 
-        console.log('decks', decks);
-        console.log('notebooks', notebooks);
 
         const settingNotes = async () => {
             const fetchNotes = await notebooks.map(el => el.notes);
@@ -157,7 +155,7 @@ function SidebarComponent(props) {
 
     return (
         <div>
-            {(cards.length || notes.length || notebooks.length || decks.length) === 0 ? (
+            {(decks.length === 0 || notebooks.length === 0) ? (
                 <p>Carregando...</p>
             ) : (
 
@@ -211,16 +209,18 @@ function SidebarComponent(props) {
                         </StyledTreeItem>
                     </TreeView>
 
-                    {decks.length > 0 && (
+                    {decks.length === undefined ? (
+                        (<p>indefinido</p>)
 
-                        <TreeView
+                    ) :
+                        < TreeView
                             defaultCollapseIcon={<ArrowDropDownIcon />}
                             defaultExpandIcon={<ArrowRightIcon />}
                             defaultEndIcon={<div style={{ width: 24 }} />}
                             sx={{ maxWidth: 200 }}
                         >
 
-                            <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={NoteIcon}>
+                            <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={NoteIcon} >
                                 {decks.map((deck) => (
                                     <StyledTreeItem
                                         nodeId={deck.id}
@@ -251,13 +251,8 @@ function SidebarComponent(props) {
                                     </StyledTreeItem>
                                 ))}
                             </StyledTreeItem>
-
-
-
-
-
                         </TreeView>
-                    )}
+                    }
 
 
                     <AddDialog open={openNotebookDialog} onClose={closeRenameNotebook} >
@@ -305,8 +300,9 @@ function SidebarComponent(props) {
                 </SidebarContainer>
 
 
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
 

@@ -163,7 +163,7 @@ function App() {
 
 
   const deleteNote = async (note, notebookIndex) => {
-    const noteRef =  doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, note.id);
+    const noteRef = doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, note.id);
     await deleteDoc(noteRef);
 
     const notebookPosition = await findNotebookPosition(notebooks, notebookIndex);
@@ -201,7 +201,7 @@ function App() {
     const data = {
       title: newTitle
     }
-    const notebookRef = doc(db, `users/${userId}/notebooks`,notebookId);
+    const notebookRef = doc(db, `users/${userId}/notebooks`, notebookId);
 
     updateDoc(notebookRef, data)
       .then(notebookRef => {
@@ -218,17 +218,17 @@ function App() {
     const notebookPosition = await findNotebookPosition(notebooks, notebookId);
     const notebookNotes = notebooks[notebookPosition].notes;
 
-     for (const note of notebookNotes){
-        await deleteNote(note, notebookId);
+    for (const note of notebookNotes) {
+      await deleteNote(note, notebookId);
     }
 
     await deleteDoc(notebookRef)
-    .then(docRef => {
-      setNotesUpdated(true);
-    })
-    .catch(error => {
-      console.log(error);
-    })  
+      .then(docRef => {
+        setNotesUpdated(true);
+      })
+      .catch(error => {
+        console.log(error);
+      })
 
   };
 
@@ -322,7 +322,7 @@ function App() {
 
 
   const deleteCard = async (card, deckIndex) => {
-    const cardRef =  doc(db, `users/${userId}/decks/${deckIndex}/cards`, card.id);
+    const cardRef = doc(db, `users/${userId}/decks/${deckIndex}/cards`, card.id);
     await deleteDoc(cardRef);
 
     const deckPosition = await findDeckPosition(decks, deckIndex);
@@ -342,7 +342,7 @@ function App() {
       const updatedCards = [...updatedDecks[deckPosition].cards];
       updatedCards.splice(updatedCards.indexOf(card), 1);
       updatedDecks[deckPosition].cards = updatedCards;
-      return updatedCards;
+      return updatedDecks;
     });
   };
 
@@ -361,7 +361,7 @@ function App() {
     const data = {
       title: newTitle
     }
-    const deckRef = doc(db, `users/${userId}/decks`,deckId);
+    const deckRef = doc(db, `users/${userId}/decks`, deckId);
 
     updateDoc(deckRef, data)
       .then(deckRef => {
@@ -374,23 +374,23 @@ function App() {
 
   }
 
-  
+
   const deleteDeck = async (deckId) => {
     const deckRef = doc(db, `users/${userId}/decks`, deckId);
     const deckPosition = await findDeckPosition(decks, deckId);
-    const deckCards= decks[deckPosition].cards;
+    const deckCards = decks[deckPosition].cards;
 
-    for (const card of deckCards){
-        await deleteCard(card, deckId);
+    for (const card of deckCards) {
+      await deleteCard(card, deckId);
     }
 
     await deleteDoc(deckRef)
-    .then(docRef => {
-      setCardsUpdated(true);
-    })
-    .catch(error => {
-      console.log(error);
-    })
+      .then(docRef => {
+        setCardsUpdated(true);
+      })
+      .catch(error => {
+        console.log(error);
+      })
 
   }
 
@@ -444,10 +444,7 @@ function App() {
 
   return (
     <div className="app-container">
-      {(notebooks.length || decks.length) === 0 ? (
-        <p></p>
-      ) : (
-        /* Spacing é a distância entre os elementos do grid */
+      {notebooks.length > 0 && decks.length > 0 ? (
         <Grid container spacing={2}   >
           <Grid item xs={1.5}>
             <SidebarComponent
@@ -510,6 +507,10 @@ function App() {
           ) : null}
 
         </Grid>
+      ) : (
+        <p></p>
+        /* Spacing é a distância entre os elementos do grid */
+
       )}
 
     </div>
