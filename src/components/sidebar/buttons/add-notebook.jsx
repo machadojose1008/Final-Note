@@ -52,7 +52,6 @@ function AddNotebook(props) {
                 <DialogContent>
                     <TextField
                         autoFocus
-                        margin=""
                         id='Nome'
                         sx={{ padding: '0px 0px 15px' }}
                         label='Nome do Notebook'

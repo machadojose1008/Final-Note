@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../../helpers';
-import { IconButton, Paper } from '@mui/material';
+import { Button, IconButton, Input, Paper, TextField } from '@mui/material';
 import { EditorContainer, EditorNavBar, TitleInput } from '../componentStyles';
 import CloseIcon from '@mui/icons-material/Close';
 
 const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote }) => {
-    const [text, setText] = useState('');
+    const [body, setBody] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
 
@@ -28,38 +28,37 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
         'link', 'image'
     ]
 
-    const updateBody = useCallback(
-        (val) => {
-            setText(val);
-            update({ title, body: val });
-        },
-        [title]
+
+    const updateBody = (val) => {
+        setBody(val);
+        update({ body: val, title: title });
+    }
+
+
+    const updateTitle = (event) => {
+        const titleVal = event.target.value;
+        setTitle(titleVal);
+        update({ title: titleVal, body: body });
+    }
+
+    const update = useCallback(
+        debounce((noteObj) => {
+            noteUpdate(id, selectedNotebookIndex, noteObj);
+        }, 1500),
+        [id, selectedNotebookIndex, noteUpdate]
     );
-
-    const updateTitle = useCallback(
-        (txt) => {
-            setTitle(txt);
-            update({ title: txt, body: text });
-        },
-        [text]
-    );
-
-    const update = () => {
-        debounce(({ title, body }) => {
-            noteUpdate(id, selectedNotebookIndex, { title, body });
-        }, 1500);
-    };
-
-
 
 
     useEffect(() => {
-        setText(selectedNote.body || '');
-        setTitle(selectedNote.title || '');
-        setId(selectedNote.id || '');
-    }, [selectedNote]);
+        setBody(selectedNote.body);
+        setTitle(selectedNote.title);
+        setId(selectedNote.id);
+    }, [selectedNote.body, selectedNote.title, selectedNote.id]);
 
 
+    const handleSave = () => {
+        update({ title, body });
+    };
 
 
     return (
@@ -68,18 +67,26 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
                 <IconButton onClick={closeNote}>
                     <CloseIcon sx={{ color: 'black' }} />
                 </IconButton>
-                <TitleInput
-                    theme='null'
+                <TextField
+                    sx={{
+                        width: '400px'
+                    }}
+                    id='filled-titleText'
+                    label='Titulo da nota'
                     placeholder="Título da nota"
-                    value={title ? title : ''}
-                    onChange={(e) => updateTitle(e.target.value)}>
-                </TitleInput>
+                    defaultValue={title ? title : ''}
+                    variant='filled'
+                    onChange={updateTitle}>
+                </TextField>
             </EditorNavBar>
+            <Button sx={{width: '200px'}} variant="contained" color="primary" onClick={handleSave}>
+                Salvar
+            </Button>
             <Paper elevation={3}>
                 <ReactQuill
                     modules={modules}
                     formats={formats}
-                    value={text}
+                    value={body ? body : ''}
                     onChange={updateBody}
                 />
             </Paper>

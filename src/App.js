@@ -6,7 +6,7 @@ import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
 import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
-import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, getDoc, query, where } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
 
@@ -93,9 +93,9 @@ function App() {
     }
   };
 
-  const selectNote = async (note, notebookIndex, noteIndex) => {
+  const selectNote = async (note, noteIndex, notebookIndex) => {
     setSelectedNoteIndex(noteIndex);
-    setSelectedNote(note);
+    setSelectedNote(note); 
     setSelectedNotebookIndex(notebookIndex);
     setShowNote(true);
     setShowStudy(false);
@@ -106,7 +106,8 @@ function App() {
     const noteRef = doc(db, `users/${userId}/notebooks/${selectedNotebookId}/notes`, id);
     const data = {
       title: noteObj.title,
-      body: noteObj.body
+      body: noteObj.body,
+      timestamp: serverTimestamp()
     };
 
     updateDoc(noteRef, data)
@@ -119,6 +120,8 @@ function App() {
   };
 
   const newNote = async (noteTitle, notebookTitle) => {
+    selectNote(null,null,null);
+
     const note = {
       title: noteTitle,
       body: '',
@@ -143,22 +146,20 @@ function App() {
       return;
     }
 
-
-
-    const updateNotes = async (newNote) => {
-      const notebookPosition = await findNotebookPosition(notebooks, notebookId);
-      notebooks[notebookPosition].notes.push(newNote);
-
-    }
-
     const dbRef = collection(db, `users/${userId}/notebooks/${notebookId}/notes`);
 
     const newFromDB = await addDoc(dbRef, note);
 
-    updateNotes(note);
-    setNotesUpdated(false);
+    const newNote = await {
+      title: note.title,
+      body: note.body,
+      timestamp: note.timestamp,
+      id: newFromDB.id
+    };
 
-    selectNote(notes, newFromDB.id);
+    setNotesUpdated(true);
+    selectNote(newNote, newFromDB.id, notebookId);  
+    
   };
 
 
@@ -173,7 +174,7 @@ function App() {
       setSelectedNote(null);
     } else {
       notebooks[notebookPosition].notes.length > 1 ?
-        selectNote(notebooks[notebookPosition].notes[selectedNoteIndex - 1], selectedNoteIndex - 1) :
+        selectNote(notebooks[notebookPosition].notes[selectedNoteIndex - 1], selectedNoteIndex - 1, notebookIndex) :
         setSelectedNoteIndex(null);
       setSelectedNote(null);
     }
@@ -253,7 +254,7 @@ function App() {
     });
   };
 
-  const selectCard = (card, deckIndex, cardIndex) => {
+  const selectCard = async (card, deckIndex, cardIndex) => {
     setSelectedCardIndex(cardIndex);
     setSelectedCard(card);
     setSelectedDeckIndex(deckIndex);
@@ -282,6 +283,8 @@ function App() {
 
 
   const newCard = async (cardTitle, deckTitle) => {
+    selectCard(null,null,null);
+    
     const card = {
       title: cardTitle,
       front: '',
@@ -305,19 +308,21 @@ function App() {
       return;
     }
 
-    const updateCards = async (newCard) => {
-      const deckPosition = await findDeckPosition(decks, deckId);
-      decks[deckPosition].cards.push(newCard);
-    }
 
     const cardsRef = collection(db, `users/${userId}/decks/${deckId}/cards`);
 
     const newFromDB = await addDoc(cardsRef, card);
 
-    updateCards(card);
+    const newCard = await {
+      title: card.title,
+      front: card.front,
+      back: card.back,
+      id: newFromDB.id
+    };
+
     setCardsUpdated(false);
 
-    selectCard(card, newFromDB.id);
+    selectCard(newCard, newFromDB.id, deckId);
   };
 
 
@@ -478,6 +483,7 @@ function App() {
             <Grid item xs={(showCard) ? 7 : 10}>
               <EditorComponent
                 selectedNote={selectedNote}
+                selectedNoteIndex={selectedNoteIndex}
                 noteUpdate={noteUpdate}
                 selectedNotebookIndex={selectedNotebookIndex}
                 closeNote={closeNote}

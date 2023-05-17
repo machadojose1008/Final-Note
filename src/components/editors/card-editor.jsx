@@ -1,7 +1,7 @@
 import ReactQuill from 'react-quill';
 import { CardEditArea, EditorContainer, EditorNavBar, TitleInput } from '../componentStyles';
 import { useCallback, useState, useEffect } from 'react';
-import { IconButton, Paper, Stack } from '@mui/material';
+import { Button, IconButton, Paper, Stack } from '@mui/material';
 import debounce from '../../helpers';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -31,78 +31,75 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
         'link', 'image'
     ]
 
-    const updateFront = useCallback(
-        (val) => {
-            setFront(val);
-            update({ title, front: val, back });
-        },
-        [title, back]
-    );
+    const updateFront = (frontVal) => {
+        setFront(frontVal);
+        update({ front: frontVal, back: back, title: title });
+    };
 
-    const updateBack = useCallback(
-        (val) => {
-            setBack(val);
-            update({ title, front, back: val });
-        },
-        [title, front]
-    )
+    const updateBack = (backVal) => {
+        setBack(backVal);
+        update({ front: front, back: backVal, title: title });
+    };
 
-    const updateTitle = useCallback(
-        (txt) => {
-            setTitle(txt);
-            update({ title: txt, front, back })
-        },
-        [front, back]
-    )
+    const updateTitle = (event) => {
+        const titleVal = event.target.value;
+        setTitle(titleVal);
+        update({ front: front, back: back, title: titleVal });
+    };
 
 
     const update = useCallback(
-        debounce(({ title, front, back }) => {
-            cardUpdate(id, selectedDeckIndex, { title, front, back });
-
+        debounce((cardObj) => {
+            cardUpdate(id, selectedDeckIndex, cardObj);
         }, 1500),
-        [id]
+        [id, selectedDeckIndex, cardUpdate]
     );
 
-  
+
 
     useEffect(() => {
         setFront(selectedCard.front || '');
         setBack(selectedCard.back || '');
         setTitle(selectedCard.title || '');
         setId(selectedCard.id || '');
-    }, [selectedCard]);
+    }, [selectedCard.id, selectedCard.front, selectedCard.back, selectedCard.title]);
+
+
+    const handleSave = () => {
+        update({title, front, back});
+    };
 
 
     return (
         <EditorContainer>
-            <EditorNavBar> 
+            <EditorNavBar>
                 <IconButton onClick={closeCard}>
-                    <CloseIcon sx={{color:'black'}}/>  
+                    <CloseIcon sx={{ color: 'black' }} />
                 </IconButton>
-                
+
                 <TitleInput
-                    sx={{paddingTop: '25px'}}
+                    sx={{ paddingTop: '25px' }}
                     theme='null'
                     placeholder='Título do cartão'
                     value={title ? title : ''}
-                    onChange={(e) => updateTitle(e.target.value)}>
-                     
+                    onChange={updateTitle}>
                 </TitleInput>
-                
-            </EditorNavBar>
 
-                <Paper elevation={3}>
-                   <CardEditArea>
+            </EditorNavBar>
+            <Button variant="contained" color="primary" onClick={handleSave}>
+                Salvar
+            </Button>
+            <Paper elevation={3}>
+                <CardEditArea>
                     <Stack direction='column' spacing={1}>
-                            <ReactQuill
+                        <ReactQuill
                             modules={modules}
                             formats={formats}
                             value={front}
                             onChange={updateFront}
                             placeholder='Frente do cartão'
                         />
-                        
+
 
                         <ReactQuill
                             modules={modules}
@@ -111,10 +108,10 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                             onChange={updateBack}
                             placeholder='Traseira do cartão'
                         />
-                        
-            </Stack>
-                    </CardEditArea> 
-                </Paper>
+
+                    </Stack>
+                </CardEditArea>
+            </Paper>
 
 
         </EditorContainer>

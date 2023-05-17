@@ -8,7 +8,7 @@ function SidebarItemComponent(props) {
     const { _noteIndex, _note, notebookIndex, selectedNoteIndex, selectNote, deleteNote } = props;
 
     const handleSelectNote = () => {
-        selectNote(_note, notebookIndex, _noteIndex);
+        selectNote(_note, _noteIndex, notebookIndex);
     };
 
     const handleDeleteNote = () => {

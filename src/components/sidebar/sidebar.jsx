@@ -179,7 +179,7 @@ function SidebarComponent(props) {
                         <StyledTreeItem nodeId='notebooks' labelText='Notebooks' labelIcon={BookIcon} >
                             {notebooks.map((notebook) => (
                                 <StyledTreeItem
-                                    renameMenu={renameMenu}
+                                    renamemenu={renameMenu}
                                     nodeId={notebook.id}
                                     labelText={notebook.title}
                                     showMenu={true}
@@ -229,7 +229,7 @@ function SidebarComponent(props) {
                                         key={deck.id}
                                         deleteMenu={deleteMenu}
                                         labelIcon={TextSnippetRoundedIcon}
-                                        renameMenu={renameMenu}
+                                        renamemenu={renameMenu}
                                         type={'deck'}
                                     >
                                         {cards && (
@@ -260,7 +260,6 @@ function SidebarComponent(props) {
                         <DialogContent>
                             <TextField
                                 autoFocus
-                                margin=""
                                 id='Nome'
                                 sx={{ padding: '0px 0px 15px' }}
                                 label='Nome do Notebook'
@@ -281,7 +280,6 @@ function SidebarComponent(props) {
                         <DialogContent>
                             <TextField
                                 autoFocus
-                                margin=""
                                 id='Nome'
                                 sx={{ padding: '0px 0px 15px' }}
                                 label='Nome do Deck'

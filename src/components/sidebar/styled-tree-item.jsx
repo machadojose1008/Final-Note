@@ -56,12 +56,12 @@ export function StyledTreeItem(props) {
     setAnchorEl(event.currentTarget);
   };
 
-  const renameMenu = (event) => {
+  const renamemenu = (event) => {
     event.stopPropagation();
     if(type === 'notebook'){
-       props.renameMenu(props.nodeId, type); 
+       props.renamemenu(props.nodeId, type); 
     }else if(type === 'deck'){
-        props.renameMenu(props.nodeId, type);
+        props.renamemenu(props.nodeId, type);
     }
     
   }
@@ -102,7 +102,7 @@ export function StyledTreeItem(props) {
             }}
           >
 
-            <MenuItem onClick={(event) => renameMenu(event)}>{(type === 'notebook') ? 'Renomear caderno' : 'Renomear Deck'}</MenuItem>
+            <MenuItem onClick={(event) => renamemenu(event)}>{(type === 'notebook') ? 'Renomear caderno' : 'Renomear Deck'}</MenuItem>
             <MenuItem onClick={(event) => deleteMenu(event)}>{(type === 'notebook') ? 'Deletar caderno' : 'Deletar Deck'}</MenuItem>
             
           </Menu>
