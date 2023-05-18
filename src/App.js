@@ -6,7 +6,7 @@ import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
 import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
-import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, getDoc, query, where } from "firebase/firestore";
+import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, getDoc, query, where, Timestamp } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
 
@@ -61,6 +61,18 @@ function App() {
     return userId;
   };
 
+
+  const fetchUserId = async () => {
+    const userEmail = location.state.email;
+    const fetchednUserId = await findUserIdByEmail(userEmail);
+    if (fetchednUserId) {
+      fetchNotebooks(fetchednUserId);
+      fetchDecks(fetchednUserId);
+      setUserId(fetchednUserId);
+    }
+  };
+
+
   const fetchNotebooks = async (userId) => {
     const notebooksRef = collection(db, `users/${userId}/notebooks`);
     const q = query(notebooksRef);
@@ -83,19 +95,10 @@ function App() {
 
   };
 
-  const fetchUserId = async () => {
-    const userEmail = location.state.email;
-    const fetchednUserId = await findUserIdByEmail(userEmail);
-    if (fetchednUserId) {
-      fetchNotebooks(fetchednUserId);
-      fetchDecks(fetchednUserId);
-      setUserId(fetchednUserId);
-    }
-  };
 
   const selectNote = async (note, noteIndex, notebookIndex) => {
     setSelectedNoteIndex(noteIndex);
-    setSelectedNote(note); 
+    setSelectedNote(note);
     setSelectedNotebookIndex(notebookIndex);
     setShowNote(true);
     setShowStudy(false);
@@ -120,12 +123,12 @@ function App() {
   };
 
   const newNote = async (noteTitle, notebookTitle) => {
-    selectNote(null,null,null);
+    selectNote(null, null, null);
 
     const note = {
       title: noteTitle,
       body: '',
-      timestamp: serverTimestamp(),
+      timestamp: Timestamp.fromDate(new Date()),
     };
 
     const findNotebookIndex = async (userId, _title) => {
@@ -158,8 +161,8 @@ function App() {
     };
 
     setNotesUpdated(true);
-    selectNote(newNote, newFromDB.id, notebookId);  
-    
+    selectNote(newNote, newFromDB.id, notebookId);
+
   };
 
 
@@ -168,6 +171,7 @@ function App() {
     await deleteDoc(noteRef);
 
     const notebookPosition = await findNotebookPosition(notebooks, notebookIndex);
+
 
     if (selectedNoteIndex === note.id) {
       setSelectedNoteIndex(null);
@@ -219,17 +223,24 @@ function App() {
     const notebookPosition = await findNotebookPosition(notebooks, notebookId);
     const notebookNotes = notebooks[notebookPosition].notes;
 
-    for (const note of notebookNotes) {
-      await deleteNote(note, notebookId);
-    }
+    if (notebooks.length === 1) {
+      alert('Você deve ter ao menos um caderno!');
 
-    await deleteDoc(notebookRef)
-      .then(docRef => {
-        setNotesUpdated(true);
-      })
-      .catch(error => {
-        console.log(error);
-      })
+    } else {
+      for (const note of notebookNotes) {
+
+        await deleteNote(note, notebookId);
+      }
+
+      await deleteDoc(notebookRef)
+        .then(docRef => {
+          setNotesUpdated(true);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+
+    }
 
   };
 
@@ -283,8 +294,8 @@ function App() {
 
 
   const newCard = async (cardTitle, deckTitle) => {
-    selectCard(null,null,null);
-    
+    selectCard(null, null, null);
+
     const card = {
       title: cardTitle,
       front: '',
@@ -385,17 +396,23 @@ function App() {
     const deckPosition = await findDeckPosition(decks, deckId);
     const deckCards = decks[deckPosition].cards;
 
-    for (const card of deckCards) {
-      await deleteCard(card, deckId);
+    if (decks.length === 1) {
+      alert('Você deve ter ao menos um deck!');
+    } else {
+
+      for (const card of deckCards) {
+        await deleteCard(card, deckId);
+      }
+
+      await deleteDoc(deckRef)
+        .then(docRef => {
+          setCardsUpdated(true);
+        })
+        .catch(error => {
+          console.log(error);
+        })
     }
 
-    await deleteDoc(deckRef)
-      .then(docRef => {
-        setCardsUpdated(true);
-      })
-      .catch(error => {
-        console.log(error);
-      })
 
   }
 
@@ -515,7 +532,7 @@ function App() {
         </Grid>
       ) : (
         <p></p>
-        /* Spacing é a distância entre os elementos do grid */
+
 
       )}
 

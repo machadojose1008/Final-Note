@@ -1,7 +1,7 @@
 import ReactQuill from 'react-quill';
-import { CardEditArea, EditorContainer, EditorNavBar, TitleInput } from '../componentStyles';
+import { CardEditArea, CardEditorTitle, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import { useCallback, useState, useEffect } from 'react';
-import { Button, IconButton, Paper, Stack } from '@mui/material';
+import { Button, Grid, IconButton, Paper, Stack } from '@mui/material';
 import debounce from '../../helpers';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -66,32 +66,47 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
 
 
     const handleSave = () => {
-        update({title, front, back});
+        update({ title, front, back });
     };
 
 
     return (
-        <EditorContainer>
-            <EditorNavBar>
-                <IconButton onClick={closeCard}>
-                    <CloseIcon sx={{ color: 'black' }} />
-                </IconButton>
+        <EditorContainer sx={{paddingTop:'22px'}}>
+            <CardEditorTitle sx={{paddingBottom:'4px'}}>
+                <Grid container sx={{width:'100%'}} >
+                    <Grid item xs={11.7}>
+                        <Title>
+                            Título do card:
+                        </Title>
+                    </Grid>
+                    <Grid item xs={.1}>
+                        <IconButton onClick={closeCard}>
+                            <CloseIcon sx={{ color: 'black' }} />
+                        </IconButton>
+                    </Grid>
+                    <Grid item xs={10}>
+                        <TitleInput
+                            sx={{ paddingTop: '5px' }}
+                            theme='null'
+                            placeholder='Título do cartão'
+                            value={title ? title : ''}
+                            onChange={updateTitle}>
+                        </TitleInput>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Button variant="contained" color="primary" onClick={handleSave}>
+                            Salvar
+                        </Button>
+                    </Grid>
 
-                <TitleInput
-                    sx={{ paddingTop: '25px' }}
-                    theme='null'
-                    placeholder='Título do cartão'
-                    value={title ? title : ''}
-                    onChange={updateTitle}>
-                </TitleInput>
 
-            </EditorNavBar>
-            <Button variant="contained" color="primary" onClick={handleSave}>
-                Salvar
-            </Button>
+                </Grid>
+
+            </CardEditorTitle>
+
             <Paper elevation={3}>
                 <CardEditArea>
-                    <Stack direction='column' spacing={1}>
+                    <Stack direction='column' spacing={.6}>
                         <ReactQuill
                             modules={modules}
                             formats={formats}
@@ -99,8 +114,6 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                             onChange={updateFront}
                             placeholder='Frente do cartão'
                         />
-
-
                         <ReactQuill
                             modules={modules}
                             formats={formats}
@@ -108,7 +121,6 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                             onChange={updateBack}
                             placeholder='Traseira do cartão'
                         />
-
                     </Stack>
                 </CardEditArea>
             </Paper>

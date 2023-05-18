@@ -15,9 +15,17 @@ export const EditorNavBar = styles('div')({
   display: "flex",
   flexDirection: 'row',
   color: "white",
-  
+  width:'100%',
   borderTopRightRadius: "0.5em",
 });
+
+export const CardEditorTitle = styles('div')({
+  display:'flex',
+  flexDirection:'row',
+  width:'100%',
+  height: '100%'
+
+})
 
 export const StudyComponentDiv = styles('div')({
   marginTop: '2%',

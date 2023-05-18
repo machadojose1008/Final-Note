@@ -5,12 +5,13 @@ import { Button, Divider, Grid, IconButton, Paper } from '@mui/material';
 import { DateShow, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import DateComponent from './date-component';
+import { serverTimestamp } from 'firebase/firestore';
 
 const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote }) => {
     const [body, setBody] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
-    const [lastUpdate, setLastUpdate] = useState(null);
+    const [lastUpdate, setLastUpdate] = useState('');
     const [updateDate, setUpdateDate] = useState(null);
 
     const modules = {
@@ -76,63 +77,66 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
 
     const handleSave = () => {
-     update({ title, body });
-        console.log(lastUpdate.getHours());
+        update({ title, body });
+
     };
 
 
     return (
-        
 
-            <EditorContainer>
-                <EditorNavBar>
-                    <Grid container>
-                        <Grid item xs={12}>
-                            <Title>
-                                Título da nota:
-                            </Title >
-                        </Grid >
-                        <Grid item xs={7.5}>
-                            <TitleInput
-                                placeholder="Título da nota"
-                                value={title ? title : ''}
-                                onChange={updateTitle}>
-                            </TitleInput>
-                        </Grid>
-                        <Grid item xs={3}>
-                            {lastUpdate === null ? (
-                                null
-                            ) : (
-                                <DateComponent date={lastUpdate} /> )}
-                            </Grid>
-                        <Grid sx={{paddingTop:'30px' }} item xs={1}>
-                            <div>
-                                <Button sx={{ width: '100px', padding: '10px 0px', }} variant="contained" color="primary" onClick={handleSave}>
-                                    Salvar
-                                </Button>
-                            </div>
-                        </Grid>
-                        <Grid item xs={0.3}>
-                            <IconButton onClick={closeNote}>
-                                <CloseIcon sx={{ color: 'black' }} />
-                            </IconButton>
-                        </Grid>
+
+        <EditorContainer>
+            <EditorNavBar>
+                <Grid container>
+
+                    <Grid item xs={11.7}>
+                        <Title>
+                            Título da nota:
+                        </Title >
                     </Grid >
+                    <Grid item xs={0.1}>
+                        <IconButton onClick={closeNote}>
+                            <CloseIcon sx={{ color: 'black' }} />
+                        </IconButton>
+                    </Grid>
+                
+                    <Grid item xs={6.5}>
+                        <TitleInput
+                            placeholder="Título da nota"
+                            value={title ? title : ''}
+                            onChange={updateTitle}>
+                        </TitleInput>
+                    </Grid>
+                    <Grid item xs={4}>
+                        {lastUpdate === '' ? (
+                            null
+                        ) : (
+                            <DateComponent date={lastUpdate} />)}
+                    </Grid>
+                    <Grid sx={{ paddingTop: '5px' }} item xs={1}>
+                        <div>
+                            <Button sx={{ width: '100px', padding: '10px 0px', }} variant="contained" color="primary" onClick={handleSave}>
+                                Salvar
+                            </Button>
+                        </div>
+                    </Grid>
+                   
+                </Grid >
 
 
-                </EditorNavBar >
+            </EditorNavBar >
 
-                <Paper elevation={3}>
-                    <ReactQuill
-                        modules={modules}
-                        formats={formats}
-                        value={body ? body : ''}
-                        onChange={updateBody}
-                    />
-                </Paper>
-            </EditorContainer >
-            
-      
+            <Paper elevation={3}>
+                <ReactQuill
+                    modules={modules}
+                    formats={formats}
+                    value={body ? body : ''}
+                    onChange={updateBody}
+                />
+            </Paper>
+        </EditorContainer >
+
+
 
 
 

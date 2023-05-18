@@ -4,7 +4,6 @@ import { Button, Container, CssBaseline, Grid, TextField, Typography } from '@mu
 import { HeaderLogo, SignInComponent, SignInContainer } from './signStyles';
 import { signInAuthUserWithEmailAndPassword } from '../../utils/firebase/firebase-config';
 
-
 const defaultFormFields = {
     email: '',
     password: ''
@@ -16,6 +15,8 @@ const SignInForm = () => {
     const [loggedEmail, setLoggedEmail] = useState('');
     const [cadastroRecente, setCadastroRecente] = useState(false);
     const location = useLocation();
+
+    //const [user] = useAuthState(auth);
 
     useEffect(() => {
         setCadastroRecente(location.state);
@@ -50,7 +51,6 @@ const SignInForm = () => {
                 email,
                 password
             );
-            console.log(response);
             setFormFields(defaultFormFields);
 
 
@@ -61,10 +61,10 @@ const SignInForm = () => {
         } catch (error) {
             switch (error.code) {
                 case 'auth/wrong-password':
-                    alert('incorrect password for email');
+                    alert('Senha incorreta!');
                     break;
                 case 'auth/user-not-found':
-                    alert('no user associated with this email');
+                    alert('Nenhum usuário registrado nesse email!');
                     break;
                 default:
                     console.log(error);
@@ -127,12 +127,6 @@ const SignInForm = () => {
 
                         </div>
 
-                        {/*
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Lembrar-me"
-                    />
-                    */}
 
                         <Button
                             type="submit"
