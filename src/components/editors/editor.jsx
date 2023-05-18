@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../../helpers';
-import { Button, IconButton, Input, Paper, TextField } from '@mui/material';
-import { EditorContainer, EditorNavBar, TitleInput } from '../componentStyles';
+import { Button, Divider, Grid, IconButton, Paper } from '@mui/material';
+import { DateShow, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import CloseIcon from '@mui/icons-material/Close';
+import DateComponent from './date-component';
 
 const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote }) => {
     const [body, setBody] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
+    const [lastUpdate, setLastUpdate] = useState(null);
+    const [updateDate, setUpdateDate] = useState(null);
 
     const modules = {
         toolbar: [
@@ -44,53 +47,94 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     const update = useCallback(
         debounce((noteObj) => {
             noteUpdate(id, selectedNotebookIndex, noteObj);
+            setUpdateDate(new Date());
         }, 1500),
         [id, selectedNotebookIndex, noteUpdate]
     );
+    const setReviewDate = (reviewDate) => {
+        // Atualiza a data do card do formato em milisegundos do firestore para o formato date do javascript
+        const timestamp = reviewDate;
+        const date = timestamp.toDate();
+        return date;
+    };
 
 
     useEffect(() => {
         setBody(selectedNote.body);
         setTitle(selectedNote.title);
         setId(selectedNote.id);
-    }, [selectedNote.body, selectedNote.title, selectedNote.id]);
+        setLastUpdate(setReviewDate(selectedNote.timestamp));
+    }, [selectedNote.body, selectedNote.title, selectedNote.id, selectedNote.timestamp]);
+
+    useEffect(() => {
+        if (updateDate) {
+            setLastUpdate(updateDate);
+        }
+    }, [updateDate]);
+
+
 
 
     const handleSave = () => {
-        update({ title, body });
+     update({ title, body });
+        console.log(lastUpdate.getHours());
     };
 
 
     return (
-        <EditorContainer>
-            <EditorNavBar>
-                <IconButton onClick={closeNote}>
-                    <CloseIcon sx={{ color: 'black' }} />
-                </IconButton>
-                <TextField
-                    sx={{
-                        width: '400px'
-                    }}
-                    id='filled-titleText'
-                    label='Titulo da nota'
-                    placeholder="Título da nota"
-                    defaultValue={title ? title : ''}
-                    variant='filled'
-                    onChange={updateTitle}>
-                </TextField>
-            </EditorNavBar>
-            <Button sx={{width: '200px'}} variant="contained" color="primary" onClick={handleSave}>
-                Salvar
-            </Button>
-            <Paper elevation={3}>
-                <ReactQuill
-                    modules={modules}
-                    formats={formats}
-                    value={body ? body : ''}
-                    onChange={updateBody}
-                />
-            </Paper>
-        </EditorContainer>
+        
+
+            <EditorContainer>
+                <EditorNavBar>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <Title>
+                                Título da nota:
+                            </Title >
+                        </Grid >
+                        <Grid item xs={7.5}>
+                            <TitleInput
+                                placeholder="Título da nota"
+                                value={title ? title : ''}
+                                onChange={updateTitle}>
+                            </TitleInput>
+                        </Grid>
+                        <Grid item xs={3}>
+                            {lastUpdate === null ? (
+                                null
+                            ) : (
+                                <DateComponent date={lastUpdate} /> )}
+                            </Grid>
+                        <Grid sx={{paddingTop:'30px' }} item xs={1}>
+                            <div>
+                                <Button sx={{ width: '100px', padding: '10px 0px', }} variant="contained" color="primary" onClick={handleSave}>
+                                    Salvar
+                                </Button>
+                            </div>
+                        </Grid>
+                        <Grid item xs={0.3}>
+                            <IconButton onClick={closeNote}>
+                                <CloseIcon sx={{ color: 'black' }} />
+                            </IconButton>
+                        </Grid>
+                    </Grid >
+
+
+                </EditorNavBar >
+
+                <Paper elevation={3}>
+                    <ReactQuill
+                        modules={modules}
+                        formats={formats}
+                        value={body ? body : ''}
+                        onChange={updateBody}
+                    />
+                </Paper>
+            </EditorContainer >
+            
+      
+
+
 
 
     );

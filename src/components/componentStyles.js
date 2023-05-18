@@ -1,13 +1,8 @@
 import { styled as styles } from "@mui/system";
-import * as React from 'react';
 import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog, CardContent, Box, Typography, IconButton, MenuItem, Menu } from "@mui/material";
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import { Delete} from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
-import { styled } from '@mui/material/styles';
-import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem';
-import PropTypes from 'prop-types';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export const EditorContainer = styles('div')({
   width: "100%",
@@ -17,10 +12,11 @@ export const EditorContainer = styles('div')({
 });
 
 export const EditorNavBar = styles('div')({
-  display: "inline-block",
+  display: "flex",
+  flexDirection: 'row',
   color: "white",
+  
   borderTopRightRadius: "0.5em",
-  flexDirection: "column"
 });
 
 export const StudyComponentDiv = styles('div')({
@@ -61,18 +57,41 @@ export const cardList = styles('li')({
 
 });
 export const TitleInput = styles('input')({
-  width: "100%",
-  padding: '20px 30px 30px',
+  width: "80%",
+  display: 'block',
+  padding:'4px, 0 5px',
   fontSize: "24px",
   color: "black",
+  boxSizing: 'content-box',
+  background: 'none',
+  height: '1.4375em',
+  WebkitTapHighlightColor:'transparent',
+  paddingTop: '25px',
+  paddingRight: '12px',
+  paddingBottom: '8px',
+  paddingLeft: '12px',
   textAlign: 'left',
-  border: 'solid',
-  borderWidth: '0.05em',
   WebkitBorderBottomRightRadius: '0.5em',
   WebkitBorderBottomLeftRadius: '0.5em',
   WebkitBorderTopRightRadius: '0.5em',
   WebkitBorderTopLeftRadius: '0.5em',
+  border: 'none',
+  ":focus-visible" : {
+    outline: 'none'
+  }
 });
+
+export const Title = styles('div')({
+  color:'black',
+  fontSize: '20px',
+  height: '12px'
+
+});
+
+export const DateShow = styles('div')({
+  color:'black'
+
+})
 
 export const SidebarContainer = styles('div')({
   position: 'relative',
