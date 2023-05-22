@@ -32,7 +32,7 @@ export default function debounce(a,b,c){
     return -1;
   }
 
-  export function findCardPosition(cards, id) {
+  export async function findCardPosition(cards, id) {
     for (let i = 0; i < cards.length; i++) {
       if(cards[i].id === id){
         return i;

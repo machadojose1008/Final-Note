@@ -1,18 +1,15 @@
-import { Backdrop, Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Divider, Fade, Grid, List, ListItem, Modal, Typography } from "@mui/material";
-import { ButtonContainer, SrsReview, StudyComponentDiv, StyledCardContent } from "../componentStyles";
+import { Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Divider, Fade, Grid, Modal, Typography } from "@mui/material";
+import { ButtonContainer, StudyComponentDiv, StyledCardContent } from "../componentStyles";
 import { useEffect, useState } from "react";
-import { collection, updateDoc, doc } from "firebase/firestore";
-import { db } from '../../utils/firebase/firebase-config';
 import { Timestamp } from "firebase/firestore";
 import { findCardPosition, findDeckPosition } from "../../helpers";
 import { removeHTMLTags } from "../../helpers";
-import DeckModal from "./deckModal";
 
 
 
 const SrsComponent = (props) => {
 
-    const { decks, userId } = props
+    const { decks } = props
 
     const [openModal, setOpenModal] = useState(false);
     const [showBack, setShowBack] = useState(false);
@@ -88,12 +85,15 @@ const SrsComponent = (props) => {
         const filteredCards = await filterCards(deck);
         setCards(filteredCards);
         setOpenModal(true);
-        setCurrentDeckIndex(findDeckPosition(decks, deck.id));
+        const deckPosition = await findDeckPosition(decks, deck.id);
+        setCurrentDeckIndex(deckPosition);
+    
 
 
     };
 
     const handleNextCard = async (newEase, cardId, currentDeck) => {
+    
 
         const cardIndex = await findCardPosition(decks[currentDeckIndex].cards, cardId);
 
@@ -111,7 +111,6 @@ const SrsComponent = (props) => {
     };
 
     const handleCloseModal = () => {
-        // TODO: ATUALIZAR REVIEWDATES E EASES NO FIRESTORE 
        setOpenModal(false);
        updateAfterReview(decks);
     
@@ -134,7 +133,7 @@ const SrsComponent = (props) => {
                     {decks.map((deck) => {
                         if (deck.cards.length === 0) {
                             return (
-                                <Grid item xs={2.4}>
+                                <Grid item xs={2.4} key={deck.id}>
                                     <Card raised sx={{ maxWidth: '300px', padding: '5px', minWidth: '200px' }}>
                                         <CardContent >
                                             <Typography variant="h4" color='black' gutterBottom>
