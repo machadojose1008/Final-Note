@@ -416,21 +416,26 @@ function App() {
   };
 
   const cardUpdate = (id, selectedDeckId, cardObj) => {
-    const cardRef = doc(db, `users/${userId}/decks/${selectedDeckId}/cards`, id);
-    const data = {
-      title: cardObj.title,
-      front: cardObj.front,
-      back: cardObj.back,
-    };
+    if (cardObj.front === '<p><br></p>' || cardObj.back === '<p><br></p>') {
+      return;
+    } else {
+      const cardRef = doc(db, `users/${userId}/decks/${selectedDeckId}/cards`, id);
+      const data = {
+        title: cardObj.title,
+        front: cardObj.front,
+        back: cardObj.back,
+      };
 
-    updateDoc(cardRef, data)
-      .then((docRef) => {
-        console.log('Card atualizado');
-        setCardsUpdated(true);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      updateDoc(cardRef, data)
+        .then((docRef) => {
+          console.log('Card atualizado');
+          setCardsUpdated(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
 
   };
 
