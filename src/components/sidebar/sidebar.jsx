@@ -18,10 +18,13 @@ import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import NoteIcon from '@mui/icons-material/Note';
 import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
 import { StyledTreeItem } from './styled-tree-item';
-import { Button, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Button, DialogContent, DialogTitle, IconButton, TextField, Typography } from '@mui/material';
+import GroupIcon from '@mui/icons-material/Group';
+import ShareIcon from '@mui/icons-material/Share';
+import SidebarSharedNoteComponent from './sidebar-shared';
 
 function SidebarComponent(props) {
-    const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectStudy } = props;
+    const { decks = [], notebooks = [], sharedNotes, selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy, selectGroup } = props;
     const [title, setTitle] = useState(null);
     const [cardTitle, setCardTitle] = useState(null);
     const [notes, setNotes] = useState([]);
@@ -38,7 +41,6 @@ function SidebarComponent(props) {
     const newNote = (txt, notebookTitle) => {
         props.newNote(txt, notebookTitle);
         setTitle(null);
-        //setAddingNote(false);
     }
 
     const newNotebook = (notebookTitle) => {
@@ -59,6 +61,12 @@ function SidebarComponent(props) {
         props.selectNote(note, notebookIndex, noteIndex);
     }
 
+
+    const selectSharedNote = (sharedNote, sharedNoteIndex) => {
+        props.selectSharedNote(sharedNote, sharedNoteIndex);
+        
+    }
+
     const selectCard = (card, deckIndex, cardIndex) => {
         props.selectCard(card, deckIndex, cardIndex);
     }
@@ -66,10 +74,14 @@ function SidebarComponent(props) {
 
     const deleteNote = (note, notebookIndex) => {
         props.deleteNote(note, notebookIndex);
-    }
+    };
 
     const deleteCard = (n, i) => {
         props.deleteCard(n, i);
+    };
+
+    const deleteSharedNote = (sharedNote) => {
+        props.deleteSharedNote(sharedNote);
     }
 
 
@@ -144,14 +156,16 @@ function SidebarComponent(props) {
             const fetchCardTitle = await decks.map(el => el.title);
             setDecksTitle(fetchCardTitle);
         }
+
+
         settingNotes();
         settingTitles();
         settingCards();
         settingCardTitles();
 
+        console.log(sharedNotes);
 
-
-    }, [decks, notebooks])
+    }, [decks, notebooks, sharedNotes])
 
     return (
         <div>
@@ -253,6 +267,51 @@ function SidebarComponent(props) {
                             </StyledTreeItem>
                         </TreeView>
                     }
+
+                    {(sharedNotes) ? (
+                        <TreeView
+                            defaultCollapseIcon={<ArrowDropDownIcon />}
+                            defaultExpandIcon={<ArrowRightIcon />}
+                            defaultEndIcon={<div style={{ width: 24 }} />}
+                            sx={{ maxWidth: 200 }}
+                        >
+                            <StyledTreeItem nodeId='sharedNotes' labelText='Notas Compartilhadas' labelIcon={ShareIcon}>
+                                {sharedNotes.map((sharedNote) => (
+                                    <div key={sharedNote.id}>
+                                        <SidebarSharedNoteComponent
+                                            _sharedNote={sharedNote}
+                                            _sharedNoteIndex={sharedNote.id}
+                                            selectedSharedNoteIndex={selectedSharedNoteIndex}
+                                            selectSharedNote={selectSharedNote}
+                                            deleteSharedNote={deleteSharedNote}
+                                        />
+                                    </div>
+                                ))}
+                            </StyledTreeItem>
+
+                        </TreeView>
+
+                    ) : null}
+
+
+
+
+                    <IconButton
+                        sx={{
+                            width: '100%',
+                            borderRadius: '0.5em',
+                            display: 'inline-flex',
+                            justifyContent: 'flex-start'
+                        }}
+                        onClick={selectGroup}
+                    >
+                        <GroupIcon />
+                        <Typography sx={{ paddingLeft: '10px' }}>
+                            Grupos
+                        </Typography>
+
+                    </IconButton>
+
 
 
                     <AddDialog open={openNotebookDialog} onClose={closeRenameNotebook} >

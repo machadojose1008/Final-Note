@@ -6,9 +6,11 @@ import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
 import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
-import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, getDoc, query, where, Timestamp } from "firebase/firestore";
+import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, Timestamp, getDoc, CollectionReference, DocumentReference } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
+import GroupComponent from './components/Group/group';
+import SharedNoteEditor from './components/editors/sharedNoteEditor';
 
 // Required for side-effects
 require("firebase/firestore");
@@ -25,6 +27,12 @@ function App() {
   const [selectedNote, setSelectedNote] = useState(null);
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(null);
   const [notesUpdated, setNotesUpdated] = useState(false);
+
+  // Shared Note States
+  const [sharedNotes, setSharedNotes] = useState([]);
+  const [selectedSharedNote, setSelectedSharedNote] = useState(null);
+  const [selectedSharedNoteIndex, setSelectedSharedNoteIndex] = useState(null);
+  const [sharedNotesUpdated, setSharedNotesUpdated] = useState(false);
 
   // Decks States
   const [decks, setDecks] = useState([]);
@@ -48,9 +56,12 @@ function App() {
   const [showCard, setShowCard] = useState(null);
   const [showNote, setShowNote] = useState(null);
   const [showStudy, setShowStudy] = useState(null);
+  const [showGroup, setShowGroup] = useState(null);
+  const [showSharedNotes, setShowSharedNotes] = useState(false);
 
 
   const findUserIdByEmail = async (email) => {
+    console.log(email);
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
@@ -78,6 +89,8 @@ function App() {
     const q = query(notebooksRef);
     const querySnapshot = await getDocs(q);
     const fetchedNotebooks = [];
+
+
     querySnapshot.forEach(async (doc) => {
       const notebookId = doc.id;
       const notebookData = doc.data();
@@ -88,11 +101,33 @@ function App() {
       notesQuerySnapshot.forEach((noteDoc) => {
         fetchedNotes.push({ id: noteDoc.id, ...noteDoc.data() });
       });
+
+
       fetchedNotebooks.push({ id: notebookId, title: notebookData.title, notes: fetchedNotes });
       setNotebooks(fetchedNotebooks);
       setNotes(fetchedNotes);
     });
 
+    fetchSharedNotes(location.state.email);
+
+  };
+
+  const fetchSharedNotes = async (email) => {
+    const sharedNotesRef = collection(db, 'sharedNotes');
+    const q = query(sharedNotesRef);
+    const querySnapshot = await getDocs(q);
+    const fetchedSharedNotes = [];
+
+    querySnapshot.forEach((doc) => {
+      doc.data().email.forEach((res) => {
+        if (res === email) {
+          fetchedSharedNotes.push({ id: doc.id, ...doc.data() });
+        }
+      });
+
+    });
+
+    setSharedNotes(fetchedSharedNotes);
   };
 
 
@@ -102,6 +137,16 @@ function App() {
     setSelectedNotebookIndex(notebookIndex);
     setShowNote(true);
     setShowStudy(false);
+
+  };
+
+  const selectSharedNote = async (sharedNote, sharedNoteIndex) => {
+    setSelectedSharedNote(sharedNote);
+    setSelectedSharedNoteIndex(sharedNoteIndex);
+    setShowSharedNotes(true);
+    setShowNote(false);
+    setShowStudy(false);
+    setShowGroup(false);
   };
 
   const noteUpdate = async (id, selectedNotebookId, noteObj) => {
@@ -119,6 +164,24 @@ function App() {
       })
       .catch((error) => {
         console.log(error);
+      });
+  };
+
+
+  const sharedNoteUpdate = async (id, sharedNoteObj) => {
+    const sharedNoteRef = doc(db, 'sharedNotes', id);
+    const data = {
+      title: sharedNoteObj.title,
+      body: sharedNoteObj.body,
+      timestamp: serverTimestamp()
+    };
+
+    updateDoc(sharedNoteRef, data)
+      .then((docRef) => {
+        setSharedNotesUpdated(true);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -161,7 +224,7 @@ function App() {
     };
 
     setNotesUpdated(true);
-    selectNote(newNote, newFromDB.id, notebookId);
+    await selectNote(newNote, newFromDB.id, notebookId);
 
   };
 
@@ -169,6 +232,7 @@ function App() {
   const deleteNote = async (note, notebookIndex) => {
     const noteRef = doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, note.id);
     await deleteDoc(noteRef);
+    
 
     const notebookPosition = await findNotebookPosition(notebooks, notebookIndex);
 
@@ -190,6 +254,73 @@ function App() {
       updatedNotebooks[notebookPosition].notes = updatedNotes;
       return updatedNotebooks;
     });
+  };
+
+  const shareNote = async (noteObj, timestamp, emailDestiny, selectedNotebookIndex) => {
+    const note = {
+      email: [location.state.email, emailDestiny],
+      title: noteObj.title,
+      body: noteObj.body,
+      timestamp: timestamp,
+
+    };
+
+
+
+    const userDestiny = await findUserIdByEmail(emailDestiny);
+
+    /*    if (userDestiny === userId) {
+         alert('Não é possível compartilhar notas com o usuário atual');
+         return;
+       }
+   
+       const shareNoteRef = collection(db, `users/${userDestiny}/sharedNotes`);
+       const newSharedNote = await addDoc(shareNoteRef, note); */
+
+
+
+
+
+
+    if (userDestiny === null) {
+      alert('Email não encontrado');
+    }
+    else {
+
+      const newNoteRef = collection(db, 'sharedNotes');
+      const newFromDB = await addDoc(newNoteRef, note);
+      setSharedNotesUpdated(true);
+
+      const newNote = {
+        title: note.title,
+        body: note.body,
+        timestamp: note.timestamp,
+        id: newFromDB.id
+      };
+
+      await selectSharedNote(newNote, newFromDB.id);
+      const removeRef = doc(db, `users/${userId}/notebooks/${selectedNotebookIndex}/notes`, noteObj.id);
+      await deleteDoc(removeRef);
+      
+      setNotesUpdated(true);
+      alert('Nota compartilhada com sucesso');
+    }
+
+
+
+
+  };
+
+  const deleteSharedNote = async (sharedNote) => {
+      const removeRef = doc(db, 'sharedNotes', sharedNote.id);
+      await deleteDoc(removeRef);
+
+      if(selectedSharedNoteIndex === shareNote.id) {
+        setSelectedSharedNoteIndex(null);
+        setSelectedSharedNote(null);
+      }
+
+      setSharedNotesUpdated(true);
   };
 
   const newNotebook = async (notebookTitle) => {
@@ -441,10 +572,29 @@ function App() {
     setShowNote(!showNote);
   }
 
+  const closeSharedNote = () => {
+    setShowSharedNotes(!showSharedNotes);
+  }
+
   const selectStudy = () => {
     setShowCard(false);
     setShowNote(false);
     setShowStudy(true);
+    setShowGroup(false);
+  }
+
+  const selectGroup = () => {
+    setShowCard(false);
+    setShowNote(false);
+    setShowStudy(false);
+    setShowGroup(true);
+  };
+
+  const selectSharedNotesEditor = () => {
+    setShowNote(false);
+    setShowStudy(false);
+    setShowGroup(false);
+    setShowSharedNotes(true);
   }
 
 
@@ -462,7 +612,12 @@ function App() {
       setCardsUpdated(false);
     };
 
-  }, [notesUpdated, cardsUpdated, userId]);
+    if (sharedNotesUpdated) {
+      fetchSharedNotes(userId);
+      setSharedNotesUpdated(false);
+    }
+
+  }, [notesUpdated, cardsUpdated, userId, sharedNotesUpdated]);
 
   return (
     <div className="app-container">
@@ -492,7 +647,14 @@ function App() {
               renameDeck={renameDeck}
               deleteDeck={deleteDeck}
 
+              sharedNotes={sharedNotes}
+              selectSharedNote={selectSharedNote}
+              selectedSharedNoteIndex={selectedSharedNoteIndex}
+              deleteSharedNote={deleteSharedNote}
+
               selectStudy={selectStudy}
+              selectGroup={selectGroup}
+
 
             />
           </Grid>
@@ -500,13 +662,24 @@ function App() {
             <Grid item xs={(showCard) ? 7 : 10}>
               <EditorComponent
                 selectedNote={selectedNote}
-                selectedNoteIndex={selectedNoteIndex}
                 noteUpdate={noteUpdate}
                 selectedNotebookIndex={selectedNotebookIndex}
                 closeNote={closeNote}
+                shareNote={shareNote}
               />
             </Grid>
           ) : null}
+
+          {(selectedSharedNote && showSharedNotes) ? (
+            <Grid item xs={(showCard) ? 7 : 10}>
+              <SharedNoteEditor
+                selectedSharedNote={selectedSharedNote}
+                sharedNoteUpdate={sharedNoteUpdate}
+                closeSharedNote={closeSharedNote}
+              />
+            </Grid>
+          ) : null}
+
           {(showStudy) ? (
             <Grid item xs={10.2} sx={{ marginRight: '30px' }}>
               <SrsComponent
@@ -516,6 +689,14 @@ function App() {
               />
             </Grid>
           ) : null}
+          {(showGroup) ? (
+            <Grid item xs={10.2} >
+              <GroupComponent
+                showGroup={showGroup}
+              />
+            </Grid>
+
+          ) : <p></p>}
           {(selectedCard && showCard) ? (
 
             <Grid item xs={(showNote) ? 3 : 7} >

@@ -3,6 +3,7 @@ import { Chip, ListItemButton, ListItemText, ListItem, SpeedDial, Dialog, CardCo
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import { Delete} from '@mui/icons-material'
 import DescriptionIcon from '@mui/icons-material/Description'
+import { blue, grey } from "@mui/material/colors";
 
 export const EditorContainer = styles('div')({
   width: "100%",
@@ -19,6 +20,8 @@ export const EditorNavBar = styles('div')({
   borderTopRightRadius: "0.5em",
 });
 
+
+
 export const CardEditorTitle = styles('div')({
   display:'flex',
   flexDirection:'row',
@@ -31,6 +34,7 @@ export const StudyComponentDiv = styles('div')({
   marginTop: '2%',
   marginLeft: '5%',
 });
+
 
 export const ButtonContainer = styles('div')({
   display: 'flex',
@@ -192,4 +196,56 @@ export const CardEditArea = styles('div')({
 
 });
 
+/* Estilos do Chat */
+
+export const SidebarChat = styles('div')({
+  flex:'1',
+  backgroundColor: "#e9e9e9",
+  height:'700px'
+});
+
+export const Chat = styles('div')({
+  flex:'3.5',
+  maxHeight:'570px',
+  maxWidth:'900px'
+});
+
+export const NavBarDiv = styles('div')({
+  display:'flex',
+  alignItems:'center',
+  backgroundColor:'#cfcfcf',
+  height:'50px',
+  justifyContent:'space-between',
+});
+
+export const GroupComponentDiv = styles('div')({
+  marginTop: '8%',
+  marginLeft: '2%',
+});
+
+export const MessageBubble = styles('div')({
+  display:'flex',
+  gap:'20px',
+  marginBottom:'20px'
+});
+
+export const MessageBubbleOwner = styles('div')({
+  display:'flex',
+  gap:'20px',
+  flexDirection:'row-reverse'
+});
+
+export const MessageInfo = styles('div')({
+  display:'flex',
+  flexDirection:'column',
+  color:'gray',
+  fontWeight:300
+});
+
+export const MessageContent = styles('div')({
+  maxWidth:'80%',
+  display:'flex',
+  flexDirection:'column',
+  gap:'10px'
+});
 

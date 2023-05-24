@@ -17,7 +17,6 @@ const DateComponent = ({ date }) => {
   const [formattedDate, setFormattedDate] = useState(null);
 
   useEffect(() => {
-    console.log(date);
     setFormattedDate(formatDate(date));
   }, [date])
 

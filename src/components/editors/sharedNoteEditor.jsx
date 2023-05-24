@@ -7,7 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DateComponent from './date-component';
 import ShareIcon from '@mui/icons-material/Share';
 
-const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote, shareNote }) => {
+const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNote}) => {
     const [body, setBody] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
@@ -48,11 +48,11 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     }
 
     const update = useCallback(
-        debounce((noteObj) => {
-            noteUpdate(id, selectedNotebookIndex, noteObj);
+        debounce((sharedNoteObj) => {
+            sharedNoteUpdate(id, sharedNoteObj);
             setUpdateDate(new Date());
         }, 1500),
-        [id, selectedNotebookIndex, noteUpdate]
+        [id, sharedNoteUpdate]
     );
     const setReviewDate = (reviewDate) => {
         // Atualiza a data do card do formato em milisegundos do firestore para o formato date do javascript
@@ -62,33 +62,17 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     };
 
 
-    const handleShare = () => {
-        setOpen(true);
-    };
-
     const handleClose = () => {
         setOpen(false);
     };
 
-    const handleEmail = (txt) => {
-        setEmail(txt);
-    };
-
-    const shareNoteHandler = () => {
-        shareNote(selectedNote, selectedNote.timestamp, email, selectedNotebookIndex);
-    }
-
-
 
     useEffect(() => {
-        setBody(selectedNote.body);
-        setTitle(selectedNote.title);
-        setId(selectedNote.id);
-        if (selectedNote.timestamp) {
-            setLastUpdate(setReviewDate(selectedNote.timestamp));
-        }
-
-    }, [selectedNote.body, selectedNote.title, selectedNote.id, selectedNote.timestamp]);
+        setBody(selectedSharedNote.body);
+        setTitle(selectedSharedNote.title);
+        setId(selectedSharedNote.id);
+        setLastUpdate(setReviewDate(selectedSharedNote.timestamp));
+    }, [selectedSharedNote.body, selectedSharedNote.title, selectedSharedNote.id, selectedSharedNote.timestamp]);
 
     useEffect(() => {
         if (updateDate) {
@@ -118,11 +102,11 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
                         </Title >
                     </Grid >
                     <Grid item xs={0.1}>
-                        <IconButton onClick={closeNote}>
+                        <IconButton onClick={closeSharedNote}>
                             <CloseIcon sx={{ color: 'black' }} />
                         </IconButton>
                     </Grid>
-
+                
                     <Grid item xs={6.5}>
                         <TitleInput
                             placeholder="Título da nota"
@@ -136,22 +120,15 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
                         ) : (
                             <DateComponent date={lastUpdate} />)}
                     </Grid>
-                    <Grid sx={{ paddingTop: '5px', paddingRight: '15px' }} item xs={1}>
-                        <div>
-                            <Button sx={{ width: '130px', padding: '10px 5px', }} variant="contained" color="primary" onClick={handleShare}>
-                                <ShareIcon />
-                                <Typography sx={{ fontSize: '12px' }}>Compartilhar</Typography>
-                            </Button>
-                        </div>
-                    </Grid>
-                    <Grid sx={{ paddingTop: '5px', display: 'flex', justifyContent: 'flex-end' }} item xs={1}>
+
+                    <Grid sx={{ paddingTop: '5px', display:'flex', justifyContent:'flex-end' }} item xs={1}>
                         <div>
                             <Button sx={{ width: '100px', padding: '10px 5px', }} variant="contained" color="primary" onClick={handleSave}>
                                 Salvar
                             </Button>
                         </div>
                     </Grid>
-
+                   
                 </Grid >
 
 
@@ -166,24 +143,6 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
                 />
             </Paper>
 
-            <AddDialog open={open} onClose={handleClose}>
-                <DialogTitle>Insira o Email do usuário que deseja adicionar a nota</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin='dense'
-                        id='Email'
-                        sx={{ padding: '0px 0px 15px' }}
-                        label='Email do usuário'
-                        type='text'
-                        fullWidth
-                        variant="standard"
-                        onChange={(e) => handleEmail(e.target.value)}
-                    />
-                </DialogContent>
-                <Button onClick={handleClose} sx={{ color: 'black' }}>Cancelar</Button>
-                <Button onClick={shareNoteHandler}>Confirmar</Button>
-            </AddDialog>
         </EditorContainer >
 
 
@@ -194,4 +153,4 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     );
 };
 
-export default EditorComponent;
+export default SharedNoteEditor;

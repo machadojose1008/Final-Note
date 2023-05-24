@@ -1,5 +1,4 @@
 import { styled } from '@mui/system';
-import backgound from './bg.jpg'
 
 export const SignInComponent = styled('div') ({
 

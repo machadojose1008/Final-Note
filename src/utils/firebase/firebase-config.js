@@ -3,6 +3,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, GoogleAuthProvider, createUserWithEmailAndPassword} from 'firebase/auth'
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -41,9 +42,6 @@ export const db = getFirestore(app);
     para criar dados e documentos. isso é feito na função 'createUserDocumentFromAuth'. Cada referência precisa de uma chave para usar e no caso usaremos o UID que é 
     dado como resposta do signInWithGoogle.
   3)  Após isso podemos usar o userDocRef para o getDoc que recuperará documentos com aquele ID ou no setDoc que modificará documentos.
-
-
-
 
 
 */
