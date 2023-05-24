@@ -9,8 +9,8 @@ import { Grid } from '@mui/material';
 import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, Timestamp, getDoc, CollectionReference, DocumentReference } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
-import GroupComponent from './components/Group/group';
 import SharedNoteEditor from './components/editors/sharedNoteEditor';
+import ChatComponent from './components/Group/chat';
 
 // Required for side-effects
 require("firebase/firestore");
@@ -58,6 +58,7 @@ function App() {
   const [showStudy, setShowStudy] = useState(null);
   const [showGroup, setShowGroup] = useState(null);
   const [showSharedNotes, setShowSharedNotes] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
 
   const findUserIdByEmail = async (email) => {
@@ -119,12 +120,11 @@ function App() {
     const fetchedSharedNotes = [];
 
     querySnapshot.forEach((doc) => {
-      doc.data().email.forEach((res) => {
-        if (res === email) {
-          fetchedSharedNotes.push({ id: doc.id, ...doc.data() });
-        }
-      });
-
+      const sharedNoteData = doc.data();
+      const sharedNoteEmails = sharedNoteData.email;
+      if (sharedNoteEmails.includes(email)) {
+        fetchedSharedNotes.push({ id: doc.id, ...sharedNoteData });
+      }
     });
 
     setSharedNotes(fetchedSharedNotes);
@@ -232,7 +232,7 @@ function App() {
   const deleteNote = async (note, notebookIndex) => {
     const noteRef = doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, note.id);
     await deleteDoc(noteRef);
-    
+
 
     const notebookPosition = await findNotebookPosition(notebooks, notebookIndex);
 
@@ -301,7 +301,7 @@ function App() {
       await selectSharedNote(newNote, newFromDB.id);
       const removeRef = doc(db, `users/${userId}/notebooks/${selectedNotebookIndex}/notes`, noteObj.id);
       await deleteDoc(removeRef);
-      
+
       setNotesUpdated(true);
       alert('Nota compartilhada com sucesso');
     }
@@ -312,15 +312,15 @@ function App() {
   };
 
   const deleteSharedNote = async (sharedNote) => {
-      const removeRef = doc(db, 'sharedNotes', sharedNote.id);
-      await deleteDoc(removeRef);
+    const removeRef = doc(db, 'sharedNotes', sharedNote.id);
+    await deleteDoc(removeRef);
 
-      if(selectedSharedNoteIndex === shareNote.id) {
-        setSelectedSharedNoteIndex(null);
-        setSelectedSharedNote(null);
-      }
+    if (selectedSharedNoteIndex === shareNote.id) {
+      setSelectedSharedNoteIndex(null);
+      setSelectedSharedNote(null);
+    }
 
-      setSharedNotesUpdated(true);
+    setSharedNotesUpdated(true);
   };
 
   const newNotebook = async (notebookTitle) => {
@@ -570,6 +570,10 @@ function App() {
 
   const closeNote = () => {
     setShowNote(!showNote);
+  };
+
+  const closeChat = () => {
+    setShowChat(!showChat);
   }
 
   const closeSharedNote = () => {
@@ -589,6 +593,11 @@ function App() {
     setShowStudy(false);
     setShowGroup(true);
   };
+
+  const selectChat = () => {
+    setShowChat(true);
+    setShowCard(false);
+  }
 
   const selectSharedNotesEditor = () => {
     setShowNote(false);
@@ -654,6 +663,7 @@ function App() {
 
               selectStudy={selectStudy}
               selectGroup={selectGroup}
+              
 
 
             />
@@ -671,11 +681,12 @@ function App() {
           ) : null}
 
           {(selectedSharedNote && showSharedNotes) ? (
-            <Grid item xs={(showCard) ? 7 : 10}>
+            <Grid item xs={(showCard || showChat) ? 7 : 10}>
               <SharedNoteEditor
                 selectedSharedNote={selectedSharedNote}
                 sharedNoteUpdate={sharedNoteUpdate}
                 closeSharedNote={closeSharedNote}
+                selectChat={selectChat}
               />
             </Grid>
           ) : null}
@@ -689,17 +700,17 @@ function App() {
               />
             </Grid>
           ) : null}
-          {(showGroup) ? (
+         {/*  {(showGroup) ? (
             <Grid item xs={10.2} >
               <GroupComponent
                 showGroup={showGroup}
               />
             </Grid>
 
-          ) : <p></p>}
+          ) : <p></p>} */}
           {(selectedCard && showCard) ? (
 
-            <Grid item xs={(showNote) ? 3 : 7} >
+            <Grid item xs={(showNote || showSharedNotes) ? 3 : 7} >
 
               <CardEditorComponent
                 selectedCard={selectedCard}
@@ -709,6 +720,16 @@ function App() {
               />
             </Grid>
           ) : null}
+
+          {(showSharedNotes && showChat) ? (
+            <Grid item xs={3}>
+              <ChatComponent
+                userEmail={location.state.email}
+                selectedSharedNote={selectedSharedNote}
+                closeChat={closeChat}
+              />
+            </Grid>
+          ): null}
 
         </Grid>
       ) : (

@@ -6,8 +6,9 @@ import { AddDialog, EditorContainer, EditorNavBar, Title, TitleInput } from '../
 import CloseIcon from '@mui/icons-material/Close';
 import DateComponent from './date-component';
 import ShareIcon from '@mui/icons-material/Share';
+import ChatIcon from '@mui/icons-material/Chat';
 
-const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNote}) => {
+const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNote, selectChat}) => {
     const [body, setBody] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
@@ -66,6 +67,10 @@ const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNot
         setOpen(false);
     };
 
+    const handleSelectChat = () => {
+        selectChat();
+    }
+
 
     useEffect(() => {
         setBody(selectedSharedNote.body);
@@ -121,12 +126,24 @@ const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNot
                             <DateComponent date={lastUpdate} />)}
                     </Grid>
 
-                    <Grid sx={{ paddingTop: '5px', display:'flex', justifyContent:'flex-end' }} item xs={1}>
+                    <Grid  sx={{ paddingTop: '5px', display:'flex', justifyContent:'flex-end' }} item xs={1}>
                         <div>
                             <Button sx={{ width: '100px', padding: '10px 5px', }} variant="contained" color="primary" onClick={handleSave}>
                                 Salvar
                             </Button>
                         </div>
+                    </Grid>
+                    <Grid item xs={1}>
+
+                    </Grid>
+                    <Grid item xs={.5} >
+                            <div >
+                                <IconButton onClick={handleSelectChat} size='large'>
+                                    <ChatIcon sx={{fontSize:30}} size='large'
+                                        
+                                    />
+                                </IconButton>
+                            </div>
                     </Grid>
                    
                 </Grid >

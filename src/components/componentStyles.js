@@ -218,34 +218,15 @@ export const NavBarDiv = styles('div')({
   justifyContent:'space-between',
 });
 
-export const GroupComponentDiv = styles('div')({
-  marginTop: '8%',
+export const ChatComponentDiv = styles('div')({
+  marginTop: '25%',
   marginLeft: '2%',
+  height:'80%'
 });
 
-export const MessageBubble = styles('div')({
-  display:'flex',
-  gap:'20px',
-  marginBottom:'20px'
-});
 
-export const MessageBubbleOwner = styles('div')({
-  display:'flex',
-  gap:'20px',
-  flexDirection:'row-reverse'
-});
 
-export const MessageInfo = styles('div')({
-  display:'flex',
-  flexDirection:'column',
-  color:'gray',
-  fontWeight:300
-});
 
-export const MessageContent = styles('div')({
-  maxWidth:'80%',
-  display:'flex',
-  flexDirection:'column',
-  gap:'10px'
-});
+
+
 
