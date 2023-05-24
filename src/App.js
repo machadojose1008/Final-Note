@@ -150,39 +150,50 @@ function App() {
   };
 
   const noteUpdate = async (id, selectedNotebookId, noteObj) => {
+    if (noteObj.body === '<p><br></p>') {
+      return;
+    } else {
+      const noteRef = doc(db, `users/${userId}/notebooks/${selectedNotebookId}/notes`, id);
+      const data = {
+        title: noteObj.title,
+        body: noteObj.body,
+        timestamp: serverTimestamp()
+      };
 
-    const noteRef = doc(db, `users/${userId}/notebooks/${selectedNotebookId}/notes`, id);
-    const data = {
-      title: noteObj.title,
-      body: noteObj.body,
-      timestamp: serverTimestamp()
-    };
+      updateDoc(noteRef, data)
+        .then((docRef) => {
+          setNotesUpdated(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
-    updateDoc(noteRef, data)
-      .then((docRef) => {
-        setNotesUpdated(true);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
   };
 
 
   const sharedNoteUpdate = async (id, sharedNoteObj) => {
-    const sharedNoteRef = doc(db, 'sharedNotes', id);
-    const data = {
-      title: sharedNoteObj.title,
-      body: sharedNoteObj.body,
-      timestamp: serverTimestamp()
-    };
 
-    updateDoc(sharedNoteRef, data)
-      .then((docRef) => {
-        setSharedNotesUpdated(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (sharedNoteObj.body === '<p><br></p>') {
+      return;
+    } else {
+      const sharedNoteRef = doc(db, 'sharedNotes', id);
+      const data = {
+        title: sharedNoteObj.title,
+        body: sharedNoteObj.body,
+        timestamp: serverTimestamp()
+      };
+
+      updateDoc(sharedNoteRef, data)
+        .then((docRef) => {
+          setSharedNotesUpdated(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
   };
 
   const newNote = async (noteTitle, notebookTitle) => {
@@ -663,7 +674,7 @@ function App() {
 
               selectStudy={selectStudy}
               selectGroup={selectGroup}
-              
+
 
 
             />
@@ -700,7 +711,7 @@ function App() {
               />
             </Grid>
           ) : null}
-         {/*  {(showGroup) ? (
+          {/*  {(showGroup) ? (
             <Grid item xs={10.2} >
               <GroupComponent
                 showGroup={showGroup}
@@ -729,7 +740,7 @@ function App() {
                 closeChat={closeChat}
               />
             </Grid>
-          ): null}
+          ) : null}
 
         </Grid>
       ) : (
