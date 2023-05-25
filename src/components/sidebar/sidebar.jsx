@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import List from '@mui/material/List';
 import { Face } from "@mui/icons-material"
 import SidebarItemComponent from './sidebar-notes';
 import SidebarCardComponent from './sidebar-card';
 import { SidebarContainer, UserIcon, ActionList, AddDialog } from '../componentStyles'
-import SidebarButton from './nested-lists/sidebar-button';
+import SidebarButton from './buttons/sidebar-button';
 import AddNote from './buttons/add-note';
 import AddCard from './buttons/add-card';
 import { TreeItem, TreeView } from '@mui/lab';
@@ -24,15 +24,23 @@ import ShareIcon from '@mui/icons-material/Share';
 import SidebarSharedNoteComponent from './sidebar-shared';
 
 function SidebarComponent(props) {
-    const { decks = [], notebooks = [], sharedNotes, selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy, selectGroup } = props;
-    const [title, setTitle] = useState(null);
-    const [cardTitle, setCardTitle] = useState(null);
+    const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy, selectGroup } = props;
+
     const [notes, setNotes] = useState([]);
-    const [notebooksTitle, setNotebooksTitle] = useState([]);
+    const [title, setTitle] = useState(null);
+
     const [notebookTitle, setNotebookTitle] = useState(null);
+    const [notebooksTitle, setNotebooksTitle] = useState([]);
+
+    const [cards, setCards] = useState([]);
+    const [cardTitle, setCardTitle] = useState(null);
+
     const [decksTitle, setDecksTitle] = useState([]);
     const [deckTitle, setDeckTitle] = useState(null);
-    const [cards, setCards] = useState([]);
+
+    const [sharedNotes, setSharedNotes] = useState([]);
+
+
     const [openNotebookDialog, setOpenNotebookDialog] = useState(false);
     const [openDeckDialog, setOpenDeckDialog] = useState(false);
     const [renameId, setRenameId] = useState(null);
@@ -64,7 +72,7 @@ function SidebarComponent(props) {
 
     const selectSharedNote = (sharedNote, sharedNoteIndex) => {
         props.selectSharedNote(sharedNote, sharedNoteIndex);
-        
+
     }
 
     const selectCard = (card, deckIndex, cardIndex) => {
@@ -134,8 +142,7 @@ function SidebarComponent(props) {
         setOpenNotebookDialog(false);
     }
 
-    useEffect(() => {
-
+    useLayoutEffect(() => {
 
         const settingNotes = async () => {
             const fetchNotes = await notebooks.map(el => el.notes);
@@ -157,15 +164,18 @@ function SidebarComponent(props) {
             setDecksTitle(fetchCardTitle);
         }
 
-
         settingNotes();
         settingTitles();
         settingCards();
         settingCardTitles();
 
-        console.log(sharedNotes);
 
-    }, [decks, notebooks, sharedNotes])
+
+    }, [decks, notebooks])
+
+    useLayoutEffect(() => {
+        setSharedNotes(props.sharedNotes);
+    }, [props.sharedNotes]);
 
     return (
         <div>
@@ -268,7 +278,7 @@ function SidebarComponent(props) {
                         </TreeView>
                     }
 
-                    {(sharedNotes) ? (
+                    {sharedNotes && (
                         <TreeView
                             defaultCollapseIcon={<ArrowDropDownIcon />}
                             defaultExpandIcon={<ArrowRightIcon />}
@@ -276,22 +286,28 @@ function SidebarComponent(props) {
                             sx={{ maxWidth: 200 }}
                         >
                             <StyledTreeItem nodeId='sharedNotes' labelText='Notas Compartilhadas' labelIcon={ShareIcon}>
-                                {sharedNotes.map((sharedNote) => (
-                                    <div key={sharedNote.id}>
-                                        <SidebarSharedNoteComponent
-                                            _sharedNote={sharedNote}
-                                            _sharedNoteIndex={sharedNote.id}
-                                            selectedSharedNoteIndex={selectedSharedNoteIndex}
-                                            selectSharedNote={selectSharedNote}
-                                            deleteSharedNote={deleteSharedNote}
-                                        />
-                                    </div>
-                                ))}
+
+                                <List>
+                                    {sharedNotes.map((sharedNote) => (
+                                        <div key={sharedNote.id}>
+                                            <SidebarSharedNoteComponent
+                                                _sharedNote={sharedNote}
+                                                _sharedNoteIndex={sharedNote.id}
+                                                selectedSharedNoteIndex={selectedSharedNoteIndex}
+                                                selectSharedNote={selectSharedNote}
+                                                deleteSharedNote={deleteSharedNote}
+                                            />
+                                        </div>
+                                    ))}
+                                </List>
+
+
                             </StyledTreeItem>
 
                         </TreeView>
+                    )}
 
-                    ) : null}
+
 
 
 

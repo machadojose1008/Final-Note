@@ -7,8 +7,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import DateComponent from './date-component';
 import ShareIcon from '@mui/icons-material/Share';
 import ChatIcon from '@mui/icons-material/Chat';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../utils/firebase/firebase-config';
 
-const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNote, selectChat}) => {
+const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeSharedNote, selectChat }) => {
     const [body, setBody] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
@@ -16,13 +18,22 @@ const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNot
     const [updateDate, setUpdateDate] = useState(null);
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState(null);
+    const [openned, setOpenned] = useState(null);
 
     const modules = {
         toolbar: [
             [{ 'header': [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }]
+            [
+                { list: 'ordered' },
+                { list: 'bullet' },
+                { indent: '-1' },
+                { indent: '+1' }
+            ],
+            ['link', 'image'],
+
         ],
+
         clipboard: {
             matchVisual: false
         }
@@ -50,10 +61,10 @@ const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNot
 
     const update = useCallback(
         debounce((sharedNoteObj) => {
-            sharedNoteUpdate(id, sharedNoteObj);
+            sharedNoteUpdate(selectedSharedNoteIndex, sharedNoteObj);
             setUpdateDate(new Date());
         }, 1500),
-        [id, sharedNoteUpdate]
+        [id, selectedSharedNoteIndex, sharedNoteUpdate]
     );
     const setReviewDate = (reviewDate) => {
         // Atualiza a data do card do formato em milisegundos do firestore para o formato date do javascript
@@ -62,22 +73,32 @@ const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNot
         return date;
     };
 
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     const handleSelectChat = () => {
         selectChat();
     }
 
+    const fetchSharedNote = async (selectedSharedNoteIndex) => {
+        const sharedNoteRef = doc(db, 'sharedNotes', selectedSharedNoteIndex);
+        const sharedNote = await getDoc(sharedNoteRef);
+        const data = sharedNote.data();
+        setBody(data.body);
+        setTitle(data.title);
+        setId(data.id);
+        setOpenned(data.openned);
+        setLastUpdate(setReviewDate(data.timestamp));
+
+        
+    }
+
 
     useEffect(() => {
-        setBody(selectedSharedNote.body);
-        setTitle(selectedSharedNote.title);
-        setId(selectedSharedNote.id);
-        setLastUpdate(setReviewDate(selectedSharedNote.timestamp));
-    }, [selectedSharedNote.body, selectedSharedNote.title, selectedSharedNote.id, selectedSharedNote.timestamp]);
+        
+        fetchSharedNote(selectedSharedNoteIndex);
+
+
+
+        console.log(openned); 
+    }, [selectedSharedNoteIndex]);
 
     useEffect(() => {
         if (updateDate) {
@@ -111,7 +132,7 @@ const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNot
                             <CloseIcon sx={{ color: 'black' }} />
                         </IconButton>
                     </Grid>
-                
+
                     <Grid item xs={6.5}>
                         <TitleInput
                             placeholder="Título da nota"
@@ -126,7 +147,7 @@ const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNot
                             <DateComponent date={lastUpdate} />)}
                     </Grid>
 
-                    <Grid  sx={{ paddingTop: '5px', display:'flex', justifyContent:'flex-end' }} item xs={1}>
+                    <Grid sx={{ paddingTop: '5px', display: 'flex', justifyContent: 'flex-end' }} item xs={1}>
                         <div>
                             <Button sx={{ width: '100px', padding: '10px 5px', }} variant="contained" color="primary" onClick={handleSave}>
                                 Salvar
@@ -137,15 +158,15 @@ const SharedNoteEditor = ({ selectedSharedNote, sharedNoteUpdate, closeSharedNot
 
                     </Grid>
                     <Grid item xs={.5} >
-                            <div >
-                                <IconButton onClick={handleSelectChat} size='large'>
-                                    <ChatIcon sx={{fontSize:30}} size='large'
-                                        
-                                    />
-                                </IconButton>
-                            </div>
+                        <div >
+                            <IconButton onClick={handleSelectChat} size='large'>
+                                <ChatIcon sx={{ fontSize: 30 }} size='large'
+
+                                />
+                            </IconButton>
+                        </div>
                     </Grid>
-                   
+
                 </Grid >
 
 

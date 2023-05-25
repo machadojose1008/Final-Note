@@ -10,10 +10,14 @@ import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs
 import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
 import SharedNoteEditor from './components/editors/sharedNoteEditor';
-import ChatComponent from './components/Group/chat';
+import ChatComponent from './components/chat/chat';
 
 // Required for side-effects
 require("firebase/firestore");
+
+
+
+
 
 function App() {
 
@@ -33,6 +37,7 @@ function App() {
   const [selectedSharedNote, setSelectedSharedNote] = useState(null);
   const [selectedSharedNoteIndex, setSelectedSharedNoteIndex] = useState(null);
   const [sharedNotesUpdated, setSharedNotesUpdated] = useState(false);
+  const [isSharedNoteOpened, setIsSharedNoteOpened] = useState(false);
 
   // Decks States
   const [decks, setDecks] = useState([]);
@@ -56,7 +61,6 @@ function App() {
   const [showCard, setShowCard] = useState(null);
   const [showNote, setShowNote] = useState(null);
   const [showStudy, setShowStudy] = useState(null);
-  const [showGroup, setShowGroup] = useState(null);
   const [showSharedNotes, setShowSharedNotes] = useState(false);
   const [showChat, setShowChat] = useState(false);
 
@@ -137,16 +141,43 @@ function App() {
     setSelectedNotebookIndex(notebookIndex);
     setShowNote(true);
     setShowStudy(false);
+    closeSharedNote();
+
 
   };
 
+  const checkOpenned = async (index) => {
+    const docRef = doc(db, 'sharedNotes', index);
+    const data = await getDoc(docRef);
+    return (data.data().openned);
+  }
+
   const selectSharedNote = async (sharedNote, sharedNoteIndex) => {
-    setSelectedSharedNote(sharedNote);
-    setSelectedSharedNoteIndex(sharedNoteIndex);
-    setShowSharedNotes(true);
-    setShowNote(false);
-    setShowStudy(false);
-    setShowGroup(false);
+    const opennedState = await checkOpenned(sharedNoteIndex);
+
+    if (opennedState === false) {
+      if (selectedSharedNoteIndex !== null) {
+        const ref = doc(db, 'sharedNotes', selectedSharedNoteIndex);
+        await updateDoc(ref, { openned: false });
+      }
+
+      setSelectedSharedNote(sharedNote);
+      setSelectedSharedNoteIndex(sharedNoteIndex);
+      setShowSharedNotes(true);
+      setShowNote(false);
+      setShowStudy(false);
+      const dbRef = doc(db, 'sharedNotes', sharedNoteIndex);
+
+      try {
+        await updateDoc(dbRef, { openned: true });
+      } catch (err) {
+        console.error(err);
+      }
+      
+    } else {
+      alert('Nota aberta por outro usuário');
+    }
+
   };
 
   const noteUpdate = async (id, selectedNotebookId, noteObj) => {
@@ -187,7 +218,7 @@ function App() {
 
       updateDoc(sharedNoteRef, data)
         .then((docRef) => {
-          setSharedNotesUpdated(true);
+
         })
         .catch((err) => {
           console.log(err);
@@ -329,6 +360,7 @@ function App() {
     if (selectedSharedNoteIndex === shareNote.id) {
       setSelectedSharedNoteIndex(null);
       setSelectedSharedNote(null);
+      setIsSharedNoteOpened(false);
     }
 
     setSharedNotesUpdated(true);
@@ -592,22 +624,28 @@ function App() {
     setShowChat(!showChat);
   }
 
-  const closeSharedNote = () => {
-    setShowSharedNotes(!showSharedNotes);
+  const closeSharedNote = async () => {
+    const dbRef = doc(db, 'sharedNotes', selectedSharedNoteIndex);
+    try {
+      await updateDoc(dbRef, { openned: false });
+    } catch (err) {
+      console.error(err);
+    }
+    setShowSharedNotes(false);
+    setSharedNotesUpdated(true);
   }
 
   const selectStudy = () => {
     setShowCard(false);
     setShowNote(false);
     setShowStudy(true);
-    setShowGroup(false);
+    closeSharedNote();
   }
 
   const selectGroup = () => {
     setShowCard(false);
     setShowNote(false);
     setShowStudy(false);
-    setShowGroup(true);
   };
 
   const selectChat = () => {
@@ -618,9 +656,10 @@ function App() {
   const selectSharedNotesEditor = () => {
     setShowNote(false);
     setShowStudy(false);
-    setShowGroup(false);
     setShowSharedNotes(true);
   }
+
+  
 
 
   useEffect(() => {
@@ -699,7 +738,7 @@ function App() {
           {(selectedSharedNote && showSharedNotes) ? (
             <Grid item xs={(showCard || showChat) ? 7 : 10}>
               <SharedNoteEditor
-                selectedSharedNote={selectedSharedNote}
+                selectedSharedNoteIndex={selectedSharedNoteIndex}
                 sharedNoteUpdate={sharedNoteUpdate}
                 closeSharedNote={closeSharedNote}
                 selectChat={selectChat}
