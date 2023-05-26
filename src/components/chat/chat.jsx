@@ -1,6 +1,6 @@
 import { AppBar, Box, Container, Typography } from "@mui/material";
 import "react-chat-elements/dist/main.css";
-import { MessageBox, MessageList } from "react-chat-elements";
+import { MessageList } from "react-chat-elements";
 import InputComponent from "./input";
 import { ChatComponentDiv } from "../componentStyles";
 import { useEffect, useState } from "react";

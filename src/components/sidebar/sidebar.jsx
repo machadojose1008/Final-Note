@@ -1,27 +1,27 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
-import List from '@mui/material/List';
-import { Face } from "@mui/icons-material"
-import SidebarItemComponent from './sidebar-notes';
-import SidebarCardComponent from './sidebar-card';
-import { SidebarContainer, UserIcon, ActionList, AddDialog } from '../componentStyles'
-import SidebarButton from './buttons/sidebar-button';
-import AddNote from './buttons/add-note';
-import AddCard from './buttons/add-card';
-import { TreeItem, TreeView } from '@mui/lab';
-import AddNotebook from './buttons/add-notebook';
-import AddDeck from './buttons/add-deck';
-import SelectStudy from './buttons/select-study';
+import { Face } from "@mui/icons-material";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import BookIcon from '@mui/icons-material/Book';
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import NoteIcon from '@mui/icons-material/Note';
-import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
-import { StyledTreeItem } from './styled-tree-item';
-import { Button, DialogContent, DialogTitle, IconButton, TextField, Typography } from '@mui/material';
 import GroupIcon from '@mui/icons-material/Group';
+import NoteIcon from '@mui/icons-material/Note';
 import ShareIcon from '@mui/icons-material/Share';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
+import { TreeView } from '@mui/lab';
+import { Button, DialogContent, DialogTitle, IconButton, TextField, Typography } from '@mui/material';
+import List from '@mui/material/List';
+import { useLayoutEffect, useState } from 'react';
+import { ActionList, AddDialog, SidebarContainer, UserIcon } from '../componentStyles';
+import AddCard from './buttons/add-card';
+import AddDeck from './buttons/add-deck';
+import AddNote from './buttons/add-note';
+import AddNotebook from './buttons/add-notebook';
+import SelectStudy from './buttons/select-study';
+import SidebarButton from './buttons/sidebar-button';
+import SidebarCardComponent from './sidebar-card';
+import SidebarItemComponent from './sidebar-notes';
 import SidebarSharedNoteComponent from './sidebar-shared';
+import { StyledTreeItem } from './styled-tree-item';
 
 function SidebarComponent(props) {
     const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy, selectGroup } = props;

@@ -1,5 +1,5 @@
 import ReactQuill from 'react-quill';
-import { CardEditArea, CardEditorTitle, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
+import { CardEditArea, CardEditorTitle, EditorContainer, Title, TitleInput } from '../componentStyles';
 import { useCallback, useState, useEffect } from 'react';
 import { Button, Grid, IconButton, Paper, Stack } from '@mui/material';
 import debounce from '../../helpers';

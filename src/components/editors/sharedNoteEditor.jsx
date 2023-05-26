@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import ChatIcon from '@mui/icons-material/Chat';
+import CloseIcon from '@mui/icons-material/Close';
+import { Button, Grid, IconButton, Paper, } from '@mui/material';
+import { doc, getDoc } from 'firebase/firestore';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../../helpers';
-import { Button, DialogContent, DialogTitle, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
-import { AddDialog, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
-import CloseIcon from '@mui/icons-material/Close';
-import DateComponent from './date-component';
-import ShareIcon from '@mui/icons-material/Share';
-import ChatIcon from '@mui/icons-material/Chat';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../utils/firebase/firebase-config';
+import { EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
+import DateComponent from './date-component';
 
 const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeSharedNote, selectChat }) => {
     const [body, setBody] = useState('');
@@ -16,8 +15,6 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
     const [id, setId] = useState('');
     const [lastUpdate, setLastUpdate] = useState('');
     const [updateDate, setUpdateDate] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [email, setEmail] = useState(null);
     const [openned, setOpenned] = useState(null);
 
     const modules = {

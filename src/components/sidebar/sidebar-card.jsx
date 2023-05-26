@@ -1,7 +1,6 @@
-import React from 'react';
-import { removeHTMLTags } from '../../helpers';
-import { NotesList, SelectNote, NoteText, DeleteIcon } from '../componentStyles'
 import { ListItemText } from '@mui/material';
+import React from 'react';
+import { DeleteIcon, NotesList, SelectNote } from '../componentStyles';
 
 
 function SidebarCardComponent(props) {

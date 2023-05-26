@@ -6,7 +6,7 @@ import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
 import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
-import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, Timestamp, getDoc, CollectionReference, DocumentReference } from "firebase/firestore";
+import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, Timestamp, getDoc } from "firebase/firestore";
 import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
 import SharedNoteEditor from './components/editors/sharedNoteEditor';
@@ -23,7 +23,6 @@ function App() {
 
   // Notebooks States
   const [notebooks, setNotebooks] = useState([]);
-  const [selectedNotebook, setSelectedNotebook] = useState(null);
   const [selectedNotebookIndex, setSelectedNotebookIndex] = useState(null);
 
   // Notes States
@@ -41,7 +40,6 @@ function App() {
 
   // Decks States
   const [decks, setDecks] = useState([]);
-  const [selectedDeck, setSelectedDeck] = useState(null);
   const [selectedDeckIndex, setSelectedDeckIndex] = useState(null);
 
   // Cards States
@@ -53,7 +51,6 @@ function App() {
   // Logged user States
   const [user, setUser] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [showEditor, setShowEditor] = useState(false);
 
   const location = useLocation();
 
@@ -66,7 +63,6 @@ function App() {
 
 
   const findUserIdByEmail = async (email) => {
-    console.log(email);
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
@@ -173,7 +169,7 @@ function App() {
       } catch (err) {
         console.error(err);
       }
-      
+
     } else {
       alert('Nota aberta por outro usuário');
     }
@@ -304,25 +300,15 @@ function App() {
       title: noteObj.title,
       body: noteObj.body,
       timestamp: timestamp,
-
+      openned: false
     };
-
-
 
     const userDestiny = await findUserIdByEmail(emailDestiny);
 
-    /*    if (userDestiny === userId) {
-         alert('Não é possível compartilhar notas com o usuário atual');
-         return;
-       }
-   
-       const shareNoteRef = collection(db, `users/${userDestiny}/sharedNotes`);
-       const newSharedNote = await addDoc(shareNoteRef, note); */
-
-
-
-
-
+    if (userDestiny === userId) {
+      alert('Não é possível compartilhar notas com o usuário atual');
+      return;
+    }
 
     if (userDestiny === null) {
       alert('Email não encontrado');
@@ -347,8 +333,6 @@ function App() {
       setNotesUpdated(true);
       alert('Nota compartilhada com sucesso');
     }
-
-
 
 
   };
@@ -659,7 +643,7 @@ function App() {
     setShowSharedNotes(true);
   }
 
-  
+
 
 
   useEffect(() => {
@@ -692,7 +676,6 @@ function App() {
               user={user}
 
               notebooks={notebooks}
-              notes={notes}
               newNote={newNote}
               selectNote={selectNote}
               deleteNote={deleteNote}
@@ -702,7 +685,6 @@ function App() {
               deleteNotebook={deleteNotebook}
 
               decks={decks}
-              cards={cards}
               newCard={newCard}
               selectCard={selectCard}
               deleteCard={deleteCard}
@@ -755,14 +737,6 @@ function App() {
               />
             </Grid>
           ) : null}
-          {/*  {(showGroup) ? (
-            <Grid item xs={10.2} >
-              <GroupComponent
-                showGroup={showGroup}
-              />
-            </Grid>
-
-          ) : <p></p>} */}
           {(selectedCard && showCard) ? (
 
             <Grid item xs={(showNote || showSharedNotes) ? 3 : 7} >

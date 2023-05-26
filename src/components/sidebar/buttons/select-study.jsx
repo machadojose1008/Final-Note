@@ -1,6 +1,5 @@
-import { useState } from "react"
-import { AddDialog, SideButton } from "../../componentStyles";
-import { Box, Button, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import { SideButton } from "../../componentStyles";
 
 function SelectStudy(props) {
 
@@ -9,10 +8,10 @@ function SelectStudy(props) {
         props.selectStudy();
     }
 
-   
+
     return (
         <SideButton>
-            <Box sx={{ paddingX: '20px', paddingY:'10px' }}>
+            <Box sx={{ paddingX: '20px', paddingY: '10px' }}>
                 <Button
                     onClick={handleClick}
                     variant="contained"
