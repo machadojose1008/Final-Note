@@ -2,12 +2,13 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../../helpers';
 import { Button, DialogContent, DialogTitle, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
-import { AddDialog, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
+import { AddDialog, CustomButtomGroup, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import DateComponent from './date-component';
 import ShareIcon from '@mui/icons-material/Share';
 import uploadImage from './image-uploader';
-import { AttachFile } from '@mui/icons-material';
+import ImageIcon from '@mui/icons-material/Image';
+import SaveIcon from '@mui/icons-material/Save';
 
 
 const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote, shareNote }) => {
@@ -100,7 +101,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
     const handleClose = () => {
         setOpen(false);
-    }; 
+    };
 
     const handleEmail = (txt) => {
         setEmail(txt);
@@ -138,59 +139,35 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
 
     return (
-
-
         < EditorContainer >
             <EditorNavBar>
                 <Grid container>
 
-                    <Grid item xs={11.7}>
+                    <Grid item xs={5} sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Title>
                             Título da nota:
                         </Title >
-                    </Grid >
-                    <Grid item xs={0.1}>
-                        <IconButton onClick={closeNote}>
-                            <CloseIcon sx={{ color: 'black' }} />
-                        </IconButton>
-                    </Grid>
-
-                    <Grid item xs={5.5}>
                         <TitleInput
                             placeholder="Título da nota"
                             value={title ? title : ''}
                             onChange={updateTitle}>
                         </TitleInput>
-                    </Grid>
-                    <Grid item xs={3}>
+                    </Grid >
+                    <Grid item xs={4}>
                         {lastUpdate === '' ? (
                             null
                         ) : (
                             <DateComponent date={lastUpdate} />)}
                     </Grid>
-                    <Grid sx={{ paddingTop: '5px'}} item xs={1}>
-                        <div>
-                            <Button sx={{ width: '130px' }} variant="contained" color="primary" onClick={handleImageUpload}>
-                                <AttachFile />
-                                <Typography sx={{ fontSize: '12px' }}>Imagem</Typography>
-                            </Button>
-                        </div>
+
+
+                    <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <IconButton onClick={closeNote}>
+                            <CloseIcon sx={{ color: 'black' }} />
+                        </IconButton>
                     </Grid>
-                    <Grid sx={{ paddingTop: '5px' }} item xs={1}>
-                        <div>
-                            <Button sx={{ width: '130px' }} variant="contained" color="primary" onClick={handleShare}>
-                                <ShareIcon />
-                                <Typography sx={{ fontSize: '12px' }}>Compartilhar</Typography>
-                            </Button>
-                        </div>
-                    </Grid>
-                    <Grid sx={{ paddingTop: '5px', paddingLeft:'1px'}} item xs={1}>
-                        <div>
-                            <Button sx={{ width: '100px' }} variant="contained" color="primary" onClick={handleSave}>
-                                Salvar
-                            </Button>
-                        </div>
-                    </Grid>
+
+
 
                 </Grid >
 
@@ -198,13 +175,31 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
             </EditorNavBar >
 
             <Paper elevation={3}>
-                <ReactQuill
-                    ref={quillRef}
-                    modules={modules}
-                    formats={formats}
-                    value={body ? body : ''}
-                    onChange={updateBody}
-                />
+                <CustomButtomGroup>
+                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<ImageIcon />} size='small' onClick={handleImageUpload}>
+                        <Typography sx={{ fontSize: '8px' }}>
+                            Upload Imagem
+                        </Typography>
+                    </Button>
+                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<ShareIcon />} size='small' onClick={handleShare}>
+                        <Typography sx={{ fontSize: '8px' }}>Compartilhar</Typography>
+                    </Button>
+                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<SaveIcon />} size='small' onClick={handleSave}>
+                        <Typography sx={{ fontSize: '8px' }}>Salvar</Typography>
+                    </Button>
+                </CustomButtomGroup>
+
+
+                <div className='noteEditor'>
+                    <ReactQuill
+                        ref={quillRef}
+                        modules={modules}
+                        formats={formats}
+                        value={body ? body : ''}
+                        onChange={updateBody}
+                    />
+                </div>
+
             </Paper>
 
             <AddDialog open={open} onClose={handleClose}>

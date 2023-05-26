@@ -636,7 +636,7 @@ function App() {
   };
 
   const selectChat = () => {
-    setShowChat(true);
+    setShowChat(!showChat);
     setShowCard(false);
   }
 

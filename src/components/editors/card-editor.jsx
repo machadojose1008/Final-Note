@@ -1,28 +1,56 @@
-import ReactQuill from 'react-quill';
-import { CardEditArea, CardEditorTitle, EditorContainer, Title, TitleInput } from '../componentStyles';
-import { useCallback, useState, useEffect } from 'react';
-import { Button, Grid, IconButton, Paper, Stack } from '@mui/material';
-import debounce from '../../helpers';
 import CloseIcon from '@mui/icons-material/Close';
+import { Button, Grid, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import ReactQuill from 'react-quill';
+import debounce from '../../helpers';
+import { CardEditArea, CustomButtomGroup, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
+import uploadImage from './image-uploader';
+import SaveIcon from '@mui/icons-material/Save';
+import ImageIcon from '@mui/icons-material/Image';
+import ShareIcon from '@mui/icons-material/Share';
 
 const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, closeCard }) => {
     const [front, setFront] = useState('');
     const [back, setBack] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
+    const quillRef = useRef(null);
 
+    const handleImageUpload = () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = handleFileChange;
+        fileInput.click();
+    };
 
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        uploadImage(file).then((imageUrl) => {
+            const range = quillRef.current.getEditor().getSelection();
+            quillRef.current.getEditor().insertEmbed(range ? range.index : 0, 'image', imageUrl);
+        });
+    };
 
     const modules = {
-        toolbar: [
-            [{ 'header': [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }]
-        ],
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                [
+                    { list: 'ordered' },
+                    { list: 'bullet' },
+                    { indent: '-1' },
+                    { indent: '+1' }
+                ],
+                ['link'],
+            ],
+        },
         clipboard: {
             matchVisual: false
         }
     };
+
 
     const formats = [
         'header',
@@ -30,6 +58,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
         'list', 'bullet', 'indent',
         'link', 'image'
     ]
+
 
     const updateFront = (frontVal) => {
         setFront(frontVal);
@@ -71,43 +100,48 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
 
 
     return (
-        <EditorContainer sx={{paddingTop:'22px'}}>
-            <CardEditorTitle sx={{paddingBottom:'4px'}}>
-                <Grid container sx={{width:'100%'}} >
-                    <Grid item xs={11.7}>
+        <EditorContainer sx={{ paddingTop: '8px' }}>
+
+            <EditorNavBar>
+
+                <Grid container sx={{ width: '100%' }} >
+                    <Grid item xs={9} sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Title>
                             Título do card:
                         </Title>
-                    </Grid>
-                    <Grid item xs={.1}>
-                        <IconButton onClick={closeCard}>
-                            <CloseIcon sx={{ color: 'black' }} />
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={10}>
                         <TitleInput
-                            sx={{ paddingTop: '5px' }}
-                            theme='null'
                             placeholder='Título do cartão'
                             value={title ? title : ''}
                             onChange={updateTitle}>
                         </TitleInput>
                     </Grid>
-                    <Grid item xs={2}>
-                        <Button variant="contained" color="primary" onClick={handleSave}>
-                            Salvar
-                        </Button>
+                    <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <IconButton onClick={closeCard}>
+                            <CloseIcon sx={{ color: 'black' }} />
+                        </IconButton>
                     </Grid>
-
-
                 </Grid>
 
-            </CardEditorTitle>
+            </EditorNavBar>
+
+
+
 
             <Paper elevation={3}>
+                <CustomButtomGroup>
+                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<ImageIcon />} size='small' onClick={handleImageUpload}>
+                        <Typography sx={{ fontSize: '8px' }}>
+                            Upload Imagem
+                        </Typography>
+                    </Button>
+                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<SaveIcon />} size='small' onClick={handleSave}>
+                        <Typography sx={{ fontSize: '8px' }}>Salvar</Typography>
+                    </Button>
+                </CustomButtomGroup>
                 <CardEditArea>
                     <Stack direction='column' spacing={.6}>
                         <ReactQuill
+                            ref={quillRef}
                             modules={modules}
                             formats={formats}
                             value={front}
@@ -115,6 +149,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                             placeholder='Frente do cartão'
                         />
                         <ReactQuill
+                            ref={quillRef}
                             modules={modules}
                             formats={formats}
                             value={back}
@@ -126,7 +161,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
             </Paper>
 
 
-        </EditorContainer>
+        </EditorContainer >
 
     );
 

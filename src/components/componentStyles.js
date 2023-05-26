@@ -190,7 +190,8 @@ export const AddDialog = styles(Dialog, {})({
 
 export const CardEditArea = styles('div')({
   [`& .ql-editor`]: {
-    minHeight: '20rem'
+    minHeight: '20rem',
+    maxHeight: '20rem'
   }
 
 
@@ -221,9 +222,15 @@ export const NavBarDiv = styles('div')({
 export const ChatComponentDiv = styles('div')({
   marginTop: '25%',
   marginLeft: '2%',
-  height:'80%'
+  height:'80%',
+  maxHeight:'43rem'
 });
 
+export const CustomButtomGroup = styles('div')({
+  display:'flex',
+  flexDirection:'row',
+  justifyContent:'flex-end'
+})
 
 
 

@@ -1,13 +1,22 @@
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Grid, IconButton, Paper, } from '@mui/material';
+import { Button, Grid, IconButton, Paper, Typography, } from '@mui/material';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../../helpers';
 import { db } from '../../utils/firebase/firebase-config';
-import { EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
+import { CustomButtomGroup, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import DateComponent from './date-component';
+import { useRef } from 'react';
+import ShareIcon from '@mui/icons-material/Share';
+import uploadImage from './image-uploader';
+import ImageIcon from '@mui/icons-material/Image';
+import SaveIcon from '@mui/icons-material/Save';
+
+
+
+
 
 const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeSharedNote, selectChat }) => {
     const [body, setBody] = useState('');
@@ -16,25 +25,43 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
     const [lastUpdate, setLastUpdate] = useState('');
     const [updateDate, setUpdateDate] = useState(null);
     const [openned, setOpenned] = useState(null);
+    const quillRef = useRef(null);
+
+    const handleImageUpload = () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = handleFileChange;
+        fileInput.click();
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        uploadImage(file).then((imageUrl) => {
+            const range = quillRef.current.getEditor().getSelection();
+            quillRef.current.getEditor().insertEmbed(range ? range.index : 0, 'image', imageUrl);
+        });
+    };
 
     const modules = {
-        toolbar: [
-            [{ 'header': [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [
-                { list: 'ordered' },
-                { list: 'bullet' },
-                { indent: '-1' },
-                { indent: '+1' }
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                [
+                    { list: 'ordered' },
+                    { list: 'bullet' },
+                    { indent: '-1' },
+                    { indent: '+1' }
+                ],
+                ['link'],
             ],
-            ['link', 'image'],
-
-        ],
-
+        },
         clipboard: {
             matchVisual: false
         }
     };
+
 
     const formats = [
         'header',
@@ -84,17 +111,17 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
         setOpenned(data.openned);
         setLastUpdate(setReviewDate(data.timestamp));
 
-        
+
     }
 
 
     useEffect(() => {
-        
+
         fetchSharedNote(selectedSharedNoteIndex);
 
 
 
-        console.log(openned); 
+        console.log(openned);
     }, [selectedSharedNoteIndex]);
 
     useEffect(() => {
@@ -118,59 +145,55 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
         <EditorContainer>
             <EditorNavBar>
                 <Grid container>
-
-                    <Grid item xs={11.7}>
+                    <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Title>
-                            Título da nota:
+                            Título da nota compartilhada:
                         </Title >
-                    </Grid >
-                    <Grid item xs={0.1}>
-                        <IconButton onClick={closeSharedNote}>
-                            <CloseIcon sx={{ color: 'black' }} />
-                        </IconButton>
-                    </Grid>
-
-                    <Grid item xs={6.5}>
                         <TitleInput
                             placeholder="Título da nota"
                             value={title ? title : ''}
                             onChange={updateTitle}>
                         </TitleInput>
-                    </Grid>
-                    <Grid item xs={3}>
+                    </Grid >
+                    <Grid item xs={5.5}>
                         {lastUpdate === '' ? (
                             null
                         ) : (
                             <DateComponent date={lastUpdate} />)}
                     </Grid>
+                    <Grid item xs={.5} sx={{display:'flex', flexDirection:'column', justifyContent:'flex-end'}} >
+                        <IconButton onClick={closeSharedNote}>
+                            <CloseIcon sx={{ color: 'black' }} />
+                        </IconButton>
+                        <IconButton onClick={handleSelectChat} size='large'>
+                            <ChatIcon sx={{ fontSize: 30 }} size='large'
 
-                    <Grid sx={{ paddingTop: '5px', display: 'flex', justifyContent: 'flex-end' }} item xs={1}>
-                        <div>
-                            <Button sx={{ width: '100px', padding: '10px 5px', }} variant="contained" color="primary" onClick={handleSave}>
-                                Salvar
-                            </Button>
-                        </div>
-                    </Grid>
-                    <Grid item xs={1}>
-
-                    </Grid>
-                    <Grid item xs={.5} >
-                        <div >
-                            <IconButton onClick={handleSelectChat} size='large'>
-                                <ChatIcon sx={{ fontSize: 30 }} size='large'
-
-                                />
-                            </IconButton>
-                        </div>
+                            />
+                        </IconButton>
                     </Grid>
 
                 </Grid >
 
-
             </EditorNavBar >
 
+
             <Paper elevation={3}>
+                <CustomButtomGroup>
+                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<ImageIcon />} size='small' onClick={handleImageUpload}>
+                        <Typography sx={{ fontSize: '8px' }}>
+                            Upload Imagem
+                        </Typography>
+                    </Button>
+                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<SaveIcon />} size='small' onClick={handleSave}>
+                        <Typography sx={{ fontSize: '8px' }}>Salvar</Typography>
+                    </Button>
+                </CustomButtomGroup>
+
+
+
+
                 <ReactQuill
+                    ref={quillRef}
                     modules={modules}
                     formats={formats}
                     value={body ? body : ''}
