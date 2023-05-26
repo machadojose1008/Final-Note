@@ -3,6 +3,9 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, GoogleAuthProvider, createUserWithEmailAndPassword} from 'firebase/auth'
+import { getStorage } from 'firebase/storage';
+
+
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -31,6 +34,9 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider)
 export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider);
 // Instânciação do banco de dados do firestore
 export const db = getFirestore(app);
+
+// Instânciação do storage do firebase
+export const storage = getStorage(app);
 
 /*
   Na manipulação de dados do firestore utilizando o Authenticator do firebase precisamos fazer os dois sistemas conversarem

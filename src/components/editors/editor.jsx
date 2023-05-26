@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../../helpers';
 import { Button, DialogContent, DialogTitle, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
@@ -6,6 +6,9 @@ import { AddDialog, EditorContainer, EditorNavBar, Title, TitleInput } from '../
 import CloseIcon from '@mui/icons-material/Close';
 import DateComponent from './date-component';
 import ShareIcon from '@mui/icons-material/Share';
+import uploadImage from './image-uploader';
+import { AttachFile } from '@mui/icons-material';
+
 
 const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote, shareNote }) => {
     const [body, setBody] = useState('');
@@ -15,17 +18,44 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     const [updateDate, setUpdateDate] = useState(null);
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState(null);
+    const quillRef = useRef(null);
+
+    const handleImageUpload = () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = handleFileChange;
+        fileInput.click();
+    };
+
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        uploadImage(file).then((imageUrl) => {
+            const range = quillRef.current.getEditor().getSelection();
+            quillRef.current.getEditor().insertEmbed(range ? range.index : 0, 'image', imageUrl);
+        });
+    };
 
     const modules = {
-        toolbar: [
-            [{ 'header': [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }]
-        ],
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                [
+                    { list: 'ordered' },
+                    { list: 'bullet' },
+                    { indent: '-1' },
+                    { indent: '+1' }
+                ],
+                ['link'],
+            ],
+        },
         clipboard: {
             matchVisual: false
         }
     };
+
 
     const formats = [
         'header',
@@ -33,6 +63,8 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
         'list', 'bullet', 'indent',
         'link', 'image'
     ]
+
+
 
 
     const updateBody = (val) => {
@@ -68,7 +100,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
     const handleClose = () => {
         setOpen(false);
-    };
+    }; 
 
     const handleEmail = (txt) => {
         setEmail(txt);
@@ -108,7 +140,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     return (
 
 
-        <EditorContainer>
+        < EditorContainer >
             <EditorNavBar>
                 <Grid container>
 
@@ -123,7 +155,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
                         </IconButton>
                     </Grid>
 
-                    <Grid item xs={6.5}>
+                    <Grid item xs={5.5}>
                         <TitleInput
                             placeholder="Título da nota"
                             value={title ? title : ''}
@@ -136,17 +168,25 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
                         ) : (
                             <DateComponent date={lastUpdate} />)}
                     </Grid>
-                    <Grid sx={{ paddingTop: '5px', paddingRight: '15px' }} item xs={1}>
+                    <Grid sx={{ paddingTop: '5px'}} item xs={1}>
                         <div>
-                            <Button sx={{ width: '130px', padding: '10px 5px', }} variant="contained" color="primary" onClick={handleShare}>
+                            <Button sx={{ width: '130px' }} variant="contained" color="primary" onClick={handleImageUpload}>
+                                <AttachFile />
+                                <Typography sx={{ fontSize: '12px' }}>Imagem</Typography>
+                            </Button>
+                        </div>
+                    </Grid>
+                    <Grid sx={{ paddingTop: '5px' }} item xs={1}>
+                        <div>
+                            <Button sx={{ width: '130px' }} variant="contained" color="primary" onClick={handleShare}>
                                 <ShareIcon />
                                 <Typography sx={{ fontSize: '12px' }}>Compartilhar</Typography>
                             </Button>
                         </div>
                     </Grid>
-                    <Grid sx={{ paddingTop: '5px', display: 'flex', justifyContent: 'flex-end' }} item xs={1}>
+                    <Grid sx={{ paddingTop: '5px', paddingLeft:'1px'}} item xs={1}>
                         <div>
-                            <Button sx={{ width: '100px', padding: '10px 5px', }} variant="contained" color="primary" onClick={handleSave}>
+                            <Button sx={{ width: '100px' }} variant="contained" color="primary" onClick={handleSave}>
                                 Salvar
                             </Button>
                         </div>
@@ -159,6 +199,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
             <Paper elevation={3}>
                 <ReactQuill
+                    ref={quillRef}
                     modules={modules}
                     formats={formats}
                     value={body ? body : ''}

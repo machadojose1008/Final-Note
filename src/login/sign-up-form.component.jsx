@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Container, CssBaseline, Grid, TextField, Typography } from "@mui/material";
-import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "../../utils/firebase/firebase-config";
+import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from '../utils/firebase/firebase-config';
 import { HeaderLogo, SignInComponent, SignInContainer } from './signStyles';
-import { db } from '../../utils/firebase/firebase-config'
+import { db } from '../utils/firebase/firebase-config'
 import { collection, addDoc, query, where, getDocs  } from 'firebase/firestore';
 
 const defaultFormFields = {

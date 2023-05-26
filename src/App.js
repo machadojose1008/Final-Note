@@ -609,14 +609,17 @@ function App() {
   }
 
   const closeSharedNote = async () => {
-    const dbRef = doc(db, 'sharedNotes', selectedSharedNoteIndex);
-    try {
-      await updateDoc(dbRef, { openned: false });
-    } catch (err) {
-      console.error(err);
+    if (selectedSharedNoteIndex !== null) {
+      const dbRef = doc(db, 'sharedNotes', selectedSharedNoteIndex);
+      try {
+        await updateDoc(dbRef, { openned: false });
+      } catch (err) {
+        console.error(err);
+      }
+      setShowSharedNotes(false);
+      setSharedNotesUpdated(true);
     }
-    setShowSharedNotes(false);
-    setSharedNotesUpdated(true);
+
   }
 
   const selectStudy = () => {
