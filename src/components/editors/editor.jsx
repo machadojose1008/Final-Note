@@ -9,7 +9,10 @@ import ShareIcon from '@mui/icons-material/Share';
 import uploadImage from './image-uploader';
 import ImageIcon from '@mui/icons-material/Image';
 import SaveIcon from '@mui/icons-material/Save';
+import { SaveAlt } from '@mui/icons-material';
+import html2pdf from 'html2pdf.js';
 
+import '../../assets/quill.snow.css';
 
 const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote, shareNote }) => {
     const [body, setBody] = useState('');
@@ -20,6 +23,24 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState(null);
     const quillRef = useRef(null);
+
+
+
+    const ExportToPdf = () => {
+        const element = document.querySelector('.noteEditor');
+        const options = {
+            margin: [10, 10, 10, 10],
+            filename: 'note.pdf',
+            image: { type: 'jpeg', quality: 0.98, includeHtmlInDataUrl: true },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf()
+            .set(options)
+            .from(element)
+            .save();
+    };
 
     const handleImageUpload = () => {
         const fileInput = document.createElement('input');
@@ -176,6 +197,14 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
             <Paper elevation={3}>
                 <CustomButtomGroup>
+
+                    <Button
+                        sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }}
+                        variant="contained" color="primary" startIcon={<SaveAlt />} onClick={ExportToPdf}
+                    >
+                        <Typography sx={{ fontSize: '8px' }}>Exportar PDF</Typography>
+                    </Button>
+
                     <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<ImageIcon />} size='small' onClick={handleImageUpload}>
                         <Typography sx={{ fontSize: '8px' }}>
                             Upload Imagem

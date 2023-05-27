@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Container, CssBaseline, Grid, TextField, Typography } from '@mui/material';
 import { HeaderLogo, SignInComponent, SignInContainer } from './signStyles';
 import { signInAuthUserWithEmailAndPassword } from '../utils/firebase/firebase-config';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth } from '../utils/firebase/firebase-config';
 
 const defaultFormFields = {
     email: '',
@@ -15,6 +17,7 @@ const SignInForm = () => {
     const [loggedEmail, setLoggedEmail] = useState('');
     const [cadastroRecente, setCadastroRecente] = useState(false);
     const location = useLocation();
+    const [signInAuthUserWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);
 
     //const [user] = useAuthState(auth);
 
@@ -72,8 +75,11 @@ const SignInForm = () => {
         }
     };
 
-    if (redirectToApp) {
-        return navigate('/app', { state: { email: loggedEmail } });
+    if (user) {
+        //Armazena localmente o usuário logado 
+        localStorage.setItem('user', JSON.stringify(user));
+        // Redireciona para a aplicação principal
+        return navigate('/app');
     }
 
     const handleChange = (event) => {

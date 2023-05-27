@@ -24,9 +24,10 @@ function SidebarSharedNoteComponent(props) {
                 onClick={handleSelectSharedNote}
             >
                 <SelectNote onClick={handleSelectSharedNote}>
-                    <ListItemText
+                    <ListItemText 
+                        sx={{maxWidth:'150px'}}
                         primary={_sharedNote.title}
-                        primaryTypographyProps={{fontSize: 14, fontWeight:'medium'}}
+                        primaryTypographyProps={{fontSize: 14, fontWeight:'medium', overflow:'clip'}}
                     />
                 </SelectNote>
                 <DeleteIcon onClick={handleDeleteSharedNote} />

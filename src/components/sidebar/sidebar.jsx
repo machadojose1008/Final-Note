@@ -184,7 +184,7 @@ function SidebarComponent(props) {
             ) : (
 
                 <SidebarContainer>
-                    <UserIcon icon={<Face />} label={props.user?.email} />
+                    <UserIcon icon={<Face />} label={props.user?.user.email} />
                     <SidebarButton>
                         <ActionList />
                         <AddNotebook newNotebook={newNotebook} />

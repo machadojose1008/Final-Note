@@ -9,14 +9,13 @@ import { db } from '../../utils/firebase/firebase-config';
 import { CustomButtomGroup, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import DateComponent from './date-component';
 import { useRef } from 'react';
-import ShareIcon from '@mui/icons-material/Share';
 import uploadImage from './image-uploader';
 import ImageIcon from '@mui/icons-material/Image';
 import SaveIcon from '@mui/icons-material/Save';
+import { SaveAlt } from '@mui/icons-material';
+import html2pdf from 'html2pdf.js';
 
-
-
-
+import '../../assets/quill.snow.css';
 
 const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeSharedNote, selectChat }) => {
     const [body, setBody] = useState('');
@@ -26,6 +25,22 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
     const [updateDate, setUpdateDate] = useState(null);
     const [openned, setOpenned] = useState(null);
     const quillRef = useRef(null);
+
+    const ExportToPdf = () => {
+        const element = document.querySelector('.noteEditor');
+        const options = {
+            margin: [10, 10, 10, 10],
+            filename: 'note.pdf',
+            image: { type: 'jpeg', quality: 0.98, includeHtmlInDataUrl: true },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf()
+            .set(options)
+            .from(element)
+            .save();
+    };
 
     const handleImageUpload = () => {
         const fileInput = document.createElement('input');
@@ -161,7 +176,7 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
                         ) : (
                             <DateComponent date={lastUpdate} />)}
                     </Grid>
-                    <Grid item xs={.5} sx={{display:'flex', flexDirection:'column', justifyContent:'flex-end'}} >
+                    <Grid item xs={.5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }} >
                         <IconButton onClick={closeSharedNote}>
                             <CloseIcon sx={{ color: 'black' }} />
                         </IconButton>
@@ -179,6 +194,14 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
 
             <Paper elevation={3}>
                 <CustomButtomGroup>
+                    <Button
+                        sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }}
+                        variant="contained" color="primary" startIcon={<SaveAlt />}
+                        onClick={ExportToPdf}
+                    >
+                        <Typography sx={{ fontSize: '8px' }}>Exportar PDF</Typography>
+                    </Button>
+
                     <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<ImageIcon />} size='small' onClick={handleImageUpload}>
                         <Typography sx={{ fontSize: '8px' }}>
                             Upload Imagem
@@ -191,14 +214,16 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
 
 
 
+                <div className='noteEditor'>
+                    <ReactQuill
+                        ref={quillRef}
+                        modules={modules}
+                        formats={formats}
+                        value={body ? body : ''}
+                        onChange={updateBody}
+                    />
+                </div>
 
-                <ReactQuill
-                    ref={quillRef}
-                    modules={modules}
-                    formats={formats}
-                    value={body ? body : ''}
-                    onChange={updateBody}
-                />
             </Paper>
 
         </EditorContainer >

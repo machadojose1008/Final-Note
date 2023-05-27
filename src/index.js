@@ -2,11 +2,11 @@ import React from 'react';
 import { createRoot} from 'react-dom/client';
 import './index.css';
 import { Routes, BrowserRouter as Router, Route } from 'react-router-dom';
-import SignUpForm from './login/sign-up-form.component';
-import SignInForm from './login/sign-in-form.component';
+import SignUpForm from './login/sign-up';
+import SignInForm from './login/login';
 import SrsComponent from './components/srs/srs';
 import App from './App';
-import './fonts/gundaly/Gundaly.ttf'
+import './utils/gundaly/Gundaly.ttf'
 
 
 

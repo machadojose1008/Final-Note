@@ -24,9 +24,9 @@ function SidebarItemComponent(props) {
                 onClick={handleSelectNote}
             >
                 <SelectNote onClick={handleSelectNote}>
-                    <ListItemText
+                    <ListItemText 
                         primary={_note.title}
-                        primaryTypographyProps={{fontSize: 14, fontWeight:'medium'}}
+                        primaryTypographyProps={{fontSize: 14, fontWeight:'medium',overflow:'unset'}}
                     />
                 </SelectNote>
                 <DeleteIcon onClick={handleDeleteNote} />

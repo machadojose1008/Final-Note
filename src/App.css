@@ -1,10 +1,9 @@
 @font-face {
   font-family: "Gundaly";
   src: local("Gundaly"),
-      url('../src/fonts/gundaly/Gundaly.ttf') format("truetype");
+      url('../src/utils/gundaly/Gundaly.ttf') format("truetype");
   font-weight: bold;
 }
-
 html,
 body {
   height: 100%;

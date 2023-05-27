@@ -11,6 +11,8 @@ import { db } from './utils/firebase/firebase-config.js';
 import SrsComponent from './components/srs/srs';
 import SharedNoteEditor from './components/editors/sharedNoteEditor';
 import ChatComponent from './components/chat/chat';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from './utils/firebase/firebase-config.js';
 
 // Required for side-effects
 require("firebase/firestore");
@@ -49,8 +51,11 @@ function App() {
   const [cardsUpdated, setCardsUpdated] = useState(false);
 
   // Logged user States
-  const [user, setUser] = useState(null);
+  const storedUser = localStorage.getItem('user');
+  const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
   const [userId, setUserId] = useState(null);
+  //const [user, loading, error] = useAuthState(auth);
+
 
   const location = useLocation();
 
@@ -75,7 +80,7 @@ function App() {
 
 
   const fetchUserId = async () => {
-    const userEmail = location.state.email;
+    const userEmail = user.user.email;
     const fetchednUserId = await findUserIdByEmail(userEmail);
     if (fetchednUserId) {
       fetchNotebooks(fetchednUserId);
@@ -109,7 +114,7 @@ function App() {
       setNotes(fetchedNotes);
     });
 
-    fetchSharedNotes(location.state.email);
+    fetchSharedNotes(user.user.email);
 
   };
 
@@ -296,7 +301,7 @@ function App() {
 
   const shareNote = async (noteObj, timestamp, emailDestiny, selectedNotebookIndex) => {
     const note = {
-      email: [location.state.email, emailDestiny],
+      email: [user.user.email, emailDestiny],
       title: noteObj.title,
       body: noteObj.body,
       timestamp: timestamp,
@@ -646,11 +651,20 @@ function App() {
     setShowSharedNotes(true);
   }
 
+  useEffect(() => {
+    // Atualize o local storage sempre que o usuário mudar
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
+
 
 
 
   useEffect(() => {
-    setUser(location.state);
+    console.log(user);
     fetchUserId();
 
     if (notesUpdated) {
@@ -756,7 +770,7 @@ function App() {
           {(showSharedNotes && showChat) ? (
             <Grid item xs={3}>
               <ChatComponent
-                userEmail={location.state.email}
+                userEmail={user.user.email}
                 selectedSharedNote={selectedSharedNote}
                 closeChat={closeChat}
               />
