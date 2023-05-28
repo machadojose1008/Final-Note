@@ -1,30 +1,45 @@
-import JsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import {  ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../utils/firebase/firebase-config';
+import Compressor from 'compressorjs';
 
-const HtmlStringToPdf = async (htmlString) => {
-  let iframe = document.createElement("iframe");
-  iframe.style.visibility = "hidden";
-  document.body.appendChild(iframe);
-  let iframedoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframedoc.body.innerHTML = htmlString;
-  
-  let canvas = await html2canvas(iframedoc.body, {});
-  
-  // Convert the iframe into a PNG image using canvas.
-  let imgData = canvas.toDataURL("image/png");
+const uploadImage = (imageFile) => {
+  return new Promise((resolve, reject) => {
+    // Redimensionar a imagem usando o Compressor.js
+    new Compressor(imageFile, {
+      quality: 0.5,
+      maxWidth: 640,
+      maxHeight: 640,
+      success: (compressedFile) => {
+        // Realizar o upload do arquivo comprimido
+        const storageRef = ref(storage, 'images/' + compressedFile.name);
+        const uploadTask = uploadBytesResumable(storageRef, compressedFile);
 
-  // Create a PDF document and add the image as a page.
-  const doc = new JsPDF({
-    format: "a4",
-    unit: "mm",
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // Acompanhamento do progresso do upload, se necessário
+          },
+          (error) => {
+            reject(error);
+          },
+          () => {
+            // Upload concluído com sucesso
+            getDownloadURL(uploadTask.snapshot.ref)
+              .then((downloadURL) => {
+                resolve(downloadURL);
+              })
+              .catch((error) => {
+                reject(error);
+              });
+          }
+        );
+      },
+      error: (error) => {
+        reject(error);
+      },
+    });
   });
-  doc.addImage(imgData, "PNG", 0, 0, 210, 297);
-
-  // Get the file as blob output.
-  let blob = doc.output("blob");
-
-  // Remove the iframe from the document when the file is generated.
-  document.body.removeChild(iframe);
 };
 
-export default HtmlStringToPdf;
+  
+export default uploadImage;

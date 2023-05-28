@@ -17,6 +17,7 @@ const SrsComponent = (props) => {
     const [currentDeckIndex, setCurrentDeckIndex] = useState(null);
     const [cards, setCards] = useState([]);
     const [showSrs, setShowSrs] = useState(false);
+    const [currentCardPosition, setCurrentCardPosition] = useState({ deckPosition: null, cardPosition: null })
 
     const setReviewDate = (reviewDate) => {
         // Atualiza a data do card do formato em milisegundos do firestore para o formato date do javascript
@@ -57,10 +58,6 @@ const SrsComponent = (props) => {
             deck.cards = updatedCards;
         });
 
-
-
-        console.log();
-
     }, [decks]);
 
     const filterCards = async (deck) => {
@@ -72,7 +69,7 @@ const SrsComponent = (props) => {
         });
         setCurrentCardIndex(0);
         await setCards(filteredCards);
-       
+
         return filteredCards;
     }
 
@@ -81,43 +78,92 @@ const SrsComponent = (props) => {
     }
 
     const handleReviewDeck = async (deck) => {
-        // Quando abrir o modal 
         const filteredCards = await filterCards(deck);
-        setCards(filteredCards);
-        setOpenModal(true);
-        const deckPosition = await findDeckPosition(decks, deck.id);
-        setCurrentDeckIndex(deckPosition);
-    
+        if (filteredCards.length === 0) {
+            alert('Nenhum card para revisar nesse deck no momento');
+        } else {
+            setCards(filteredCards);
+            setOpenModal(true);
+            const deckPosition = await findDeckPosition(decks, deck.id);
+            setCurrentDeckIndex(deckPosition);
+        }
 
 
     };
 
-    const handleNextCard = async (newEase, cardId, currentDeck) => {
-    
+    const handleReviewAll = async () => {
+        const revisionCards = [];
 
-        const cardIndex = await findCardPosition(decks[currentDeckIndex].cards, cardId);
+        await Promise.all(
+            decks.map(async (deck) => {
+                const filteredCards = await filterCards(deck);
+                filteredCards.map((card) => {
+                    revisionCards.push({ ...card });
+                });
 
-        decks[currentDeckIndex].cards[cardIndex].ease = newEase;
-        decks[currentDeckIndex].cards[cardIndex].reviewDate = Timestamp.now();
-
-         const nextCardIndex = currentCardIndex + 1;
-
-        if (nextCardIndex < cards.length) {
-            setCurrentCardIndex(currentCardIndex + 1);
-            setShowBack(false);
+            })
+        );
+        if (revisionCards.length === 0) {
+            alert('Nenhum card para revisão no momento!')
         } else {
-           handleCloseModal();
+            setCards(revisionCards);
+            setOpenModal(true);
+        }
+
+
+    };
+
+
+    const findCardInDeck = async (cardId) => {
+        const position = { deckPosition: null, cardPosition: null };
+
+        await Promise.all(
+            decks.map(async (deck) => {
+                await Promise.all(
+                    deck.cards.map(async (card) => {
+                        if (card.id === cardId) {
+                            position.deckPosition = await findDeckPosition(decks, deck.id);
+                            position.cardPosition = await findCardPosition(deck.cards, card.id);
+                        }
+                    })
+                );
+            })
+        );
+        setCurrentCardPosition(position);
+        return position;
+    };
+
+    const handleNextCard = async (newEase, cardId) => {
+        const currentPosition = await findCardInDeck(cardId);
+        const deckPosition = currentPosition.deckPosition;
+        const cardPosition = currentPosition.cardPosition;
+
+        if (deckPosition !== null && cardPosition !== null) {
+            const updatedDecks = [...decks];
+            updatedDecks[deckPosition].cards[cardPosition].ease = newEase;
+            updatedDecks[deckPosition].cards[cardPosition].reviewDate = Timestamp.now();
+
+
+            const nextCardIndex = currentCardIndex + 1;
+
+            if (nextCardIndex < cards.length) {
+                setCurrentCardIndex(nextCardIndex);
+                setShowBack(false);
+            } else {
+                handleCloseModal();
+            }
         }
     };
 
     const handleCloseModal = () => {
-       setOpenModal(false);
-       updateAfterReview(decks);
-    
+        setOpenModal(false);
+        updateAfterReview(decks);
+
     }
 
     const handleShowBack = () => {
         setShowBack(true);
+
     }
 
     return (
@@ -125,10 +171,18 @@ const SrsComponent = (props) => {
         <StudyComponentDiv>
             {(showSrs) ? (
                 <Grid container spacing={1}>
-                    <Grid item xs={12}>
+                    <Grid item xs={9}>
                         <Grid key='deckName'>
                             <h1>Decks</h1>
+                            <Typography sx={{ fontStyle: 'italic', color: 'red', fontWeight: 'bold' }}>Cards em Vermelho precisam de revisão</Typography>
                         </Grid>
+
+                    </Grid>
+                    <Grid item xs={3} sx={{ dispaly: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                        <Button onClick={handleReviewAll} title="Revisa todos os cards que já precisam de revisão." variant="contained" color="primary">
+                            <Typography>Revisar Tudo</Typography>
+                        </Button>
+
                     </Grid>
                     {decks.map((deck) => {
                         if (deck.cards.length === 0) {
@@ -155,11 +209,22 @@ const SrsComponent = (props) => {
                                             {deck.cards.map((card) => (
                                                 <ul>
                                                     <li>
-                                                        {card.title} {card.ease}
+                                                        {(card.ease) === 1 ? (
+                                                            <Typography color='red'>{card.title} {card.ease}</Typography>
+                                                        ) : (
+                                                            <Typography>{card.title} {card.ease}</Typography>
+                                                        )}
+
+
                                                     </li>
                                                 </ul>
                                             ))}
                                         </StyledCardContent>
+                                        {deck.cards.map((card) => {
+                                            if (card.ease === 1) (
+                                                <Typography color='red'>Cards precisam de revisão</Typography>
+                                            )
+                                        })}
                                         <CardActions sx={{ position: 'absolute' }}>
                                             <Button variant="contained" color="primary" size='small' onClick={() => handleReviewDeck(deck)}>Revisar Deck</Button>
                                         </CardActions>
@@ -169,12 +234,12 @@ const SrsComponent = (props) => {
                                                 open={openModal}
                                                 onClose={handleCloseModal}
                                                 closeAfterTransition
-                                               
+
                                                 sx={{
                                                     display: "flex",
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
-                                                    
+
                                                 }}
                                             >
 
@@ -183,48 +248,56 @@ const SrsComponent = (props) => {
                                                         <Card
                                                             sx={{
                                                                 maxWidth: 600,
-                                                                minWidth:600,
+                                                                minWidth: 600,
                                                                 minHeight: 300,
                                                                 margin: 'auto',
-                                                                
+
                                                             }}
                                                         >
-                                                            <CardHeader title={cards[currentCardIndex].title} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}/>
-                                                            <CardContent sx={{ display: "flex", justifyContent: 'space-around', alignContent:'center', flexDirection:'column', alignItems:'center'}}>
-                                                                <Typography variant="h5" component="h2" gutterBottom sx={{paddingBottom: '10px',display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                                            <CardHeader title={cards[currentCardIndex].title} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
+                                                            <CardContent sx={{ display: "flex", justifyContent: 'space-around', alignContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                                                                <Typography variant="h5" component="h2" gutterBottom sx={{ paddingBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                                     {removeHTMLTags(cards[currentCardIndex].front)}
                                                                 </Typography>
                                                                 <Divider />
-                                                                <Typography variant="h5" component="h2" gutterBottom sx={{paddingTop: '10px'}}>
+                                                                <Typography variant="h5" component="h2" gutterBottom sx={{ paddingTop: '10px' }}>
                                                                     {showBack ? removeHTMLTags(cards[currentCardIndex].back) : ''}
                                                                 </Typography>
                                                                 {showBack && (
-                                                                    <ButtonContainer>
+                                                                    <ButtonContainer sx={{ width: '500px' }}>
                                                                         <Button
                                                                             variant="contained"
                                                                             color="primary"
-                                                                            onClick={() => handleNextCard(3, cards[currentCardIndex].id, deck)}
+                                                                            size="small"
+                                                                            onClick={() => handleNextCard(1, cards[currentCardIndex].id)}
                                                                         >
-                                                                            Fácil
+                                                                            Difícil - 1 min
                                                                         </Button>
+
                                                                         <Button
                                                                             variant="contained"
                                                                             color="primary"
-                                                                            onClick={() => handleNextCard(2, cards[currentCardIndex].id, deck)}
+                                                                            size="small"
+                                                                            sx={{ display: 'block' }}
+                                                                            onClick={() => handleNextCard(2, cards[currentCardIndex].id)}
                                                                         >
-                                                                            Médio
+                                                                            Médio - 10 min
                                                                         </Button>
+
                                                                         <Button
                                                                             variant="contained"
                                                                             color="primary"
-                                                                            onClick={() => handleNextCard(1, cards[currentCardIndex].id, deck)}
+                                                                            size="small"
+                                                                            onClick={() => handleNextCard(3, cards[currentCardIndex].id)}
                                                                         >
-                                                                            Difícil
+                                                                            Fácil - 4 dias
                                                                         </Button>
+
+
                                                                     </ButtonContainer>
                                                                 )}
                                                                 {!showBack && (
-                                                                    <Button variant="contained" color="primary" size="small" sx={{maxWidth: '200px'}} onClick={handleShowBack}>
+                                                                    <Button variant="contained" color="primary" size="small" sx={{ maxWidth: '200px' }} onClick={handleShowBack}>
                                                                         Mostrar resposta
                                                                     </Button>
                                                                 )}

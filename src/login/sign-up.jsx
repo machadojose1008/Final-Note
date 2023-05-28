@@ -89,10 +89,10 @@ const SignUpForm = () => {
         setFormFields({ ...formFields, [name]: value });
 
         if (name === 'password') {
-           /*  setPasswordFormatConfirmation(false);
-            if (/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9@$&!]{8,}/.test(value)) { */
+             setPasswordFormatConfirmation(false);
+            if (/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9@$&!]{8,}/.test(value))
                 setPasswordFormatConfirmation(true);
-            /* } */
+            
         }
 
         if (name === 'confirmPassword') {

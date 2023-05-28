@@ -41,6 +41,7 @@ export const ButtonContainer = styles('div')({
   justifyContent: 'center',
   alignItems: 'center',
   marginTop: '5px',
+  width:'300px'
 });
 
 export const SrsReview = styles(Box, {})({

@@ -428,12 +428,13 @@ function App() {
     });
   };
 
-  const selectCard = async (card, deckIndex, cardIndex) => {
+  const selectCard = async (card,  cardIndex,deckIndex) => {
     setSelectedCardIndex(cardIndex);
     setSelectedCard(card);
     setSelectedDeckIndex(deckIndex);
     setShowCard(true);
     setShowStudy(false);
+    closeSharedNote();
   };
 
   const cardUpdate = (id, selectedDeckId, cardObj) => {
@@ -449,7 +450,6 @@ function App() {
 
       updateDoc(cardRef, data)
         .then((docRef) => {
-          console.log('Card atualizado');
           setCardsUpdated(true);
         })
         .catch((error) => {
@@ -468,6 +468,8 @@ function App() {
       title: cardTitle,
       front: '',
       back: '',
+      ease: 1,
+      reviewDate: serverTimestamp(),
     };
 
     const findDeckIndex = async (userId, _title) => {
@@ -499,9 +501,9 @@ function App() {
       id: newFromDB.id
     };
 
-    setCardsUpdated(false);
+    setCardsUpdated(true);
 
-    selectCard(newCard, newFromDB.id, deckId);
+    await selectCard(newCard, newFromDB.id, deckId);
   };
 
 
@@ -516,7 +518,7 @@ function App() {
       setSelectedCard(null);
     } else {
       decks[deckPosition].cards.length > 1 ?
-        selectCard(decks[deckPosition].cards[selectedCardIndex - 1], selectedCardIndex - 1) :
+        selectCard(decks[deckPosition].cards[selectedCardIndex - 1], selectedCardIndex - 1, deckIndex) :
         setSelectedCardIndex(null);
       setSelectedCard(null);
     }
@@ -592,7 +594,7 @@ function App() {
 
         updateDoc(deckRef, _card)
           .then(docRef => {
-            console.log('Documento Adiconado com sucesso');
+          
           })
           .catch(error => {
             console.log(error);
@@ -664,7 +666,7 @@ function App() {
 
 
   useEffect(() => {
-    console.log(user);
+    
     fetchUserId();
 
     if (notesUpdated) {

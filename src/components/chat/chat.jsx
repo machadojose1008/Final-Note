@@ -27,7 +27,7 @@ const ChatComponent = ({ selectedSharedNote, userEmail }) => {
 
     const newMessage = async (message) => {
         const novaMensagem = {
-            position: 'right',
+            position: 'left',
             type: 'text',
             title: userEmail,
             text: message

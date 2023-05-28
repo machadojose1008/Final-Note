@@ -7,7 +7,7 @@ function SidebarCardComponent(props) {
     const { _cardIndex, _card, deckIndex, selectedCardIndex, selectCard, deleteCard } = props;
 
     const handleSelectCard = () => {
-        selectCard(_card, deckIndex, _cardIndex);
+        selectCard(_card,_cardIndex, deckIndex );
     };
 
     const handleDeleteCard = () => {

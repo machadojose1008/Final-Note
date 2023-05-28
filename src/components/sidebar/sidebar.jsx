@@ -65,8 +65,8 @@ function SidebarComponent(props) {
     }
 
 
-    const selectNote = (note, notebookIndex, noteIndex) => {
-        props.selectNote(note, notebookIndex, noteIndex);
+    const selectNote = (note,noteIndex, notebookIndex ) => {
+        props.selectNote(note, noteIndex, notebookIndex );
     }
 
 
@@ -75,8 +75,8 @@ function SidebarComponent(props) {
 
     }
 
-    const selectCard = (card, deckIndex, cardIndex) => {
-        props.selectCard(card, deckIndex, cardIndex);
+    const selectCard = (card,cardIndex, deckIndex ) => {
+        props.selectCard(card, cardIndex,deckIndex) ;
     }
 
 
@@ -312,7 +312,7 @@ function SidebarComponent(props) {
 
 
 
-                    <IconButton
+                   {/*  <IconButton
                         sx={{
                             width: '100%',
                             borderRadius: '0.5em',
@@ -326,7 +326,7 @@ function SidebarComponent(props) {
                             Grupos
                         </Typography>
 
-                    </IconButton>
+                    </IconButton> */}
 
 
 
