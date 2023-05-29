@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { findNotebookPosition, findDeckPosition } from './helpers';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';
 import CardEditorComponent from './components/editors/card-editor';
@@ -13,13 +13,17 @@ import SharedNoteEditor from './components/editors/sharedNoteEditor';
 import ChatComponent from './components/chat/chat';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './utils/firebase/firebase-config.js';
+import { redirect } from 'react-router-dom';
 
 // Required for side-effects
 require("firebase/firestore");
 
 
+
+
 function App() {
 
+  const navigate = useNavigate();
   // Notebooks States
   const [notebooks, setNotebooks] = useState([]);
   const [selectedNotebookIndex, setSelectedNotebookIndex] = useState(null);
@@ -49,6 +53,7 @@ function App() {
   const storedUser = localStorage.getItem('user');
   const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
   const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(null);
 
   // Display setters
   const [showCard, setShowCard] = useState(null);
@@ -80,8 +85,17 @@ function App() {
       fetchNotebooks(fetchednUserId);
       fetchDecks(fetchednUserId);
       setUserId(fetchednUserId);
+      fetchUsername(fetchednUserId);
     }
   };
+
+  const fetchUsername = async (userId) => {
+    // Pega o nome de usuário do email logado
+    const ref = doc(db, `users`, userId);
+    const user = await getDoc(ref);
+    setUsername(user.data().displayName);
+
+  }
 
 
   const fetchNotebooks = async (userId) => {
@@ -616,6 +630,12 @@ function App() {
     setShowChat(!showChat);
   }
 
+  const logOut = () => {
+    console.log('logout');
+    auth.signOut();
+    return navigate('/signin')
+  }
+
   const closeSharedNote = async () => {
     if (selectedSharedNoteIndex !== null) {
       const dbRef = doc(db, 'sharedNotes', selectedSharedNoteIndex);
@@ -694,6 +714,8 @@ function App() {
           <Grid item xs={1.5}>
             <SidebarComponent
               user={user}
+              username={username}
+              logOut={logOut}
 
               notebooks={notebooks}
               newNote={newNote}

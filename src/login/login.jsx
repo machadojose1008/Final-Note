@@ -19,7 +19,6 @@ const SignInForm = () => {
     const location = useLocation();
     const [signInAuthUserWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);
 
-    //const [user] = useAuthState(auth);
 
     useEffect(() => {
         setCadastroRecente(location.state);

@@ -1,4 +1,5 @@
 import { Face } from "@mui/icons-material";
+import * as React from 'react';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import BookIcon from '@mui/icons-material/Book';
@@ -8,7 +9,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
 import { TreeView } from '@mui/lab';
-import { Button, DialogContent, DialogTitle, IconButton, TextField, Typography } from '@mui/material';
+import { Button, DialogContent, DialogTitle, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material';
 import List from '@mui/material/List';
 import { useLayoutEffect, useState } from 'react';
 import { ActionList, AddDialog, SidebarContainer, UserIcon } from '../componentStyles';
@@ -45,10 +46,18 @@ function SidebarComponent(props) {
     const [openDeckDialog, setOpenDeckDialog] = useState(false);
     const [renameId, setRenameId] = useState(null);
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const openMenu = Boolean(anchorEl);
+
 
     const newNote = (txt, notebookTitle) => {
         props.newNote(txt, notebookTitle);
         setTitle(null);
+    }
+
+    const handleLogOut = () => {
+        props.logOut();
     }
 
     const newNotebook = (notebookTitle) => {
@@ -65,8 +74,8 @@ function SidebarComponent(props) {
     }
 
 
-    const selectNote = (note,noteIndex, notebookIndex ) => {
-        props.selectNote(note, noteIndex, notebookIndex );
+    const selectNote = (note, noteIndex, notebookIndex) => {
+        props.selectNote(note, noteIndex, notebookIndex);
     }
 
 
@@ -75,8 +84,8 @@ function SidebarComponent(props) {
 
     }
 
-    const selectCard = (card,cardIndex, deckIndex ) => {
-        props.selectCard(card, cardIndex,deckIndex) ;
+    const selectCard = (card, cardIndex, deckIndex) => {
+        props.selectCard(card, cardIndex, deckIndex);
     }
 
 
@@ -142,6 +151,14 @@ function SidebarComponent(props) {
         setOpenNotebookDialog(false);
     }
 
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    }
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    }
+
     useLayoutEffect(() => {
 
         const settingNotes = async () => {
@@ -184,7 +201,23 @@ function SidebarComponent(props) {
             ) : (
 
                 <SidebarContainer>
-                    <UserIcon icon={<Face />} label={props.user?.user.email} />
+                
+                        <UserIcon onClick={handleMenu} icon={<Face />} label={props.username} >
+                            
+                        </UserIcon>
+                        <Menu
+                            id='user-menu'
+                            anchorEl={anchorEl}
+                            open={openMenu}
+                            onClose={handleCloseMenu}
+                            MenuListProps={{
+                                'aria-labelledby': 'basic-button'
+                            }}
+                        >
+                            <MenuItem onClick={handleLogOut} >Sair</MenuItem>
+                        </Menu>
+                   
+
                     <SidebarButton>
                         <ActionList />
                         <AddNotebook newNotebook={newNotebook} />
@@ -312,7 +345,7 @@ function SidebarComponent(props) {
 
 
 
-                   {/*  <IconButton
+                    {/*  <IconButton
                         sx={{
                             width: '100%',
                             borderRadius: '0.5em',
