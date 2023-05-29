@@ -219,7 +219,7 @@ function App() {
 
       updateDoc(sharedNoteRef, data)
         .then((docRef) => {
-
+          setSharedNotesUpdated(true);
         })
         .catch((err) => {
           console.log(err);
@@ -317,6 +317,7 @@ function App() {
 
     if (userDestiny === null) {
       alert('Email não encontrado');
+      return;
     }
     else {
 
@@ -434,7 +435,6 @@ function App() {
     setSelectedDeckIndex(deckIndex);
     setShowCard(true);
     setShowStudy(false);
-    closeSharedNote();
   };
 
   const cardUpdate = (id, selectedDeckId, cardObj) => {
