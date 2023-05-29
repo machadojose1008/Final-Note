@@ -233,7 +233,7 @@ function SidebarComponent(props) {
                         defaultEndIcon={<div style={{ width: 24 }} />}
                         sx={{ maxWidth: 200 }}
                     >
-                        <StyledTreeItem nodeId='notebooks' labelText='Notebooks' labelIcon={BookIcon} >
+                        <StyledTreeItem nodeId='notebooks' labelText='Cadernos' labelIcon={BookIcon} >
                             {notebooks.map((notebook) => (
                                 <StyledTreeItem
                                     renamemenu={renameMenu}

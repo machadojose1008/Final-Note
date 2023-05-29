@@ -188,7 +188,7 @@ const SrsComponent = (props) => {
                         if (deck.cards.length === 0) {
                             return (
                                 <Grid item xs={2.4} key={deck.id}>
-                                    <Card raised sx={{ maxWidth: '300px', padding: '5px', minWidth: '300px' }}>
+                                    <Card raised sx={{ maxWidth: '300px', maxHeight: '320px', padding: '5px', minWidth: '300px' }}>
                                         <CardContent >
                                             <Typography variant="h4" color='black' gutterBottom sx={{minWidth:'290px'}}>
                                                 {deck.title}
