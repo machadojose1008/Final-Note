@@ -52,7 +52,7 @@ body {
   width: 100%;
   min-height: 46rem;
   padding: 30px 20px 30px;
-  overflow: scroll;
+  overflow: auto;
   overflow-x: hidden;
 }
 

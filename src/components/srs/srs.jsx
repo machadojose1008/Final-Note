@@ -191,7 +191,7 @@ const SrsComponent = (props) => {
                                     <Card raised sx={{ maxWidth: '300px', maxHeight: '320px', padding: '5px', minWidth: '300px' }}>
                                         <CardContent >
                                             <Typography variant="h4" color='black' gutterBottom noWrap={true} sx={{
-                                                minWidth: '290px', overflow: 'scroll', overflowY: 'unset',
+                                                minWidth: '290px', overflow: 'auto', overflowY: 'unset',
                                                 display: '-webkit-box',
                                                 '-webkit-line-clamp': 1,
                                                 '-webkit-box-orient': 'vertical'
@@ -269,7 +269,7 @@ const SrsComponent = (props) => {
                                                                 maxHeight: 800,
                                                                 minHeight: 300,
                                                                 margin: 'auto',
-                                                                overflow:'scroll',
+                                                                overflow:'auto',
                                                                 overflowX:'unset'
 
                                                             }}
@@ -279,7 +279,7 @@ const SrsComponent = (props) => {
                                                                 <Typography
                                                                     variant="h5"
                                                                     component="h2" gutterBottom
-                                                                    sx={{ paddingBottom: '10px', overflow: 'scroll', maxWidth: '600px', maxHeight: '400px' }}
+                                                                    sx={{ paddingBottom: '10px', overflow: 'auto', maxWidth: '600px', maxHeight: '400px' }}
                                                                     dangerouslySetInnerHTML={{ __html: cards[currentCardIndex].front }}
                                                                 />
 
@@ -289,7 +289,7 @@ const SrsComponent = (props) => {
                                                                         variant="h5"
                                                                         component="h2"
                                                                         gutterBottom
-                                                                        sx={{ paddingTop: '10px', overflow: 'scroll', maxWidth: '600px', maxHeight: '400px' }}
+                                                                        sx={{ paddingTop: '10px', overflow: 'auto', maxWidth: '600px', maxHeight: '400px' }}
                                                                         dangerouslySetInnerHTML={{ __html: cards[currentCardIndex].back }}
                                                                     />
 

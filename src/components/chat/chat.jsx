@@ -68,7 +68,7 @@ const ChatComponent = ({ selectedSharedNote, userEmail }) => {
                         Chat
                     </Typography>
                 </AppBar>
-                <Box sx={{ height: '95%', overflow: 'scroll', maxHeight:'700px', overflowX:'unset'}}>
+                <Box sx={{ height: '95%', overflow: 'auto', maxHeight:'700px', overflowX:'unset'}}>
 
                     <MessageList
                         className="message-list"
