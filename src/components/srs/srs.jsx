@@ -190,7 +190,12 @@ const SrsComponent = (props) => {
                                 <Grid item xs={2.4} key={deck.id}>
                                     <Card raised sx={{ maxWidth: '300px', maxHeight: '320px', padding: '5px', minWidth: '300px' }}>
                                         <CardContent >
-                                            <Typography variant="h4" color='black' gutterBottom sx={{minWidth:'290px'}}>
+                                            <Typography variant="h4" color='black' gutterBottom noWrap={true} sx={{
+                                                minWidth: '290px', overflow: 'scroll', overflowY:'unset',
+                                                display: '-webkit-box',
+                                                '-webkit-line-clamp': 1,
+                                                '-webkit-box-orient': 'vertical'
+                                            }}>
                                                 {deck.title}
                                             </Typography>
                                             <Typography sx={{ display: 'center' }}>Nenhum card criado!</Typography>
@@ -210,7 +215,12 @@ const SrsComponent = (props) => {
                                                 <ul>
                                                     <li>
                                                         {(card.ease) === 1 ? (
-                                                            <Typography color='red'>{card.title} </Typography>
+                                                            <Typography color='red' sx={{
+                                                                overflow: 'hidden',
+                                                                display: '-webkit-box',
+                                                                '-webkit-line-clamp': 1,
+                                                                '-webkit-box-orient': 'vertical'
+                                                            }}>{card.title} </Typography>
                                                         ) : (
                                                             <Typography>{card.title}</Typography>
                                                         )}

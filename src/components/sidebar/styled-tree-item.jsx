@@ -87,9 +87,7 @@ export function StyledTreeItem(props) {
               flexGrow: 1,
               maxWidth: '140px',
               overflow: 'hidden',
-              display: '-webkit-box',
-              '-webkit-line-clamp': 1,
-              '-webkit-box-orient': 'vertical'
+
             }}>
             {labelText}
           </Typography>
