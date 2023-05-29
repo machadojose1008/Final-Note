@@ -341,28 +341,6 @@ function SidebarComponent(props) {
                     )}
 
 
-
-
-
-
-                    {/*  <IconButton
-                        sx={{
-                            width: '100%',
-                            borderRadius: '0.5em',
-                            display: 'inline-flex',
-                            justifyContent: 'flex-start'
-                        }}
-                        onClick={selectGroup}
-                    >
-                        <GroupIcon />
-                        <Typography sx={{ paddingLeft: '10px' }}>
-                            Grupos
-                        </Typography>
-
-                    </IconButton> */}
-
-
-
                     <AddDialog open={openNotebookDialog} onClose={closeRenameNotebook} >
                         <DialogTitle>Insira o novo nome do Notebook</DialogTitle>
                         <DialogContent>

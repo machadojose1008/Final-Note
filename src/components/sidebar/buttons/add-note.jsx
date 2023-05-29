@@ -3,15 +3,25 @@ import { useState, useEffect } from "react";
 import { AddDialog, SideButton } from "../../componentStyles";
 
 function AddNote(props) {
-    const {notebooksTitle} = props;
+    const { notebooksTitle } = props;
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [selectedNotebookTitle, setSelectedNotebookTitle] = useState('');
     const [keyPressed, setKeyPressed] = useState(false);
 
     const newNote = () => {
-        props.newNote(title, selectedNotebookTitle);
-        setOpen(false);
+        if (title !== '') {
+            if (title.length > 30) {
+                alert('Título muito grande!');
+            } else {
+                props.newNote(title, selectedNotebookTitle);
+                setOpen(false);
+                setTitle('');
+            }
+        }else{
+            alert('Nome da Nota vazio!');
+        }
+
     };
 
     const handleClick = () => {
@@ -26,8 +36,8 @@ function AddNote(props) {
         setTitle(txt);
     };
 
-    const handleNotebook =  (event) => {
-         setSelectedNotebookTitle(event.target.value);
+    const handleNotebook = (event) => {
+        setSelectedNotebookTitle(event.target.value);
     }
 
     useEffect(() => {
@@ -35,7 +45,7 @@ function AddNote(props) {
             newNote();
         }
         setKeyPressed(false);
-      }, [keyPressed]);
+    }, [keyPressed]);
 
     return (
         <SideButton>
@@ -59,14 +69,14 @@ function AddNote(props) {
                         autoFocus
                         margin='dense'
                         id='titulo'
-                        sx={{padding: '0px 0px 15px'}}
+                        sx={{ padding: '0px 0px 15px' }}
                         label='Título da Nota'
                         type='text'
                         fullWidth
                         variant="standard"
                         onChange={(e) => handleTitle(e.target.value)}
                         onKeyDown={(event) => {
-                            if(event.key === 'Enter') {
+                            if (event.key === 'Enter') {
                                 setKeyPressed(true);
                             }
                         }}
@@ -82,7 +92,7 @@ function AddNote(props) {
                         >
                             {notebooksTitle.map((title) => (
                                 <MenuItem key={title} value={title}>{title}</MenuItem>
-                            ))} 
+                            ))}
                         </Select>
                     </FormControl>
                 </DialogContent>

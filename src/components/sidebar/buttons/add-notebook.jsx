@@ -8,8 +8,19 @@ function AddNotebook(props) {
     const [keyPressed, setKeyPressed] = useState(false);
 
     const newNotebook = () => {
-        props.newNotebook(title);
-        setOpen(false);
+        if (title !== '') {
+            if (title.length > 30) {
+                alert('Título muito grande');
+            } else {
+                props.newNotebook(title);
+                setOpen(false);
+                setTitle('');
+            }
+
+        }else{
+            alert('Nome do Carderno Vazio!');
+        }
+
     };
 
     const handleClick = () => {

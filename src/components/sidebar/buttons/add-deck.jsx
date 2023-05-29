@@ -8,8 +8,18 @@ function AddDeck(props) {
     const [keyPressed, setKeyPressed] = useState(false);
 
     const newDeck = () => {
-        props.newDeck(title);
-        setOpen(false);
+        if (title !== '') {
+            if (title.length > 30) {
+                alert('Título do deck muito grande!');
+            } else {
+                props.newDeck(title);
+                setOpen(false);
+                setTitle('');
+            }
+        }else {
+            alert('Nome do Deck Vazio!');
+        }
+
     };
 
     const handleClick = () => {
@@ -59,7 +69,7 @@ function AddDeck(props) {
                         variant="standard"
                         onChange={(e) => handleTitle(e.target.value)}
                         onKeyDown={(event) => {
-                            if(event.key === 'Enter') {
+                            if (event.key === 'Enter') {
                                 setKeyPressed(true);
                             }
                         }}

@@ -191,7 +191,7 @@ const SrsComponent = (props) => {
                                     <Card raised sx={{ maxWidth: '300px', maxHeight: '320px', padding: '5px', minWidth: '300px' }}>
                                         <CardContent >
                                             <Typography variant="h4" color='black' gutterBottom noWrap={true} sx={{
-                                                minWidth: '290px', overflow: 'scroll', overflowY:'unset',
+                                                minWidth: '290px', overflow: 'scroll', overflowY: 'unset',
                                                 display: '-webkit-box',
                                                 '-webkit-line-clamp': 1,
                                                 '-webkit-box-orient': 'vertical'
@@ -264,22 +264,38 @@ const SrsComponent = (props) => {
                                                     <Fade in={openModal}>
                                                         <Card
                                                             sx={{
-                                                                maxWidth: 600,
-                                                                minWidth: 600,
+                                                                maxWidth: 800,
+                                                                minWidth: 800,
+                                                                maxHeight: 800,
                                                                 minHeight: 300,
                                                                 margin: 'auto',
+                                                                overflow:'scroll',
+                                                                overflowX:'unset'
 
                                                             }}
                                                         >
                                                             <CardHeader title={cards[currentCardIndex].title} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
                                                             <CardContent sx={{ display: "flex", justifyContent: 'space-around', alignContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-                                                                <Typography variant="h5" component="h2" gutterBottom sx={{ paddingBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                                    {removeHTMLTags(cards[currentCardIndex].front)}
-                                                                </Typography>
+                                                                <Typography
+                                                                    variant="h5"
+                                                                    component="h2" gutterBottom
+                                                                    sx={{ paddingBottom: '10px', overflow: 'scroll', maxWidth: '600px', maxHeight: '400px' }}
+                                                                    dangerouslySetInnerHTML={{ __html: cards[currentCardIndex].front }}
+                                                                />
+
                                                                 <Divider />
-                                                                <Typography variant="h5" component="h2" gutterBottom sx={{ paddingTop: '10px' }}>
-                                                                    {showBack ? removeHTMLTags(cards[currentCardIndex].back) : ''}
-                                                                </Typography>
+                                                                {showBack ? (
+                                                                    <Typography
+                                                                        variant="h5"
+                                                                        component="h2"
+                                                                        gutterBottom
+                                                                        sx={{ paddingTop: '10px', overflow: 'scroll', maxWidth: '600px', maxHeight: '400px' }}
+                                                                        dangerouslySetInnerHTML={{ __html: cards[currentCardIndex].back }}
+                                                                    />
+
+
+                                                                ) : ''}
+
                                                                 {showBack && (
                                                                     <ButtonContainer sx={{ width: '500px' }}>
                                                                         <Button

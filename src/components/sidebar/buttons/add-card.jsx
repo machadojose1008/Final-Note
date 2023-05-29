@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { AddDialog, SideButton } from "../../componentStyles";
 
 function AddCard(props) {
-    const {decksTitle} = props;
+    const { decksTitle } = props;
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [selectedDeckTitle, setSelectedDeckTitle] = useState('');
@@ -11,8 +11,19 @@ function AddCard(props) {
 
 
     const newCard = () => {
-        props.newCard(title, selectedDeckTitle);
-        setOpen(false);
+        if (title !== '') {
+            if (title.length > 30) {
+                alert('Título muito grande');
+            } else {
+                props.newCard(title, selectedDeckTitle);
+                setOpen(false);
+                setTitle('');
+            }
+        } else {
+            alert('Nome do Card Vazio');
+        }
+
+
     };
 
     const handleClick = () => {
@@ -33,12 +44,12 @@ function AddCard(props) {
 
     useEffect(() => {
         if (keyPressed && title && selectedDeckTitle) {
-          newCard();
+            newCard();
         }
         setKeyPressed(false);
-      }, [keyPressed]);
+    }, [keyPressed]);
 
-   
+
     return (
         <SideButton>
             <Box sx={{ paddingX: '20px' }}>
@@ -61,14 +72,14 @@ function AddCard(props) {
                         autoFocus
                         margin='dense'
                         id='titulo'
-                        sx={{padding: '0px 0px 15px'}}
+                        sx={{ padding: '0px 0px 15px' }}
                         label='Título do Card'
                         type='text'
                         fullWidth
                         variant="standard"
                         onChange={(e) => handleTitle(e.target.value)}
                         onKeyDown={(event) => {
-                            if(event.key === 'Enter') {
+                            if (event.key === 'Enter') {
                                 setKeyPressed(true);
                             }
                         }}
@@ -88,11 +99,11 @@ function AddCard(props) {
                         </Select>
                     </FormControl>
                 </DialogContent>
-                <Button onClick={handleClose} sx={{color:'black', }}>Cancelar</Button>
+                <Button onClick={handleClose} sx={{ color: 'black', }}>Cancelar</Button>
                 <Button onClick={newCard}>Pronto</Button>
             </AddDialog>
         </SideButton>
-            
+
 
 
     );
