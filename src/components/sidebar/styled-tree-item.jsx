@@ -42,7 +42,7 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 
 
 export function StyledTreeItem(props) {
-  const { bgColor, color, labelIcon: LabelIcon, labelInfo, labelText,showMenu, type, ...other } = props;
+  const { bgColor, color, labelIcon: LabelIcon, labelInfo, labelText, showMenu, type, ...other } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClose = (event) => {
@@ -58,21 +58,21 @@ export function StyledTreeItem(props) {
 
   const renamemenu = (event) => {
     event.stopPropagation();
-    if(type === 'notebook'){
-       props.renamemenu(props.nodeId, type); 
-    }else if(type === 'deck'){
-        props.renamemenu(props.nodeId, type);
+    if (type === 'notebook') {
+      props.renamemenu(props.nodeId, type);
+    } else if (type === 'deck') {
+      props.renamemenu(props.nodeId, type);
     }
-    
+
   }
 
   const deleteMenu = (event) => {
     event.stopPropagation();
-    if(type === 'notebook'){
-        props.deleteMenu(props.nodeId, type); 
-     }else if(type === 'deck'){
-         props.deleteMenu(props.nodeId, type);
-     }
+    if (type === 'notebook') {
+      props.deleteMenu(props.nodeId, type);
+    } else if (type === 'deck') {
+      props.deleteMenu(props.nodeId, type);
+    }
   };
 
 
@@ -81,7 +81,16 @@ export function StyledTreeItem(props) {
       label={
         <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }}>
           <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} />
-          <Typography variant="body2" sx={{ fontWeight: 'inherit', flexGrow: 1, maxWidth:'100px', overflow:'hidden' }}>
+          <Typography variant="body2" noWrap={true}
+            sx={{
+              fontWeight: 'inherit',
+              flexGrow: 1,
+              maxWidth: '140px',
+              overflow: 'hidden',
+              display: '-webkit-box',
+              '-webkit-line-clamp': 1,
+              '-webkit-box-orient': 'vertical'
+            }}>
             {labelText}
           </Typography>
           <Typography variant="caption" color="inherit">
@@ -98,13 +107,13 @@ export function StyledTreeItem(props) {
             open={open}
             onClose={handleClose}
             MenuListProps={{
-              'aria-labelledby': {labelText},
+              'aria-labelledby': { labelText },
             }}
           >
 
             <MenuItem onClick={(event) => renamemenu(event)}>{(type === 'notebook') ? 'Renomear caderno' : 'Renomear Deck'}</MenuItem>
             <MenuItem onClick={(event) => deleteMenu(event)}>{(type === 'notebook') ? 'Deletar caderno' : 'Deletar Deck'}</MenuItem>
-            
+
           </Menu>
 
         </Box>
