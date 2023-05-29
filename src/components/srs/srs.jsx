@@ -188,7 +188,7 @@ const SrsComponent = (props) => {
                         if (deck.cards.length === 0) {
                             return (
                                 <Grid item xs={2.4} key={deck.id}>
-                                    <Card raised sx={{ maxWidth: '300px', padding: '5px', minWidth: '200px' }}>
+                                    <Card raised sx={{ maxWidth: '300px', padding: '5px', minWidth: '280px' }}>
                                         <CardContent >
                                             <Typography variant="h4" color='black' gutterBottom>
                                                 {deck.title}
@@ -210,9 +210,9 @@ const SrsComponent = (props) => {
                                                 <ul>
                                                     <li>
                                                         {(card.ease) === 1 ? (
-                                                            <Typography color='red'>{card.title} {card.ease}</Typography>
+                                                            <Typography color='red'>{card.title} </Typography>
                                                         ) : (
-                                                            <Typography>{card.title} {card.ease}</Typography>
+                                                            <Typography>{card.title}</Typography>
                                                         )}
 
 
@@ -226,7 +226,14 @@ const SrsComponent = (props) => {
                                             )
                                         })}
                                         <CardActions sx={{ position: 'absolute' }}>
-                                            <Button variant="contained" color="primary" size='small' onClick={() => handleReviewDeck(deck)}>Revisar Deck</Button>
+                                            <Button title="Revisar todos os cards que precisam de revisão do deck"
+                                                variant="contained"
+                                                color="primary"
+                                                size='small'
+                                                onClick={() => handleReviewDeck(deck)}
+                                            >
+                                                Revisar Deck
+                                            </Button>
                                         </CardActions>
 
                                         {openModal ? (

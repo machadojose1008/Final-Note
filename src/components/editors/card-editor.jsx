@@ -105,7 +105,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
             <EditorNavBar>
 
                 <Grid container sx={{ width: '100%' }} >
-                    <Grid item xs={9} sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Grid item xs={11} sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Title>
                             Título do card:
                         </Title>
@@ -115,7 +115,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                             onChange={updateTitle}>
                         </TitleInput>
                     </Grid>
-                    <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <IconButton onClick={closeCard}>
                             <CloseIcon sx={{ color: 'black' }} />
                         </IconButton>
