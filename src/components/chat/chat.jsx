@@ -10,6 +10,7 @@ import { db } from "../../utils/firebase/firebase-config";
 
 const ChatComponent = ({ selectedSharedNote, userEmail }) => {
 
+
     const [mensagens, setMensagens] = useState([]);
 
     useEffect(() => {

@@ -18,9 +18,6 @@ import { auth } from './utils/firebase/firebase-config.js';
 require("firebase/firestore");
 
 
-
-
-
 function App() {
 
   // Notebooks States
@@ -28,7 +25,6 @@ function App() {
   const [selectedNotebookIndex, setSelectedNotebookIndex] = useState(null);
 
   // Notes States
-  const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(null);
   const [notesUpdated, setNotesUpdated] = useState(false);
@@ -45,7 +41,6 @@ function App() {
   const [selectedDeckIndex, setSelectedDeckIndex] = useState(null);
 
   // Cards States
-  const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [cardsUpdated, setCardsUpdated] = useState(false);
@@ -54,10 +49,6 @@ function App() {
   const storedUser = localStorage.getItem('user');
   const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
   const [userId, setUserId] = useState(null);
-  //const [user, loading, error] = useAuthState(auth);
-
-
-  const location = useLocation();
 
   // Display setters
   const [showCard, setShowCard] = useState(null);
@@ -67,7 +58,9 @@ function App() {
   const [showChat, setShowChat] = useState(false);
 
 
+
   const findUserIdByEmail = async (email) => {
+    // Função auxiliar para pegar o userId com um email
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
@@ -80,6 +73,7 @@ function App() {
 
 
   const fetchUserId = async () => {
+    // Buscar Material do usuário logado antes de carregar a página
     const userEmail = user.user.email;
     const fetchednUserId = await findUserIdByEmail(userEmail);
     if (fetchednUserId) {
@@ -91,6 +85,8 @@ function App() {
 
 
   const fetchNotebooks = async (userId) => {
+    // Busca os notebooks do usuário logado e carrega no notebooks
+
     const notebooksRef = collection(db, `users/${userId}/notebooks`);
     const q = query(notebooksRef);
     const querySnapshot = await getDocs(q);
@@ -111,14 +107,39 @@ function App() {
 
       fetchedNotebooks.push({ id: notebookId, title: notebookData.title, notes: fetchedNotes });
       setNotebooks(fetchedNotebooks);
-      setNotes(fetchedNotes);
     });
 
     fetchSharedNotes(user.user.email);
 
   };
 
+  const fetchDecks = async (userId) => {
+    // Busca os decks do usuário logado e carrega em decks.
+
+
+    const decksRef = collection(db, `users/${userId}/decks`);
+    const q = query(decksRef);
+    const querySnapshot = await getDocs(q);
+    const fetchedDecks = [];
+    querySnapshot.forEach(async (doc) => {
+      const deckId = doc.id;
+      const deckData = doc.data();
+      const cardsRef = collection(db, `users/${userId}/decks/${deckId}/cards`);
+      const cardsQuery = query(cardsRef);
+      const cardsQuerySnapshot = await getDocs(cardsQuery);
+      const fetchedCards = [];
+      cardsQuerySnapshot.forEach((cardDoc) => {
+        fetchedCards.push({ id: cardDoc.id, ...cardDoc.data() });
+      });
+      fetchedDecks.push({ id: deckId, title: deckData.title, cards: fetchedCards });
+      setDecks(fetchedDecks);
+    });
+  };
+
+
   const fetchSharedNotes = async (email) => {
+    // Busca no sharedNotes as notas que possuem o usuário atual como dono  e carrega no sharedNotes
+
     const sharedNotesRef = collection(db, 'sharedNotes');
     const q = query(sharedNotesRef);
     const querySnapshot = await getDocs(q);
@@ -408,28 +429,8 @@ function App() {
 
   };
 
-  const fetchDecks = async (userId) => {
-    const decksRef = collection(db, `users/${userId}/decks`);
-    const q = query(decksRef);
-    const querySnapshot = await getDocs(q);
-    const fetchedDecks = [];
-    querySnapshot.forEach(async (doc) => {
-      const deckId = doc.id;
-      const deckData = doc.data();
-      const cardsRef = collection(db, `users/${userId}/decks/${deckId}/cards`);
-      const cardsQuery = query(cardsRef);
-      const cardsQuerySnapshot = await getDocs(cardsQuery);
-      const fetchedCards = [];
-      cardsQuerySnapshot.forEach((cardDoc) => {
-        fetchedCards.push({ id: cardDoc.id, ...cardDoc.data() });
-      });
-      fetchedDecks.push({ id: deckId, title: deckData.title, cards: fetchedCards });
-      setDecks(fetchedDecks);
-      setCards(fetchedCards);
-    });
-  };
 
-  const selectCard = async (card,  cardIndex,deckIndex) => {
+  const selectCard = async (card, cardIndex, deckIndex) => {
     setSelectedCardIndex(cardIndex);
     setSelectedCard(card);
     setSelectedDeckIndex(deckIndex);
@@ -594,7 +595,7 @@ function App() {
 
         updateDoc(deckRef, _card)
           .then(docRef => {
-          
+
           })
           .catch(error => {
             console.log(error);
@@ -666,7 +667,7 @@ function App() {
 
 
   useEffect(() => {
-    
+
     fetchUserId();
 
     if (notesUpdated) {
