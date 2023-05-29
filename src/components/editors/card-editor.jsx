@@ -14,21 +14,33 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
     const [back, setBack] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
-    const quillRef = useRef(null);
+    const backQuillRef = useRef(null);
+    const frontQuillRef = useRef(null);
+    const [activeEditor, setActiveEditor] = useState('front');
 
-    const handleImageUpload = () => {
+
+    const handleImageUpload = async (editorName) => {
+            setActiveEditor(editorName);
+        
+
+
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
-        fileInput.onchange = handleFileChange;
+        fileInput.onchange = (event) =>  handleFileChange(editorName, event);
         fileInput.click();
     };
 
-    const handleFileChange = (event) => {
+    const handleFileChange = (editorName, event) => {
         const file = event.target.files[0];
+
         uploadImage(file).then((imageUrl) => {
-            const range = quillRef.current.getEditor().getSelection();
-            quillRef.current.getEditor().insertEmbed(range ? range.index : 0, 'image', imageUrl);
+            const range = editorName === 'front' ? frontQuillRef.current.getEditor().getSelection() : backQuillRef.current.getEditor().getSelection();
+            if (editorName === 'front') {
+                frontQuillRef.current.getEditor().insertEmbed(range ? range.index : 0, 'image', imageUrl);
+            } else {
+                backQuillRef.current.getEditor().insertEmbed(range ? range.index : 0, 'image', imageUrl);
+            }
         });
     };
 
@@ -80,7 +92,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
     const update = useCallback(
         debounce((cardObj) => {
             cardUpdate(id, selectedDeckIndex, cardObj);
-        }, 1500),
+        }, 2000),
         [id, selectedDeckIndex, cardUpdate]
     );
 
@@ -101,64 +113,93 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
 
     return (
         <EditorContainer sx={{ paddingTop: '8px' }}>
+            {(front && back) ? (
+                <div>
+                    <EditorNavBar>
 
-            <EditorNavBar>
+                        <Grid container sx={{ width: '100%' }} >
+                            <Grid item xs={11} sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <Title>
+                                    Título do card:
+                                </Title>
+                                <TitleInput
+                                    placeholder='Título do cartão'
+                                    value={title ? title : ''}
+                                    onChange={updateTitle}>
+                                </TitleInput>
+                            </Grid>
+                            <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <IconButton onClick={closeCard}>
+                                    <CloseIcon sx={{ color: 'black' }} />
+                                </IconButton>
+                            </Grid>
+                        </Grid>
 
-                <Grid container sx={{ width: '100%' }} >
-                    <Grid item xs={11} sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <Title>
-                            Título do card:
-                        </Title>
-                        <TitleInput
-                            placeholder='Título do cartão'
-                            value={title ? title : ''}
-                            onChange={updateTitle}>
-                        </TitleInput>
-                    </Grid>
-                    <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <IconButton onClick={closeCard}>
-                            <CloseIcon sx={{ color: 'black' }} />
-                        </IconButton>
-                    </Grid>
-                </Grid>
-
-            </EditorNavBar>
+                    </EditorNavBar>
 
 
 
 
-            <Paper elevation={3}>
-                <CustomButtomGroup>
-                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<ImageIcon />} size='small' onClick={handleImageUpload}>
-                        <Typography sx={{ fontSize: '8px' }}>
-                            Upload Imagem
-                        </Typography>
-                    </Button>
-                    <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<SaveIcon />} size='small' onClick={handleSave}>
-                        <Typography sx={{ fontSize: '8px' }}>Salvar</Typography>
-                    </Button>
-                </CustomButtomGroup>
-                <CardEditArea>
-                    <Stack direction='column' spacing={.6}>
-                        <ReactQuill
-                            ref={quillRef}
-                            modules={modules}
-                            formats={formats}
-                            value={front}
-                            onChange={updateFront}
-                            placeholder='Frente do cartão'
-                        />
-                        <ReactQuill
-                            ref={quillRef}
-                            modules={modules}
-                            formats={formats}
-                            value={back}
-                            onChange={updateBack}
-                            placeholder='Traseira do cartão'
-                        />
-                    </Stack>
-                </CardEditArea>
-            </Paper>
+                    <Paper elevation={3}>
+                        <CustomButtomGroup>
+                            <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }}
+                                variant="contained"
+                                color="primary"
+                                startIcon={<ImageIcon />}
+                                size='small'
+                                onClick={() => handleImageUpload('front')}
+                            >
+                                <Typography sx={{ fontSize: '8px' }}>
+                                    Upload Imagem frente
+                                </Typography>
+                            </Button>
+                            <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }}
+                                variant="contained"
+                                color="primary"
+                                startIcon={<ImageIcon />}
+                                size='small'
+                                onClick={() => handleImageUpload('back')}
+                            >
+                                <Typography sx={{ fontSize: '8px' }}>
+                                    Upload Imagem traseira
+                                </Typography>
+                            </Button>
+                            <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }}
+                                variant="contained"
+                                color="primary"
+                                startIcon={<SaveIcon />}
+                                size='small'
+                                onClick={handleSave}
+                            >
+                                <Typography sx={{ fontSize: '8px' }}>Salvar</Typography>
+                            </Button>
+                        </CustomButtomGroup>
+                        <CardEditArea>
+                            <Stack direction='column' spacing={.6}>
+                                <ReactQuill
+                                    ref={frontQuillRef}
+                                    modules={modules}
+                                    formats={formats}
+                                    value={front ? front : ''}
+                                    onChange={updateFront}
+                                    placeholder='Frente do cartão'
+                                />
+                                <ReactQuill
+                                    ref={backQuillRef}
+                                    modules={modules}
+                                    formats={formats}
+                                    value={back ? back : ''}
+                                    onChange={updateBack}
+                                    placeholder='Traseira do cartão'
+                                />
+                            </Stack>
+                        </CardEditArea>
+                    </Paper>
+
+                </div>
+
+
+            ) : null}
 
 
         </EditorContainer >

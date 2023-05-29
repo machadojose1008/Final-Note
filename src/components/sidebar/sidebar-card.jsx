@@ -7,7 +7,7 @@ function SidebarCardComponent(props) {
     const { _cardIndex, _card, deckIndex, selectedCardIndex, selectCard, deleteCard } = props;
 
     const handleSelectCard = () => {
-        selectCard(_card,_cardIndex, deckIndex );
+        selectCard(_card, _cardIndex, deckIndex);
     };
 
     const handleDeleteCard = () => {
@@ -24,12 +24,12 @@ function SidebarCardComponent(props) {
                 onClick={handleSelectCard}
             >
                 <SelectNote onClick={handleSelectCard}>
-                    <ListItemText 
+                    <ListItemText
                         primary={_card.title}
-                        primaryTypographyProps={{fontSize: 14, fontWeight:'medium'}}
+                        primaryTypographyProps={{ fontSize: 14, fontWeight: 'medium' }}
                     />
                 </SelectNote>
-                <DeleteIcon  onClick={handleDeleteCard} />
+                <DeleteIcon onClick={handleDeleteCard} />
             </NotesList>
         </div >
     );
