@@ -79,6 +79,7 @@ const SignInForm = () => {
         localStorage.setItem('user', JSON.stringify(user));
         // Redireciona para a aplicação principal
         return navigate('/app');
+        
     }
 
     const handleChange = (event) => {

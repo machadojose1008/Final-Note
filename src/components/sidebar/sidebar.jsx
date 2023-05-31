@@ -17,12 +17,12 @@ import AddCard from './buttons/add-card';
 import AddDeck from './buttons/add-deck';
 import AddNote from './buttons/add-note';
 import AddNotebook from './buttons/add-notebook';
-import SelectStudy from './buttons/select-study';
-import SidebarButton from './buttons/sidebar-button';
-import SidebarCardComponent from './sidebar-card';
-import SidebarItemComponent from './sidebar-notes';
-import SidebarSharedNoteComponent from './sidebar-shared';
-import { StyledTreeItem } from './styled-tree-item';
+import SelectStudy from './buttons/revisar-srs';
+import SidebarButton from './buttons/dropDown-button';
+import SidebarCardComponent from './itens/sidebar-card';
+import SidebarItemComponent from './itens/sidebar-notes';
+import SidebarSharedNoteComponent from './itens/sidebar-shared';
+import { StyledTreeItem } from './itens/styled-tree-item';
 
 function SidebarComponent(props) {
     const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy, selectGroup } = props;

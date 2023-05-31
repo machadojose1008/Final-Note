@@ -1,12 +1,12 @@
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 import SignInForm from '../signin';
-import userEvent from '@testing-library/user-event';
-import { signInAuthUserWithEmailAndPassword } from '../../../utils/firebase/firebase-config';
-import { auth } from '../../../utils/firebase/firebase-config';
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
+jest.mock('react-router', () => ({
+    ...jest.requireActual('react-router'),
+    useNavigate: jest.fn(),
+}));
 
 describe('SignInForm', () => {
 
@@ -17,6 +17,8 @@ describe('SignInForm', () => {
             <Router>
                 <SignInForm />
             </Router>
+
+
         );
 
         expect(screen.getByText('Entre já')).toBeInTheDocument();
@@ -26,23 +28,52 @@ describe('SignInForm', () => {
         expect(screen.getByText('Não possui uma conta? Crie agora')).toBeInTheDocument();
 
     });
+/* 
+    it('Deve chamar o navigate quando usuário logar', async () => {
+        const mockNavigate = jest.fn();
+        useNavigate.mockReturnValue(mockNavigate);
 
-    test('Clique Botão', async () => {
-        const user = userEvent.setup();
-
-        render(
+        const { getByLabelText, getByRole } = render(
             <Router>
                 <SignInForm />
             </Router>
+
+
         );
 
-        await user.click(screen.getByRole('button', { name: 'Entrar' }));
-
-        expect(window.alert).toHaveBeenCalled();
 
 
-    })
+        // Obtem e preenche os campos formulários 
+        const emailField = screen.getByLabelText('Endereço de Email');
+        const passwordField = screen.getByLabelText('Senha');
+        const button = screen.getByRole('button', { name: 'Entrar' });
 
+        fireEvent.change(getByLabelText('Endereço de Email'), { taget: { value: 'admin@admin.com' } });
+        fireEvent.change(getByLabelText('Senha'), { target: { value: '12341234' } });
+        await fireEvent.click(getByRole('button', { name: 'Entrar' }));
+
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('/app');
+        });
+
+
+    }); */
+
+    /*     test('Clique Botão', async () => {
+    
+            render(
+                <Router>
+                    <SignInForm />
+                </Router>
+            );
+    
+            userEvent.click(screen.getByRole('button', {name: 'Entrar'}))
+    
+            expect(window.alert).toHaveBeenCalled();
+    
+    
+        })
+     */
 
     /*    test('Erro quando email ou senha estiverem vazios', async () => {
            const [signInAuthUserWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);

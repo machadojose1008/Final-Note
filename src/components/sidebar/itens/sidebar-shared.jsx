@@ -1,5 +1,5 @@
 import React from 'react';
-import { NotesList, SelectNote, DeleteIcon } from '../componentStyles'
+import { NotesList, SelectNote, DeleteIcon } from '../../componentStyles'
 import { ListItemText } from '@mui/material';
 
 

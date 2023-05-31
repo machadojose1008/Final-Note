@@ -1,6 +1,6 @@
 import { ListItemText } from '@mui/material';
 import React from 'react';
-import { DeleteIcon, NotesList, SelectNote } from '../componentStyles';
+import { DeleteIcon, NotesList, SelectNote } from '../../componentStyles';
 
 
 function SidebarCardComponent(props) {

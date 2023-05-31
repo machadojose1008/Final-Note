@@ -1,7 +1,7 @@
 import { Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Divider, Fade, Grid, Modal, Typography } from "@mui/material";
 import { ButtonContainer, StudyComponentDiv, StyledCardContent } from "../componentStyles";
 import { useEffect, useState } from "react";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, serverTimestamp } from "firebase/firestore";
 import { findCardPosition, findDeckPosition } from "../../helpers";
 import { removeHTMLTags } from "../../helpers";
 
@@ -9,7 +9,19 @@ import { removeHTMLTags } from "../../helpers";
 
 const SrsComponent = (props) => {
 
-    const { decks } = props
+
+    const decks = [{
+        id: '1',
+        title: 'Teste',
+        cards: [{
+            back: '<p>Traseira do teste</p>',
+            front: '<p>Frente do teste</p>',
+            ease: 1,
+            reviewDate: Timestamp.fromDate(new Date()),
+            id: '1',
+            title: 'Título do card de teste'
+        }],
+    }];
 
     const [openModal, setOpenModal] = useState(false);
     const [showBack, setShowBack] = useState(false);
@@ -170,17 +182,17 @@ const SrsComponent = (props) => {
 
         <StudyComponentDiv>
             {(showSrs) ? (
-                <Grid container spacing={1}>
-                    <Grid item xs={9}>
+                <Grid container spacing={1} key='srs'>
+                    <Grid item xs={9} key='title'>
                         <Grid key='deckName'>
                             <h1>Decks</h1>
                             <Typography sx={{ fontStyle: 'italic', color: 'red', fontWeight: 'bold' }}>Cards em Vermelho precisam de revisão</Typography>
                         </Grid>
 
                     </Grid>
-                    <Grid item xs={3} sx={{ dispaly: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                        <Button onClick={handleReviewAll} title="Revisa todos os cards que já precisam de revisão." variant="contained" color="primary">
-                            <Typography>Revisar Tudo</Typography>
+                    <Grid key='revisarButton' item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                        <Button onClick={handleReviewAll} data-testid='botao revisao' title="Revisa todos os cards que já precisam de revisão." variant="contained" color="primary">
+                            Revisar Tudo
                         </Button>
 
                     </Grid>
@@ -188,13 +200,13 @@ const SrsComponent = (props) => {
                         if (deck.cards.length === 0) {
                             return (
                                 <Grid item xs={2.4} key={deck.id}>
-                                    <Card raised sx={{ maxWidth: '300px', maxHeight: '320px', padding: '5px', minWidth: '300px' }}>
+                                    <Card raised key={deck.id} sx={{ maxWidth: '300px', maxHeight: '320px', padding: '5px', minWidth: '300px' }}>
                                         <CardContent >
-                                            <Typography variant="h4" color='black' gutterBottom noWrap={true} sx={{
+                                            <Typography key={deck.id} variant="h4" color='black' gutterBottom noWrap={true} sx={{
                                                 minWidth: '290px', overflow: 'auto', overflowY: 'unset',
-                                                display: '-webkit-box',
-                                                '-webkit-line-clamp': 1,
-                                                '-webkit-box-orient': 'vertical'
+                                                display: 'WebkitBox',
+                                                WebkitLineClamp: 1,
+                                                WebkitBoxOrient: 'vertical'
                                             }}>
                                                 {deck.title}
                                             </Typography>
@@ -207,20 +219,23 @@ const SrsComponent = (props) => {
                             return (
                                 <Grid item xs={2.4}>
                                     <Card raised sx={{ maxWidth: '300px', padding: '5px', maxHeight: '320px', paddingBottom: '80px' }}>
-                                        <Typography variant="h4" color='black' sx={{ position: 'absolute', backgroundColor: 'white', minWidth: '200px' }} gutterBottom>
+                                        <Typography variant="h4" key={deck.id} color='black' sx={{ position: 'absolute', backgroundColor: 'white', minWidth: '200px' }} gutterBottom>
                                             {deck.title}
                                         </Typography>
                                         <StyledCardContent >
                                             {deck.cards.map((card) => (
-                                                <ul>
-                                                    <li>
+                                                <ul key={card.id}>
+                                                    <li key={card.id}>
                                                         {(card.ease) === 1 ? (
-                                                            <Typography color='red' sx={{
-                                                                overflow: 'hidden',
-                                                                display: '-webkit-box',
-                                                                '-webkit-line-clamp': 1,
-                                                                '-webkit-box-orient': 'vertical'
-                                                            }}>{card.title} </Typography>
+                                                            <Typography
+                                                                key={card.id}
+                                                                color='red'
+                                                                sx={{
+                                                                    overflow: 'hidden',
+                                                                    display: 'WebkitBox',
+                                                                    WebkitLineClamp: 1,
+                                                                    WebkitBoxOrient: 'vertical'
+                                                                }}>{card.title} </Typography>
                                                         ) : (
                                                             <Typography>{card.title}</Typography>
                                                         )}
@@ -232,8 +247,9 @@ const SrsComponent = (props) => {
                                         </StyledCardContent>
                                         {deck.cards.map((card) => {
                                             if (card.ease === 1) (
-                                                <Typography color='red'>Cards precisam de revisão</Typography>
+                                                <Typography key={card.id} color='red'>Cards precisam de revisão</Typography>
                                             )
+
                                         })}
                                         <CardActions sx={{ position: 'absolute' }}>
                                             <Button title="Revisar todos os cards que precisam de revisão do deck"
@@ -248,6 +264,7 @@ const SrsComponent = (props) => {
 
                                         {openModal ? (
                                             <Modal
+                                                data-testid='modal'
                                                 open={openModal}
                                                 onClose={handleCloseModal}
                                                 closeAfterTransition
@@ -269,8 +286,8 @@ const SrsComponent = (props) => {
                                                                 maxHeight: 800,
                                                                 minHeight: 300,
                                                                 margin: 'auto',
-                                                                overflow:'auto',
-                                                                overflowX:'unset'
+                                                                overflow: 'auto',
+                                                                overflowX: 'unset'
 
                                                             }}
                                                         >
@@ -278,14 +295,14 @@ const SrsComponent = (props) => {
                                                             <CardContent sx={{ display: "flex", justifyContent: 'space-around', alignContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
                                                                 <Typography
                                                                     variant="h5"
-                                                                    component="h2" gutterBottom
+                                                                    component="h2"
+                                                                    gutterBottom
                                                                     sx={{ paddingBottom: '10px', overflow: 'auto', maxWidth: '600px', maxHeight: '400px' }}
                                                                     dangerouslySetInnerHTML={{ __html: cards[currentCardIndex].front }}
                                                                 />
-
-                                                                <Divider />
                                                                 {showBack ? (
                                                                     <Typography
+                                                                        data-testid='back'
                                                                         variant="h5"
                                                                         component="h2"
                                                                         gutterBottom
