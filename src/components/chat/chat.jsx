@@ -24,7 +24,7 @@ const ChatComponent = ({ selectedSharedNote, userEmail }) => {
 
         // Desativar o listener se o componente for fechado 
         return () => unsubscribe();
-    }, [])
+    }, [selectedSharedNote])
 
     const newMessage = async (message) => {
         const novaMensagem = {
@@ -68,21 +68,32 @@ const ChatComponent = ({ selectedSharedNote, userEmail }) => {
                         Chat
                     </Typography>
                 </AppBar>
-                <Box sx={{ height: '95%', overflow: 'auto', maxHeight:'700px', overflowX:'unset'}}>
 
-                    <MessageList
-                        className="message-list"
-                        lockable={true}
-                        toBottomHeight={"100%"}
-                        dataSource={mensagens}
-                    />
+
+                <Box sx={{ height: '95%', overflow: 'auto', maxHeight: '700px', overflowX: 'unset' }}>
+                    {(mensagens) ? (
+                        <div data-testid='message-list' >
+                            <MessageList
+
+                                className="message-list"
+                                lockable={true}
+                                toBottomHeight={"100%"}
+                                dataSource={mensagens}
+                            />
+                        </div>
+
+                    ) : null}
                 </Box>
 
                 <InputComponent
                     newMessage={newMessage}
                 />
+
+
+
+
             </Container>
-        </ChatComponentDiv>
+        </ChatComponentDiv >
 
 
 

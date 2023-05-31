@@ -10,18 +10,7 @@ import { removeHTMLTags } from "../../helpers";
 const SrsComponent = (props) => {
 
 
-    const decks = [{
-        id: '1',
-        title: 'Teste',
-        cards: [{
-            back: '<p>Traseira do teste</p>',
-            front: '<p>Frente do teste</p>',
-            ease: 1,
-            reviewDate: Timestamp.fromDate(new Date()),
-            id: '1',
-            title: 'Título do card de teste'
-        }],
-    }];
+    const { decks } = props
 
     const [openModal, setOpenModal] = useState(false);
     const [showBack, setShowBack] = useState(false);
