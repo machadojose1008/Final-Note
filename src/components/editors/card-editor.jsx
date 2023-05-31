@@ -20,14 +20,14 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
 
 
     const handleImageUpload = async (editorName) => {
-            setActiveEditor(editorName);
-        
+        setActiveEditor(editorName);
+
 
 
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
-        fileInput.onchange = (event) =>  handleFileChange(editorName, event);
+        fileInput.onchange = (event) => handleFileChange(editorName, event);
         fileInput.click();
     };
 
@@ -55,7 +55,6 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                     { indent: '-1' },
                     { indent: '+1' }
                 ],
-                ['link'],
             ],
         },
         clipboard: {
@@ -99,6 +98,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
 
 
     useEffect(() => {
+        console.log(selectedCard);
         setFront(selectedCard.front || '');
         setBack(selectedCard.back || '');
         setTitle(selectedCard.title || '');
@@ -122,14 +122,17 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                                 <Title>
                                     Título do card:
                                 </Title>
-                                <TitleInput
-                                    placeholder='Título do cartão'
-                                    value={title ? title : ''}
-                                    onChange={updateTitle}>
-                                </TitleInput>
+                                <div data-testid={title}>
+                                    <TitleInput
+                                        placeholder='Título do cartão'
+                                        value={title ? title : ''}
+                                        onChange={updateTitle}>
+                                    </TitleInput>
+                                </div>
+
                             </Grid>
                             <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                <IconButton onClick={closeCard}>
+                                <IconButton data-testid="close-button" onClick={closeCard} >
                                     <CloseIcon sx={{ color: 'black' }} />
                                 </IconButton>
                             </Grid>
@@ -169,6 +172,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                                 color="primary"
                                 startIcon={<SaveIcon />}
                                 size='small'
+                                data-testid='save-button'
                                 onClick={handleSave}
                             >
                                 <Typography sx={{ fontSize: '8px' }}>Salvar</Typography>

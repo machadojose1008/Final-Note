@@ -87,6 +87,7 @@ export function StyledTreeItem(props) {
               flexGrow: 1,
               maxWidth: '140px',
               overflow: 'hidden',
+              fontSize:'12px'
 
             }}>
             {labelText}

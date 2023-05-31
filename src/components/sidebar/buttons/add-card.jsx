@@ -43,6 +43,7 @@ function AddCard(props) {
     }
 
     useEffect(() => {
+        console.log(decksTitle);
         if (keyPressed && title && selectedDeckTitle) {
             newCard();
         }
@@ -54,6 +55,7 @@ function AddCard(props) {
         <SideButton>
             <Box sx={{ paddingX: '20px' }}>
                 <Button
+                    data-testid='novoCard-button'
                     onClick={handleClick}
                     sx={{
                         color: 'white',

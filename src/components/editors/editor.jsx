@@ -70,7 +70,6 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
                     { indent: '-1' },
                     { indent: '+1' }
                 ],
-                ['link'],
             ],
         },
         clipboard: {
@@ -183,7 +182,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
 
                     <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <IconButton onClick={closeNote}>
+                        <IconButton onClick={closeNote} data-testid='close-icon'>
                             <CloseIcon sx={{ color: 'black' }} />
                         </IconButton>
                     </Grid>

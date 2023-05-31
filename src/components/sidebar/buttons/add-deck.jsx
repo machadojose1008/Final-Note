@@ -16,7 +16,7 @@ function AddDeck(props) {
                 setOpen(false);
                 setTitle('');
             }
-        }else {
+        } else {
             alert('Nome do Deck Vazio!');
         }
 
@@ -45,6 +45,7 @@ function AddDeck(props) {
         <SideButton>
             <Box sx={{ paddingX: '20px' }}>
                 <Button
+                    data-testid='addDeck-button'
                     onClick={handleClick}
                     sx={{
                         color: 'white',

@@ -1,4 +1,4 @@
-import { Face } from "@mui/icons-material";
+import { Face, Logout } from "@mui/icons-material";
 import * as React from 'react';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
@@ -23,6 +23,7 @@ import SidebarCardComponent from './itens/sidebar-card';
 import SidebarItemComponent from './itens/sidebar-notes';
 import SidebarSharedNoteComponent from './itens/sidebar-shared';
 import { StyledTreeItem } from './itens/styled-tree-item';
+import TopicIcon from '@mui/icons-material/Topic';
 
 function SidebarComponent(props) {
     const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy, selectGroup } = props;
@@ -160,7 +161,8 @@ function SidebarComponent(props) {
     }
 
     useLayoutEffect(() => {
-
+        console.log(props.username);
+        console.log(decks, notebooks);
         const settingNotes = async () => {
             const fetchNotes = await notebooks.map(el => el.notes);
             setNotes(fetchNotes);
@@ -202,7 +204,7 @@ function SidebarComponent(props) {
 
                 <SidebarContainer>
                 
-                        <UserIcon onClick={handleMenu} icon={<Face />} label={props.username} >
+                        <UserIcon onClick={handleMenu} icon={<Logout />} label={props.username} >
                             
                         </UserIcon>
                         <Menu
@@ -219,7 +221,6 @@ function SidebarComponent(props) {
                    
 
                     <SidebarButton>
-                        <ActionList />
                         <AddNotebook newNotebook={newNotebook} />
                         <AddNote notebooksTitle={notebooksTitle} newNote={newNote} />
                         <AddDeck newDeck={newDeck} />
@@ -233,7 +234,7 @@ function SidebarComponent(props) {
                         defaultEndIcon={<div style={{ width: 24 }} />}
                         sx={{ maxWidth: 200 }}
                     >
-                        <StyledTreeItem nodeId='notebooks' labelText='Cadernos' labelIcon={BookIcon} >
+                        <StyledTreeItem nodeId='notebooks' labelText='Cadernos' labelIcon={TopicIcon} >
                             {notebooks.map((notebook) => (
                                 <StyledTreeItem
                                     renamemenu={renameMenu}
@@ -242,7 +243,7 @@ function SidebarComponent(props) {
                                     showMenu={true}
                                     key={notebook.id}
                                     deleteMenu={deleteMenu}
-                                    labelIcon={TextSnippetIcon}
+                                    labelIcon={BookIcon}
                                     type={'notebook'}
                                 >
                                     {notes && (
@@ -277,7 +278,7 @@ function SidebarComponent(props) {
                             sx={{ maxWidth: 200 }}
                         >
 
-                            <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={NoteIcon} >
+                            <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={TopicIcon} >
                                 {decks.map((deck) => (
                                     <StyledTreeItem
                                         nodeId={deck.id}
@@ -285,7 +286,7 @@ function SidebarComponent(props) {
                                         labelText={deck.title}
                                         key={deck.id}
                                         deleteMenu={deleteMenu}
-                                        labelIcon={TextSnippetRoundedIcon}
+                                        labelIcon={NoteIcon}
                                         renamemenu={renameMenu}
                                         type={'deck'}
                                     >
@@ -318,7 +319,7 @@ function SidebarComponent(props) {
                             defaultEndIcon={<div style={{ width: 24 }} />}
                             sx={{ maxWidth: 200 }}
                         >
-                            <StyledTreeItem nodeId='sharedNotes' labelText='Notas Compartilhadas' labelIcon={ShareIcon}>
+                            <StyledTreeItem nodeId='sharedNotes'  labelText='Notas Compartilhadas' labelIcon={ShareIcon}>
 
                                 <List>
                                     {sharedNotes.map((sharedNote) => (

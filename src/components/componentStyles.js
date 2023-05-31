@@ -170,9 +170,7 @@ export const DeleteIcon = styles(Delete, {})({
   }
 });
 
-export const ActionList = styles('div')({
-  backgroundColor: 'black'
-});
+
 
 export const DropList = styles(ListItem, {})({
   width: '20%',

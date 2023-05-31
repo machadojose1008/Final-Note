@@ -69,7 +69,6 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
                     { indent: '-1' },
                     { indent: '+1' }
                 ],
-                ['link'],
             ],
         },
         clipboard: {
@@ -131,6 +130,7 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
 
 
     useEffect(() => {
+        console.log(selectedSharedNoteIndex);
 
         fetchSharedNote(selectedSharedNoteIndex);
 
@@ -174,10 +174,10 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
                             <DateComponent date={lastUpdate} />)}
                     </Grid>
                     <Grid item xs={.5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }} >
-                        <IconButton onClick={closeSharedNote}>
+                        <IconButton data-testid='close-button' onClick={closeSharedNote}>
                             <CloseIcon sx={{ color: 'black' }} />
                         </IconButton>
-                        <IconButton onClick={handleSelectChat} size='large'>
+                        <IconButton data-testid='chat-button' onClick={handleSelectChat} size='large'>
                             <ChatIcon sx={{ fontSize: 30 }} size='large'
 
                             />
