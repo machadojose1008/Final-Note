@@ -204,7 +204,7 @@ function SidebarComponent(props) {
 
                 <SidebarContainer>
                 
-                        <UserIcon onClick={handleMenu} icon={<Logout />} label={props.username} >
+                        <UserIcon onClick={handleMenu} label={props.username} icon={<Logout />} >
                             
                         </UserIcon>
                         <Menu
@@ -278,7 +278,7 @@ function SidebarComponent(props) {
                             sx={{ maxWidth: 200 }}
                         >
 
-                            <StyledTreeItem nodeId='decks' labelText='Decks' labelIcon={TopicIcon} >
+                            <StyledTreeItem nodeId='decks' labelText='Baralhos' labelIcon={TopicIcon} >
                                 {decks.map((deck) => (
                                     <StyledTreeItem
                                         nodeId={deck.id}

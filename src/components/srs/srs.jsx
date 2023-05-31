@@ -174,13 +174,13 @@ const SrsComponent = (props) => {
                 <Grid container spacing={1} key='srs'>
                     <Grid item xs={9} key='title'>
                         <Grid key='deckName'>
-                            <h1>Decks</h1>
-                            <Typography sx={{ fontStyle: 'italic', color: 'red', fontWeight: 'bold' }}>Cards em Vermelho precisam de revisão</Typography>
+                            <h1>Baralhos</h1>
+                            <Typography sx={{ fontStyle: 'italic', color: 'red', fontWeight: 'bold' }}>Cartões em Vermelho precisam de revisão</Typography>
                         </Grid>
 
                     </Grid>
                     <Grid key='revisarButton' item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                        <Button onClick={handleReviewAll} data-testid='botao revisao' title="Revisa todos os cards que já precisam de revisão." variant="contained" color="primary">
+                        <Button onClick={handleReviewAll} data-testid='botao revisao' title="Revisa todos os cartões que já precisam de revisão." variant="contained" color="primary">
                             Revisar Tudo
                         </Button>
 
@@ -199,7 +199,7 @@ const SrsComponent = (props) => {
                                             }}>
                                                 {deck.title}
                                             </Typography>
-                                            <Typography sx={{ display: 'center' }}>Nenhum card criado!</Typography>
+                                            <Typography sx={{ display: 'center' }}>Nenhum cartão criado!</Typography>
                                         </CardContent>
                                     </Card>
                                 </Grid>
@@ -236,18 +236,18 @@ const SrsComponent = (props) => {
                                         </StyledCardContent>
                                         {deck.cards.map((card) => {
                                             if (card.ease === 1) (
-                                                <Typography key={card.id} color='red'>Cards precisam de revisão</Typography>
+                                                <Typography key={card.id} color='red'>Cartões que precisam de revisão</Typography>
                                             )
 
                                         })}
                                         <CardActions sx={{ position: 'absolute' }}>
-                                            <Button title="Revisar todos os cards que precisam de revisão do deck"
+                                            <Button title="Revisar todos os cards que precisam de revisão do baralho"
                                                 variant="contained"
                                                 color="primary"
                                                 size='small'
                                                 onClick={() => handleReviewDeck(deck)}
                                             >
-                                                Revisar Deck
+                                                Revisar Baralho
                                             </Button>
                                         </CardActions>
 

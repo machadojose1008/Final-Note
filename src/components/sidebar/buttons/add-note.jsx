@@ -49,11 +49,12 @@ function AddNote(props) {
 
     return (
         <SideButton>
-            <Box sx={{ paddingX: '20px' }}>
+            <Box sx={{ paddingX: '20px', paddingLeft:'35px' }}>
                 <Button
                     data-testid='novaNota-button'
                     onClick={handleClick}
                     sx={{
+                        width:'150px',
                         color: 'white',
                         backgroundColor: 'black',
                         '&:hover': { bgcolor: 'black' }

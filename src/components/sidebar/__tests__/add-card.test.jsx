@@ -10,14 +10,14 @@ describe('AddCard Component', () => {
         render(<AddCard decksTitle={decksTitle} />);
         const buttonElement = screen.getByTestId('novoCard-button');
         expect(buttonElement).toBeInTheDocument();
-        expect(buttonElement).toHaveTextContent('Novo Card');
+        expect(buttonElement).toHaveTextContent('Novo Cartão');
     });
 
     test('Abrir o dialog quando clicado', () => {
         render(<AddCard decksTitle={decksTitle} />);
         const buttonElement = screen.getByTestId('novoCard-button');
         fireEvent.click(buttonElement);
-        const dialogTitleElement = screen.getByText('Insira um título para o seu card');
+        const dialogTitleElement = screen.getByText('Insira um título para o seu cartão');
         expect(dialogTitleElement).toBeInTheDocument();
 
     });
@@ -28,7 +28,7 @@ describe('AddCard Component', () => {
         fireEvent.click(buttonElement);
         const cancelButtonElement = screen.getByText('Cancelar');
         fireEvent.click(cancelButtonElement);
-        const dialogTitleElement = screen.queryByText('Insira um título para o seu card');
+        const dialogTitleElement = screen.queryByText('Insira um título para o seu cartão');
         await waitFor(() => {
             expect(dialogTitleElement).not.toBeInTheDocument();
         });
@@ -40,7 +40,7 @@ describe('AddCard Component', () => {
         render(<AddCard decksTitle={decksTitle} newCard={newCardMock} />);
         const buttonElement = screen.getByTestId('novoCard-button');
         fireEvent.click(buttonElement);
-        const titleInput = screen.getByLabelText('Título do Card');
+        const titleInput = screen.getByLabelText('Título do Cartão');
         fireEvent.change(titleInput, { target: { value: 'Lorem ipsum' } });
         const prontoButtonElement = screen.getByText('Pronto');
         fireEvent.click(prontoButtonElement);

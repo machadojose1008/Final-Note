@@ -60,7 +60,7 @@ const SignUpForm = () => {
                 const userId = await findUserIdByEmail(user.email);
 
                 const decksCollectionRef = collection(db, `users/${userId}/decks`);
-                const decksDocRef = await addDoc(decksCollectionRef, {title: 'Primeiro Deck'});
+                const decksDocRef = await addDoc(decksCollectionRef, {title: 'Primeiro Baralho'});
 
                 const notebooksCollectionRef = collection(db, `users/${userId}/notebooks`);
                 const notebooksDocRef = await addDoc(notebooksCollectionRef, {title:'Primeiro Caderno'});

@@ -17,7 +17,7 @@ function AddNotebook(props) {
                 setTitle('');
             }
 
-        }else{
+        } else {
             alert('Nome do Carderno Vazio!');
         }
 
@@ -47,6 +47,7 @@ function AddNotebook(props) {
         <SideButton>
             <Box sx={{ paddingX: '20px' }}>
                 <Button
+                    data-testid='addNotebook-button'
                     onClick={handleClick}
                     sx={{
                         color: 'white',
@@ -54,18 +55,18 @@ function AddNotebook(props) {
                         '&:hover': { bgcolor: 'black' }
                     }}
                 >
-                    Novo Notebook
+                    Novo Caderno
                 </Button>
             </Box>
 
             <AddDialog open={open} onClose={handleClose} >
-                <DialogTitle>Insira o nome do Notebook</DialogTitle>
+                <DialogTitle>Insira um título para o seu caderno</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         id='Nome'
                         sx={{ padding: '0px 0px 15px' }}
-                        label='Nome do Notebook'
+                        label='Título do caderno'
                         type='text'
                         fullWidth
                         variant="standard"

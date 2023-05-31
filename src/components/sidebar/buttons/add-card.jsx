@@ -20,7 +20,7 @@ function AddCard(props) {
                 setTitle('');
             }
         } else {
-            alert('Nome do Card Vazio');
+            alert('Nome do Cartão Vazio');
         }
 
 
@@ -53,29 +53,30 @@ function AddCard(props) {
 
     return (
         <SideButton>
-            <Box sx={{ paddingX: '20px' }}>
+            <Box sx={{ paddingX: '20px', paddingLeft:'35px' }}>
                 <Button
                     data-testid='novoCard-button'
                     onClick={handleClick}
                     sx={{
+                        width:'150px',
                         color: 'white',
                         backgroundColor: 'black',
                         '&:hover': { bgcolor: 'black' }
                     }}
                 >
-                    Novo Card
+                    Novo Cartão
                 </Button>
             </Box>
 
             <AddDialog open={open} onClose={handleClose}>
-                <DialogTitle>Insira um título para o seu card</DialogTitle>
+                <DialogTitle>Insira um título para o seu cartão</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin='dense'
                         id='titulo'
                         sx={{ padding: '0px 0px 15px' }}
-                        label='Título do Card'
+                        label='Título do Cartão'
                         type='text'
                         fullWidth
                         variant="standard"
@@ -87,11 +88,11 @@ function AddCard(props) {
                         }}
                     />
                     <FormControl fullWidth >
-                        <InputLabel id='deck-select-label'>Selecione um Deck</InputLabel>
+                        <InputLabel id='deck-select-label'>Selecione um Baralho</InputLabel>
                         <Select
                             labelId="deck-select-label"
                             id="deck-select"
-                            label="Selecione um Caderno"
+                            label="Selecione um Baralho"
                             value={selectedDeckTitle}
                             onChange={handleDeck}
                         >

@@ -120,7 +120,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                         <Grid container sx={{ width: '100%' }} >
                             <Grid item xs={11} sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Title>
-                                    Título do card:
+                                    Título do cartão:
                                 </Title>
                                 <div data-testid={title}>
                                     <TitleInput
@@ -139,8 +139,6 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                         </Grid>
 
                     </EditorNavBar>
-
-
 
 
                     <Paper elevation={3}>

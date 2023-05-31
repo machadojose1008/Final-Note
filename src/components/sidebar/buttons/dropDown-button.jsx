@@ -28,7 +28,7 @@ const SideBarButton = ({ children }) => {
             },
           }}
         >
-          New
+          Criar
           <IconButton
             sx={{
               position: "absolute",
@@ -43,7 +43,7 @@ const SideBarButton = ({ children }) => {
           </IconButton>
         </Button>
         <Collapse in={open} sx={{ top: "100%" }}>
-          <Box
+          <Box sx={{display: 'flex', flexDirection:'column', justifyContent:'center', justifyItems:'center', }}
           >
             {children}
           </Box>

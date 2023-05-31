@@ -21,7 +21,7 @@ describe('CardEditorComponent', () => {
         );
 
         // Testa a renderização do card
-        expect(screen.getByText('Título do card:')).toBeInTheDocument();
+        expect(screen.getByText('Título do cartão:')).toBeInTheDocument();
         // Render do título do card
         expect(screen.getByPlaceholderText('Título do cartão')).toBeInTheDocument();
 
@@ -61,29 +61,5 @@ describe('CardEditorComponent', () => {
 
 
     });
-
-   /*  test('Chama o handleSave ao clicar em salvar', async () => {
-        const handleSaveMock = jest.fn();
-        const { getByTestId } = render(
-            <CardEditorComponent
-                cardUpdate={handleSaveMock}
-                selectedCard={selectedCard}
-                selectedDeckIndex={selectedDeckIndex}
-            />
-        );
-        const saveButton = getByTestId('save-button');
-
-        fireEvent.click(saveButton);
-
-        await waitFor(() => {
-            expect(handleSaveMock).toHaveBeenCalled();
-        }, {timeout:3000})
-
-
-
-
-
-    }) */
-
 
 });

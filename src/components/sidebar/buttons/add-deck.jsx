@@ -53,18 +53,18 @@ function AddDeck(props) {
                         '&:hover': { bgcolor: 'black' }
                     }}
                 >
-                    Novo Deck
+                    Novo Baralho
                 </Button>
             </Box>
 
             <AddDialog open={open} onClose={handleClose} >
-                <DialogTitle>Insira o nome do Deck</DialogTitle>
+                <DialogTitle>Insira um título para seu baralho</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         id='Nome'
                         sx={{ padding: '0px 0px 15px' }}
-                        label='Nome do Deck'
+                        label='Título do baralho'
                         type='text'
                         fullWidth
                         variant="standard"
