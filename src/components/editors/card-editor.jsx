@@ -2,7 +2,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Button, Grid, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
-import debounce from '../../helpers';
+import debounce from '../../utils/helpers/helpers';
 import { CardEditArea, CustomButtomGroup, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import uploadImage from './image-uploader';
 import SaveIcon from '@mui/icons-material/Save';

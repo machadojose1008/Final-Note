@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { findNotebookPosition, findDeckPosition } from './helpers';
+import { findNotebookPosition, findDeckPosition } from '../src/utils/helpers/helpers';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarComponent from './components/sidebar/sidebar';
 import EditorComponent from './components/editors/editor';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ReactQuill from 'react-quill';
-import debounce from '../../helpers';
+import debounce from '../../utils/helpers/helpers';
 import { Button, DialogContent, DialogTitle, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
 import { AddDialog, CustomButtomGroup, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import CloseIcon from '@mui/icons-material/Close';

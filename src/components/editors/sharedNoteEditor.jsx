@@ -4,7 +4,7 @@ import { Button, Grid, IconButton, Paper, Typography, } from '@mui/material';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
-import debounce from '../../helpers';
+import debounce from '../../utils/helpers/helpers';
 import { db } from '../../utils/firebase/firebase-config';
 import { CustomButtomGroup, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import DateComponent from './date-component';

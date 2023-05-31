@@ -2,8 +2,8 @@ import { Button, Card, CardActions, CardContent, CardHeader, CircularProgress, D
 import { ButtonContainer, StudyComponentDiv, StyledCardContent } from "../componentStyles";
 import { useEffect, useState } from "react";
 import { Timestamp, serverTimestamp } from "firebase/firestore";
-import { findCardPosition, findDeckPosition } from "../../helpers";
-import { removeHTMLTags } from "../../helpers";
+import { findCardPosition, findDeckPosition } from "../../utils/helpers/helpers";
+import { removeHTMLTags } from "../../utils/helpers/helpers";
 
 
 
