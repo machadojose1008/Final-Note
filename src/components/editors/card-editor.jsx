@@ -162,6 +162,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                             <InputLabel id='select-ease-label'>Dificuldade do Cartão</InputLabel>
                             <Select
                                 labelId='select-ease-label'
+                                data-testid='select-ease'
                                 id='select-ease'
                                 label='Dificuldade do Cartão'
                                 value={ease ? ease : ''}

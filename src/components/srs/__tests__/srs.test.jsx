@@ -112,6 +112,35 @@ describe('SrsComponent', () => {
 
     });
 
+    test('Dialog abrir quando clica em como funciona', async () => {
+        //Array de decks mock para teste
+        const decks = [{
+            id: '1',
+            title: 'Teste',
+            cards: [{
+                back: '<p>Traseira do teste</p>',
+                front: '<p>Frente do teste</p>',
+                ease: 1,
+                reviewDate: Timestamp.fromDate(new Date()),
+                id: '1',
+                title: 'Título do card de teste'
+            }],
+        }];
+
+        render(
+            <SrsComponent decks={decks} />
+        );
+
+        const button = screen.getByText('Como Funciona');
+        fireEvent.click(button);
+        //Testa dialog abrir
+        await waitFor(() => {
+            expect(screen.getByTestId('dialog-test')).toBeInTheDocument()
+        });
+
+
+    });
+
 
 
 

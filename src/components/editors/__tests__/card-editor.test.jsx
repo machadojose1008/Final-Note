@@ -25,6 +25,7 @@ describe('CardEditorComponent', () => {
         // Render do título do card
         expect(screen.getByPlaceholderText('Título do cartão')).toBeInTheDocument();
 
+        expect(screen.getByTestId('select-ease')).toBeInTheDocument();
     });
 
     test('Atualiza o título corretamente', () => {
@@ -61,5 +62,7 @@ describe('CardEditorComponent', () => {
 
 
     });
+
+    
 
 });

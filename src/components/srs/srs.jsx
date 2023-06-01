@@ -203,7 +203,7 @@ const SrsComponent = (props) => {
                         </Button>
                     </Grid>
 
-                    <Dialog open={openDialog} onClose={closeHowTo}>
+                    <Dialog data-testid='dialog-test' open={openDialog} onClose={closeHowTo}>
                         <DialogTitle sx={{fontWeight:'bold'}}>Sistema de Estudo por Repetição Espaçada</DialogTitle>
                         <DialogContent>
                             <p>
