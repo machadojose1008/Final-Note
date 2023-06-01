@@ -44,13 +44,14 @@ body {
   Estilo do editor do React Quill
 */
 .noteEditor .ql-editor{
-  max-height: 46rem;
+  height: 46rem;
+  overflow: auto;
 }
 
 .ql-editor {
   cursor: text;
   width: 100%;
-  min-height: 46rem;
+  height: 46rem;
   padding: 30px 20px 30px;
   overflow: auto;
   overflow-x: hidden;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import debounce from '../../utils/helpers/helpers';
-import { Button, DialogContent, DialogTitle, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, DialogContent, DialogTitle, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
 import { AddDialog, CustomButtomGroup, EditorContainer, EditorNavBar, Title, TitleInput } from '../componentStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import DateComponent from './date-component';
@@ -23,24 +23,37 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState(null);
     const quillRef = useRef(null);
-
-
+    const [exportingPdf, setExportingPdf] = useState(false);
 
     const ExportToPdf = () => {
-        const element = document.querySelector('.noteEditor');
-        const options = {
-            margin: [10, 10, 10, 10],
-            filename: 'note.pdf',
-            image: { type: 'jpeg', quality: 0.98, includeHtmlInDataUrl: true },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf()
-            .set(options)
-            .from(element)
-            .save();
+        setExportingPdf(true);
     };
+
+
+    useEffect(() => {
+        if (exportingPdf) {
+            const editorContent = quillRef.current.getEditor().root.innerHTML;
+            const options = {
+                margin: [10, 10, 10, 10],
+                filename: `${title}.pdf`,
+                image: { type: 'jpeg', quality: 0.98, includeHtmlInDataUrl: true },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf()
+                .set(options)
+                .from(editorContent)
+                .save()
+                .then(() => setExportingPdf(false))
+                .catch((error) => {
+                    console.error('Error exporting PDF:', error);
+                    setExportingPdf(false);
+                });
+        }
+    }, [exportingPdf]);
+
+
 
     const handleImageUpload = () => {
         const fileInput = document.createElement('input');
@@ -197,13 +210,18 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
             <Paper elevation={3}>
                 <CustomButtomGroup>
 
-                    <Button
-                        sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }}
-                        variant="contained" color="primary" startIcon={<SaveAlt />} onClick={ExportToPdf}
-                    >
-                        <Typography sx={{ fontSize: '8px' }}>Exportar PDF</Typography>
-                    </Button>
+                    {(exportingPdf) ? (
+                        <CircularProgress />) :
+                        <Button
+                            sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }}
+                            variant="contained" color="primary" startIcon={<SaveAlt />} onClick={ExportToPdf}
+                        >
 
+
+                            <Typography sx={{ fontSize: '8px' }}>Exportar PDF</Typography>
+
+                        </Button>
+                    }
                     <Button sx={{ width: '120px', display: 'flex', justifyContent: 'flex-start' }} variant="contained" color="primary" startIcon={<ImageIcon />} size='small' onClick={handleImageUpload}>
                         <Typography sx={{ fontSize: '8px' }}>
                             Upload Imagem
@@ -218,7 +236,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
                 </CustomButtomGroup>
 
 
-                <div className='noteEditor'>
+                <div className='noteEditor' id='editorContainer'>
                     <ReactQuill
                         ref={quillRef}
                         modules={modules}

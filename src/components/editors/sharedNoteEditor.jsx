@@ -25,22 +25,36 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
     const [updateDate, setUpdateDate] = useState(null);
     const [openned, setOpenned] = useState(null);
     const quillRef = useRef(null);
+    const [exportingPdf, setExportingPdf] = useState(false);
 
     const ExportToPdf = () => {
-        const element = document.querySelector('.noteEditor');
-        const options = {
-            margin: [10, 10, 10, 10],
-            filename: 'note.pdf',
-            image: { type: 'jpeg', quality: 0.98, includeHtmlInDataUrl: true },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf()
-            .set(options)
-            .from(element)
-            .save();
+        setExportingPdf(true);
     };
+
+
+    useEffect(() => {
+        if (exportingPdf) {
+            const editorContent = quillRef.current.getEditor().root.innerHTML;
+            const options = {
+                margin: [10, 10, 10, 10],
+                filename: `${title}.pdf`,
+                image: { type: 'jpeg', quality: 0.98, includeHtmlInDataUrl: true },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf()
+                .set(options)
+                .from(editorContent)
+                .save()
+                .then(() => setExportingPdf(false))
+                .catch((error) => {
+                    console.error('Error exporting PDF:', error);
+                    setExportingPdf(false);
+                });
+        }
+    }, [exportingPdf]);
+
 
     const handleImageUpload = () => {
         const fileInput = document.createElement('input');
