@@ -461,6 +461,8 @@ function App() {
         title: cardObj.title,
         front: cardObj.front,
         back: cardObj.back,
+        ease: cardObj.ease,
+        reviewDate: serverTimestamp(),
       };
 
       updateDoc(cardRef, data)
