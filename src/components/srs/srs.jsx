@@ -1,8 +1,9 @@
-import { Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Divider, Fade, Grid, Modal, Typography } from "@mui/material";
+import { Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Fade, Grid, Modal, Typography } from "@mui/material";
 import { ButtonContainer, StudyComponentDiv, StyledCardContent } from "../componentStyles";
 import { useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore";
 import { findCardPosition, findDeckPosition } from "../../utils/helpers/helpers";
+import HelpIcon from '@mui/icons-material/Help';
 
 
 
@@ -18,6 +19,7 @@ const SrsComponent = (props) => {
     const [cards, setCards] = useState([]);
     const [showSrs, setShowSrs] = useState(false);
     const [currentCardPosition, setCurrentCardPosition] = useState({ deckPosition: null, cardPosition: null })
+    const [openDialog, setOpenDialog] = useState(false);
 
     const setReviewDate = (reviewDate) => {
         // Atualiza a data do card do formato em milisegundos do firestore para o formato date do javascript
@@ -113,6 +115,15 @@ const SrsComponent = (props) => {
 
     };
 
+    const handleHow = () => {
+        setOpenDialog(true);
+
+    }
+
+    const closeHowTo = () => {
+        setOpenDialog(false);
+    }
+
 
     const findCardInDeck = async (cardId) => {
         const position = { deckPosition: null, cardPosition: null };
@@ -171,22 +182,71 @@ const SrsComponent = (props) => {
         <StudyComponentDiv>
             {(showSrs) ? (
                 <Grid container spacing={1} key='srs'>
-                    <Grid item xs={9} key='title'>
+                    <Grid item xs={8.5} key='title'>
                         <Grid key='deckName'>
                             <h1>Baralhos</h1>
                             <Typography sx={{ fontStyle: 'italic', color: 'red', fontWeight: 'bold' }}>Cartões em Vermelho precisam de revisão</Typography>
                         </Grid>
 
                     </Grid>
-                    <Grid key='revisarButton' item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                        <Button 
-                        onClick={handleReviewAll} 
-                        data-testid='botao revisao' 
-                        title="Revisa todos os cartões que já precisam de revisão." 
-                        variant="contained" 
-                        color="primary"
-                        sx={{maxWidth:'200px'}}
-                        
+                    <Grid key='ComoFunciona-button' item xs={1.5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                        <Button
+                            onClick={handleHow}
+                            data-testid='howto-button'
+                            title='Como funciona a revisão SRS'
+                            variant="outlined"
+                            color="primary"
+                            sx={{ maxWidth: '100%' }}
+                            endIcon={<HelpIcon />}
+                        >
+                            Como Funciona
+                        </Button>
+                    </Grid>
+
+                    <Dialog open={openDialog} onClose={closeHowTo}>
+                        <DialogTitle sx={{fontWeight:'bold'}}>Sistema de Estudo por Repetição Espaçada</DialogTitle>
+                        <DialogContent>
+                            <p>
+                                O sistema de estudo por repetição espaçada é uma técnica que visa otimizar a retenção de informações durante o processo de aprendizado. Ele se baseia no princípio de que revisar o conteúdo em intervalos de tempo espaçados, ao longo do tempo, aumenta a eficácia da aprendizagem.
+                            </p>
+                            <p>
+                                O funcionamento do sistema de estudo por repetição espaçada envolve algumas etapas:
+                            </p>
+                            <ol>
+                                <li>
+                                    Estabelecimento de intervalos: Ao estudar um novo conteúdo, o sistema determina um intervalo inicial para a revisão. Esse intervalo pode variar dependendo da complexidade e dificuldade do material.
+                                </li>
+                                <li>
+                                    Revisão periódica: Após o estudo inicial, o sistema programa revisões periódicas do conteúdo. O intervalo entre as revisões aumenta gradualmente com o tempo, à medida que o material é consolidado na memória.
+                                </li>
+                                <li>
+                                    Avaliação do desempenho: Durante as revisões, o sistema avalia o desempenho do usuário, identificando quais informações foram retidas com sucesso e quais necessitam de revisão adicional.
+                                </li>
+                                <li>
+                                    Ajuste dos intervalos: Com base no desempenho do usuário, o sistema ajusta os intervalos de revisão para cada item de conteúdo. Os itens que são facilmente lembrados têm intervalos maiores, enquanto os itens mais desafiadores têm intervalos menores.
+                                </li>
+                                <li>
+                                    Repetição personalizada: O sistema adapta as revisões de acordo com as necessidades individuais de cada usuário. Itens mais difíceis ou que foram esquecidos são revisados com mais frequência, enquanto itens mais fáceis são revisados com menos frequência.
+                                </li>
+                            </ol>
+                            <p>
+                                O objetivo final do sistema de estudo por repetição espaçada é maximizar a retenção de informações a longo prazo, otimizando o tempo de estudo e minimizando o esquecimento. Ele se baseia nos princípios da curva do esquecimento e do espaçamento ótimo, promovendo uma aprendizagem mais eficiente e duradoura.
+                            </p>
+                        </DialogContent>
+                    </Dialog>
+
+
+
+
+                    <Grid key='revisarButton' item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                        <Button
+                            onClick={handleReviewAll}
+                            data-testid='botao revisao'
+                            title="Revisa todos os cartões que já precisam de revisão."
+                            variant="contained"
+                            color="primary"
+                            sx={{ maxWidth: '200px' }}
+
                         >
 
                             Revisar Tudo
@@ -288,7 +348,7 @@ const SrsComponent = (props) => {
 
                                                             }}
                                                         >
-                                                            <CardHeader title={cards[currentCardIndex].title} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor:'#cccccc' }} />
+                                                            <CardHeader title={cards[currentCardIndex].title} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#cccccc' }} />
                                                             <CardContent sx={{ display: "flex", justifyContent: 'space-around', alignContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
                                                                 <Typography
                                                                     variant="h5"
@@ -297,7 +357,7 @@ const SrsComponent = (props) => {
                                                                     sx={{ paddingBottom: '10px', overflow: 'auto', maxWidth: '600px', maxHeight: '400px' }}
                                                                     dangerouslySetInnerHTML={{ __html: cards[currentCardIndex].front }}
                                                                 />
-                                                                <Divider sx={{width:'100%'}} />
+                                                                <Divider sx={{ width: '100%' }} />
                                                                 {showBack ? (
                                                                     <Typography
                                                                         data-testid='back'
@@ -310,7 +370,7 @@ const SrsComponent = (props) => {
 
 
                                                                 ) : ''}
-                                                                <Divider sx={{width:'100%'}} />
+                                                                <Divider sx={{ width: '100%' }} />
 
                                                                 {showBack && (
                                                                     <ButtonContainer sx={{ width: '500px' }}>
@@ -346,9 +406,14 @@ const SrsComponent = (props) => {
                                                                     </ButtonContainer>
                                                                 )}
                                                                 {!showBack && (
-                                                                    <Button variant="contained" color="primary" size="small" sx={{ maxWidth: '200px' }} onClick={handleShowBack}>
-                                                                        Mostrar resposta
-                                                                    </Button>
+                                                                    <Box sx={{ paddingTop: '50px' }}>
+                                                                        <Button variant="contained" color="primary" size="small" sx={{ maxWidth: '200px' }} onClick={handleShowBack}>
+                                                                            Mostrar resposta
+                                                                        </Button>
+                                                                    </Box>
+
+
+
                                                                 )}
                                                             </CardContent>
                                                         </Card>
@@ -366,9 +431,11 @@ const SrsComponent = (props) => {
                         }
                     })}
                 </Grid>
-            ) : <CircularProgress color="inherit" />}
+            ) : <CircularProgress color="inherit" />
+            }
 
-        </StudyComponentDiv>
+
+        </StudyComponentDiv >
 
 
 
