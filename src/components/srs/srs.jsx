@@ -1,9 +1,8 @@
 import { Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Divider, Fade, Grid, Modal, Typography } from "@mui/material";
 import { ButtonContainer, StudyComponentDiv, StyledCardContent } from "../componentStyles";
 import { useEffect, useState } from "react";
-import { Timestamp, serverTimestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import { findCardPosition, findDeckPosition } from "../../utils/helpers/helpers";
-import { removeHTMLTags } from "../../utils/helpers/helpers";
 
 
 
@@ -69,7 +68,7 @@ const SrsComponent = (props) => {
             };
         });
         setCurrentCardIndex(0);
-        await setCards(filteredCards);
+        setCards(filteredCards);
 
         return filteredCards;
     }
@@ -180,7 +179,16 @@ const SrsComponent = (props) => {
 
                     </Grid>
                     <Grid key='revisarButton' item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                        <Button onClick={handleReviewAll} data-testid='botao revisao' title="Revisa todos os cartões que já precisam de revisão." variant="contained" color="primary">
+                        <Button 
+                        onClick={handleReviewAll} 
+                        data-testid='botao revisao' 
+                        title="Revisa todos os cartões que já precisam de revisão." 
+                        variant="contained" 
+                        color="primary"
+                        sx={{maxWidth:'200px'}}
+                        
+                        >
+
                             Revisar Tudo
                         </Button>
 
@@ -208,7 +216,7 @@ const SrsComponent = (props) => {
                             return (
                                 <Grid item xs={2.4}>
                                     <Card raised sx={{ maxWidth: '300px', padding: '5px', maxHeight: '320px', paddingBottom: '80px' }}>
-                                        <Typography variant="h4" key={deck.id} color='black' sx={{ position: 'absolute', backgroundColor: 'white', minWidth: '200px' }} gutterBottom>
+                                        <Typography variant="h4" key={deck.id} color='black' sx={{ position: 'absolute', backgroundColor: 'white', minWidth: '250px' }} gutterBottom>
                                             {deck.title}
                                         </Typography>
                                         <StyledCardContent >
@@ -280,7 +288,7 @@ const SrsComponent = (props) => {
 
                                                             }}
                                                         >
-                                                            <CardHeader title={cards[currentCardIndex].title} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
+                                                            <CardHeader title={cards[currentCardIndex].title} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor:'#cccccc' }} />
                                                             <CardContent sx={{ display: "flex", justifyContent: 'space-around', alignContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
                                                                 <Typography
                                                                     variant="h5"
@@ -289,6 +297,7 @@ const SrsComponent = (props) => {
                                                                     sx={{ paddingBottom: '10px', overflow: 'auto', maxWidth: '600px', maxHeight: '400px' }}
                                                                     dangerouslySetInnerHTML={{ __html: cards[currentCardIndex].front }}
                                                                 />
+                                                                <Divider sx={{width:'100%'}} />
                                                                 {showBack ? (
                                                                     <Typography
                                                                         data-testid='back'
@@ -301,6 +310,7 @@ const SrsComponent = (props) => {
 
 
                                                                 ) : ''}
+                                                                <Divider sx={{width:'100%'}} />
 
                                                                 {showBack && (
                                                                     <ButtonContainer sx={{ width: '500px' }}>

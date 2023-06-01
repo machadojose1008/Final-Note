@@ -7,7 +7,6 @@ import { CardEditArea, CustomButtomGroup, EditorContainer, EditorNavBar, Title, 
 import uploadImage from './image-uploader';
 import SaveIcon from '@mui/icons-material/Save';
 import ImageIcon from '@mui/icons-material/Image';
-import ShareIcon from '@mui/icons-material/Share';
 
 const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, closeCard }) => {
     const [front, setFront] = useState('');
@@ -113,7 +112,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
 
     return (
         <EditorContainer sx={{ paddingTop: '8px' }}>
-            {(front && back) ? (
+            
                 <div>
                     <EditorNavBar>
 
@@ -201,7 +200,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
                 </div>
 
 
-            ) : null}
+          
 
 
         </EditorContainer >
