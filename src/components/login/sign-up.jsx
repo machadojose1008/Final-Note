@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Container, CssBaseline, Grid, TextField, Typography } from "@mui/material";
+import { Button, Container, CssBaseline, Grid, Snackbar, TextField, Typography } from "@mui/material";
 import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from '../../utils/firebase/firebase-config';
 import { HeaderLogo, SignInComponent, SignInContainer } from './signStyles';
 import { db } from '../../utils/firebase/firebase-config'
-import { collection, addDoc, query, where, getDocs  } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 
 const defaultFormFields = {
     displayName: '',
@@ -22,7 +22,11 @@ const SignUpForm = () => {
     const [passwordFormatConfirmation, setPasswordFormatConfirmation] = useState(true);
     const { displayName, email, password, confirmPassword } = formFields;
     const mensagemErroSenha = "Senha não pode ter espaços,deve ter no mínimo 8 caracteres, deve conter pelo menos 1 número, deve ter pelo menos 1 letra maiúscula e 1 letra minúscula. Você pode usar os seguintes símbolos: !, @, #, $, & "
-    
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+    };
 
     const navigate = useNavigate();
 
@@ -45,6 +49,11 @@ const SignUpForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        // Verificar se algum campo está vazio
+        if (displayName === '' || email === '' || password === '' || confirmPassword === '') {
+            setSnackbarOpen(true); // Exibir Snackbar de erro
+            return; // Não executar o restante da função
+        }
 
         try {
             const result = await createAuthUserWithEmailAndPassword(
@@ -56,14 +65,14 @@ const SignUpForm = () => {
             if (result.user) {
                 const { user } = result;
                 await createUserDocumentFromAuth(user, { displayName });
-                
+
                 const userId = await findUserIdByEmail(user.email);
 
                 const decksCollectionRef = collection(db, `users/${userId}/decks`);
-                const decksDocRef = await addDoc(decksCollectionRef, {title: 'Primeiro Baralho'});
+                const decksDocRef = await addDoc(decksCollectionRef, { title: 'Primeiro Baralho' });
 
                 const notebooksCollectionRef = collection(db, `users/${userId}/notebooks`);
-                const notebooksDocRef = await addDoc(notebooksCollectionRef, {title:'Primeiro Caderno'});
+                const notebooksDocRef = await addDoc(notebooksCollectionRef, { title: 'Primeiro Caderno' });
 
                 resetFormFields();
 
@@ -89,10 +98,10 @@ const SignUpForm = () => {
         setFormFields({ ...formFields, [name]: value });
 
         if (name === 'password') {
-             setPasswordFormatConfirmation(false);
+            setPasswordFormatConfirmation(false);
             if (/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9@$&!]{8,}/.test(value))
                 setPasswordFormatConfirmation(true);
-            
+
         }
 
         if (name === 'confirmPassword') {
@@ -114,16 +123,13 @@ const SignUpForm = () => {
 
     return (
 
-        <SignInComponent>
-            <HeaderLogo>Final Note</HeaderLogo>
-            <SignInContainer>
-                <Container component="main" maxWidth="xs">
-                    <CssBaseline />
-                    <form
-                        noValidate
-                        //Função chamada quando o botão com o tipo submit é acionado
-                        onSubmit={handleSubmit}
-                    >
+        <div>
+            <SignInComponent>
+                <HeaderLogo>Final Note</HeaderLogo>
+                <SignInContainer>
+                    <Container component="main" maxWidth="xs">
+                        <CssBaseline />
+
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <Typography component="h1" variant="h5">
@@ -189,14 +195,16 @@ const SignUpForm = () => {
                                 />
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sx={{ paddingTop: '10px' }}>
                             <Button
+                                data-testid='criarConta-button'
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 color="primary"
+                                onClick={handleSubmit}
                             >
-                                Inscreva-se
+                                Criar Conta
                             </Button>
                         </Grid>
 
@@ -210,12 +218,25 @@ const SignUpForm = () => {
                                 </Link>
                             </Grid>
                         </Grid>
-                    </form>
-                </Container>
-            </SignInContainer>
+
+                    </Container>
+                </SignInContainer>
 
 
-        </SignInComponent>
+
+
+            </SignInComponent>
+
+            <Snackbar
+                id='snackbar-erro'
+                open={snackbarOpen}
+                autoHideDuration={5000}
+                onClose={handleSnackbarClose}
+                message="Por favor, preencha todos os campos."
+            />
+        </div>
+
+
 
 
     );

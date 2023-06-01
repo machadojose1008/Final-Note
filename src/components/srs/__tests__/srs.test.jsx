@@ -29,7 +29,7 @@ describe('SrsComponent', () => {
         // Renderiza o card 
         expect(screen.getByText('Teste')).toBeInTheDocument();
         // Renderiza o aviso de revisão
-        expect(screen.getByText('Cards em Vermelho precisam de revisão')).toBeInTheDocument();
+        expect(screen.getByText('Cartões em Vermelho precisam de revisão')).toBeInTheDocument();
         // Renderiza o card dentro do deck 
         expect(screen.getByText('Título do card de teste')).toBeInTheDocument();
 
@@ -56,7 +56,7 @@ describe('SrsComponent', () => {
             <SrsComponent decks={decks} />
         );
 
-        const revisarDeck = screen.getByText('Revisar Deck');
+        const revisarDeck = screen.getByText('Revisar Baralho');
         fireEvent.click(revisarDeck);
         // Testa o modal abrir ao clicar no botão
         await waitFor(() => {
