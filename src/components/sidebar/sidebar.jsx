@@ -161,8 +161,6 @@ function SidebarComponent(props) {
     }
 
     useLayoutEffect(() => {
-        console.log(props.username);
-        console.log(decks, notebooks);
         const settingNotes = async () => {
             const fetchNotes = await notebooks.map(el => el.notes);
             setNotes(fetchNotes);

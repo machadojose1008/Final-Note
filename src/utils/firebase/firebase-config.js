@@ -77,7 +77,7 @@ export const createUserDocumentFromAuth = async (
         ...additionalInformation,
       });
     } catch (error) {
-      console.log(error.message);
+      
     }
   }
   return userDocRef;

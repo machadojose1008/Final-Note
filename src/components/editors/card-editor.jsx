@@ -97,7 +97,6 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
 
 
     useEffect(() => {
-        console.log(selectedCard);
         setFront(selectedCard.front || '');
         setBack(selectedCard.back || '');
         setTitle(selectedCard.title || '');

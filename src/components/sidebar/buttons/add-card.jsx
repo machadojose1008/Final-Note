@@ -43,7 +43,6 @@ function AddCard(props) {
     }
 
     useEffect(() => {
-        console.log(decksTitle);
         if (keyPressed && title && selectedDeckTitle) {
             newCard();
         }

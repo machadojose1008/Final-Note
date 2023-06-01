@@ -500,7 +500,7 @@ function App() {
 
     const deckId = await findDeckIndex(userId, deckTitle);
     if (!deckId) {
-      console.log('deck não encontrado');
+      
       return;
     }
 
@@ -631,7 +631,6 @@ function App() {
   }
 
   const logOut = () => {
-    console.log('logout');
     auth.signOut();
     return navigate('/signin')
   }

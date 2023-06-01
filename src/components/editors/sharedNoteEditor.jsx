@@ -130,7 +130,6 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
 
 
     useEffect(() => {
-        console.log(selectedSharedNoteIndex);
 
         fetchSharedNote(selectedSharedNoteIndex);
 
