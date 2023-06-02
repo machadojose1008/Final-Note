@@ -14,7 +14,7 @@ import html2pdf from 'html2pdf.js';
 
 import '../../assets/quill.snow.css';
 
-const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote, shareNote }) => {
+const NoteEditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, closeNote, shareNote }) => {
     const [body, setBody] = useState('');
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
@@ -56,6 +56,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
 
     const handleImageUpload = () => {
+        // Faz o upload da imagem para o editor
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
@@ -65,12 +66,15 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
 
 
     const handleFileChange = (event) => {
+        // Converte o editor para pdf
         const file = event.target.files[0];
         uploadImage(file).then((imageUrl) => {
             const range = quillRef.current.getEditor().getSelection();
             quillRef.current.getEditor().insertEmbed(range ? range.index : 0, 'image', imageUrl);
         });
     };
+
+    // Configurações do React-quill
 
     const modules = {
         toolbar: {
@@ -99,7 +103,7 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     ]
 
 
-
+    // Atualização dos campos da note
 
     const updateBody = (val) => {
         setBody(val);
@@ -276,4 +280,4 @@ const EditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, clos
     );
 };
 
-export default EditorComponent;
+export default NoteEditorComponent;

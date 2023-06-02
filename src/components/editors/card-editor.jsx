@@ -22,6 +22,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
 
 
     const handleImageUpload = async (editorName) => {
+        // Faz o upload da imagem para o banco storage do firebase e insere ela no editor
         setActiveEditor(editorName);
 
 
@@ -46,6 +47,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
         });
     };
 
+    // configurações do React-quill
     const modules = {
         toolbar: {
             container: [
@@ -72,6 +74,7 @@ const CardEditorComponent = ({ selectedCard, cardUpdate, selectedDeckIndex, clos
         'link', 'image'
     ]
 
+    // Funções de atualização dos campos do card
 
     const updateFront = (frontVal) => {
         setFront(frontVal);

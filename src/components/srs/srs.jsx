@@ -63,6 +63,7 @@ const SrsComponent = (props) => {
     }, [decks]);
 
     const filterCards = async (deck) => {
+        // Filtra os cards que precisam de revisão pelo ease
         const filteredCards = [];
         deck.cards.map((card) => {
             if (card.ease === 1) {
@@ -80,6 +81,7 @@ const SrsComponent = (props) => {
     }
 
     const handleReviewDeck = async (deck) => {
+        // Chama a revisão dos cards de um deck
         const filteredCards = await filterCards(deck);
         if (filteredCards.length === 0) {
             alert('Nenhum card para revisar nesse deck no momento');
@@ -94,6 +96,7 @@ const SrsComponent = (props) => {
     };
 
     const handleReviewAll = async () => {
+        // Chama a revisão de todos os cards dos decks
         const revisionCards = [];
 
         await Promise.all(
@@ -126,6 +129,7 @@ const SrsComponent = (props) => {
 
 
     const findCardInDeck = async (cardId) => {
+        // acha a posição do card nos decks
         const position = { deckPosition: null, cardPosition: null };
 
         await Promise.all(
@@ -145,6 +149,7 @@ const SrsComponent = (props) => {
     };
 
     const handleNextCard = async (newEase, cardId) => {
+        // atualiza o card aberto no dialog e chama o próximo card que precisa de revisão
         const currentPosition = await findCardInDeck(cardId);
         const deckPosition = currentPosition.deckPosition;
         const cardPosition = currentPosition.cardPosition;

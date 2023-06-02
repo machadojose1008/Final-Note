@@ -1,5 +1,5 @@
 import { fireEvent, getByTestId, render, screen, waitFor } from "@testing-library/react";
-import EditorComponent from "../editor";
+import NoteEditorComponent from "../note-editor";
 import { Timestamp } from "firebase/firestore";
 
 const selectedNotebookIndex = '1';
@@ -11,11 +11,11 @@ const selectedNote = {
     title: '',
 };
 
-describe('EditorComponent', () => {
+describe('NoteEditorComponent', () => {
 
     test('Renderiza a note', () => {
         render(
-            <EditorComponent
+            <NoteEditorComponent
                 selectedNote={selectedNote}
                 selectedNotebookIndex={selectedNotebookIndex}
             />
@@ -32,7 +32,7 @@ describe('EditorComponent', () => {
 
         const {getByPlaceholderText} = 
             render(
-                <EditorComponent
+                <NoteEditorComponent
                     selectedNote={selectedNote}
                     selectedNotebookIndex={selectedNotebookIndex}
                 />
@@ -47,7 +47,7 @@ describe('EditorComponent', () => {
     test('Chama o closeNote corretamente', () => {
         const closeNoteMock = jest.fn();
         const {getByTestId} = render(
-            <EditorComponent
+            <NoteEditorComponent
                 selectedNote={selectedNote}
                 selectedNotebookIndex={selectedNotebookIndex}
                 closeNote={closeNoteMock}

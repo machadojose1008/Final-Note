@@ -25,31 +25,35 @@ import SearchBox from "./Search";
 
 
 function SidebarComponent(props) {
-    const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy, selectGroup } = props;
+    const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy } = props;
 
+    // notes setters
     const [notes, setNotes] = useState([]);
     const [title, setTitle] = useState(null);
     const [notesSearch, setNotesSearch] = useState([]);
 
+    // notebooks setters
     const [notebookTitle, setNotebookTitle] = useState(null);
     const [notebooksTitle, setNotebooksTitle] = useState([]);
     const [selectedNotebookIndex, setSelectedNotebookIndex] = useState(null);
 
+    // cards setters
     const [cards, setCards] = useState([]);
     const [cardTitle, setCardTitle] = useState(null);
     const [cardsSearch, setCardsSearch] = useState([]);
 
+    // decks setters
     const [decksTitle, setDecksTitle] = useState([]);
     const [deckTitle, setDeckTitle] = useState(null);
     const [selectedDeckIndex, setSelectedDeckIndex] = useState(null);
 
+    // sharedNote setters
     const [sharedNotes, setSharedNotes] = useState([]);
 
-
+    // Controle de componentes 
     const [openNotebookDialog, setOpenNotebookDialog] = useState(false);
     const [openDeckDialog, setOpenDeckDialog] = useState(false);
     const [renameId, setRenameId] = useState(null);
-
     const [anchorEl, setAnchorEl] = React.useState(null);
     const openMenu = Boolean(anchorEl);
 
@@ -247,7 +251,7 @@ function SidebarComponent(props) {
 
                 <SidebarContainer>
 
-                    <UserIcon onClick={handleMenu} label={props.username} icon={<Logout />} >
+                    <UserIcon onClick={handleMenu} label={props.username}  icon={<Logout />} >
 
                     </UserIcon>
                     <Menu

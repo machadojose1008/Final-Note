@@ -3,7 +3,7 @@ import './App.css';
 import { findNotebookPosition, findDeckPosition } from '../src/utils/helpers/helpers';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarComponent from './components/sidebar/sidebar';
-import EditorComponent from './components/editors/editor';
+import NoteEditorComponent from './components/editors/note-editor';
 import CardEditorComponent from './components/editors/card-editor';
 import { Grid } from '@mui/material';
 import { collection, updateDoc, doc, serverTimestamp, addDoc, deleteDoc, getDocs, query, where, Timestamp, getDoc } from "firebase/firestore";
@@ -17,6 +17,13 @@ import { redirect } from 'react-router-dom';
 
 // Required for side-effects
 require("firebase/firestore");
+
+/*
+    Função principal do aplicativo ele que vai renderizar os componentes e gerenciar
+  as buscas e envio de informações para o banco de dados do firestore.
+  
+
+*/
 
 
 
@@ -172,6 +179,7 @@ function App() {
 
 
   const selectNote = async (note, noteIndex, notebookIndex) => {
+    // Função usada pelos componentes para exibir uma nota na tela
     setSelectedNoteIndex(noteIndex);
     setSelectedNote(note);
     setSelectedNotebookIndex(notebookIndex);
@@ -183,12 +191,15 @@ function App() {
   };
 
   const checkOpenned = async (index) => {
+    // Verifica se a sharedNote ja está aberta por outro usuário.
     const docRef = doc(db, 'sharedNotes', index);
     const data = await getDoc(docRef);
     return (data.data().openned);
   }
 
   const selectSharedNote = async (sharedNote, sharedNoteIndex) => {
+    // Seleciona a sharedNote para exibir ela na tela
+
     const opennedState = await checkOpenned(sharedNoteIndex);
 
     if (opennedState === false) {
@@ -217,6 +228,7 @@ function App() {
   };
 
   const noteUpdate = async (id, selectedNotebookId, noteObj) => {
+    // Atualiza a nota no banco de dados com as informações que o componente enviar
     if (noteObj.body === '<p><br></p>') {
       return;
     } else {
@@ -241,7 +253,7 @@ function App() {
 
 
   const sharedNoteUpdate = async (id, sharedNoteObj) => {
-
+     // Atualiza a sharedNote no banco de dados com as informações que o componente enviar
     if (sharedNoteObj.body === '<p><br></p>') {
       return;
     } else {
@@ -264,6 +276,7 @@ function App() {
   };
 
   const newNote = async (noteTitle, notebookTitle) => {
+    // Cria uma nova nota no banco com o titulo enviado pelo componente no notebook selecionado.
     selectNote(null, null, null);
 
     const note = {
@@ -308,6 +321,8 @@ function App() {
 
 
   const deleteNote = async (note, notebookIndex) => {
+    // Deleta a nota enviada pelo componente do banco de dados do usuário
+
     const noteRef = doc(db, `users/${userId}/notebooks/${notebookIndex}/notes`, note.id);
     await deleteDoc(noteRef);
 
@@ -335,6 +350,9 @@ function App() {
   };
 
   const shareNote = async (noteObj, timestamp, emailDestiny, selectedNotebookIndex) => {
+    // Compartilha uma nota
+    // Primeiro ela faz uma cópia da nota para uma nova coleção no firestore sharedNotes para mais de um usuário acessar
+    // Depois tira a nota do banco do usuário para não ficar duplicada
     const note = {
       email: [user.user.email, emailDestiny],
       title: noteObj.title,
@@ -379,6 +397,7 @@ function App() {
   };
 
   const deleteSharedNote = async (sharedNote) => {
+    // Deleta uma nota compartilhada do banco de dados 
     const removeRef = doc(db, 'sharedNotes', sharedNote.id);
     await deleteDoc(removeRef);
 
@@ -402,6 +421,8 @@ function App() {
   };
 
   const renameNotebook = async (notebookId, newTitle) => {
+    // Altera o nome do notebook com o enviado pelo componente no banco de dados
+
     const data = {
       title: newTitle
     }
@@ -418,6 +439,7 @@ function App() {
   };
 
   const deleteNotebook = async (notebookId) => {
+    // Deleta o notebook do id recebido pelo componente do banco de dados 
     const notebookRef = doc(db, `users/${userId}/notebooks`, notebookId);
     const notebookPosition = await findNotebookPosition(notebooks, notebookId);
     const notebookNotes = notebooks[notebookPosition].notes;
@@ -445,6 +467,7 @@ function App() {
 
 
   const selectCard = async (card, cardIndex, deckIndex) => {
+    // Seleciona o card para exibir ele na tela
     setSelectedCardIndex(cardIndex);
     setSelectedCard(card);
     setSelectedDeckIndex(deckIndex);
@@ -453,6 +476,7 @@ function App() {
   };
 
   const cardUpdate = (id, selectedDeckId, cardObj) => {
+    // Atualiza o card com as informações passadas pelo componente no banco de dados
     if (cardObj.front === '<p><br></p>' || cardObj.back === '<p><br></p>') {
       return;
     } else {
@@ -479,6 +503,7 @@ function App() {
 
 
   const newCard = async (cardTitle, deckTitle) => {
+    // Adiciona um novo card com o titulo enviado pelo componente no deck selecionado
     selectCard(null, null, null);
 
     const card = {
@@ -525,6 +550,7 @@ function App() {
 
 
   const deleteCard = async (card, deckIndex) => {
+    // Deleta o card passado pelo componente do banco de dados
     const cardRef = doc(db, `users/${userId}/decks/${deckIndex}/cards`, card.id);
     await deleteDoc(cardRef);
 
@@ -551,6 +577,7 @@ function App() {
 
 
   const newDeck = async (deckTitle) => {
+    // Adiciona um novo deck no banco de dados com o título passado
     const _deck = {
       title: deckTitle
     }
@@ -561,6 +588,7 @@ function App() {
   };
 
   const renameDeck = async (deckId, newTitle) => {
+    // Altera o nome do deck passado pelo componente com o newTitle no banco de dados
     const data = {
       title: newTitle
     }
@@ -579,6 +607,7 @@ function App() {
 
 
   const deleteDeck = async (deckId) => {
+    // Deleta o deck passado pelo componente no banco de dados.
     const deckRef = doc(db, `users/${userId}/decks`, deckId);
     const deckPosition = await findDeckPosition(decks, deckId);
     const deckCards = decks[deckPosition].cards;
@@ -605,6 +634,7 @@ function App() {
 
 
   const updateAfterReview = async (decks) => {
+    // Atualiza o ease e o reviewDate dos cards depois que uma revisão é feita
     for (const _deck of decks) {
       for (const _card of _deck.cards) {
         const deckRef = doc(db, `users/${userId}/decks/${_deck.id}/cards`, _card.id);
@@ -621,23 +651,28 @@ function App() {
   }
 
   const closeCard = () => {
+    // Fecha o card na tela
     setShowCard(!showCard);
   }
 
   const closeNote = () => {
+    // Fecha a note na tela
     setShowNote(!showNote);
   };
 
   const closeChat = () => {
+    // Fecha o chat na tela 
     setShowChat(!showChat);
   }
 
   const logOut = () => {
+    // Desloga o usuário voltando para a tela de login
     auth.signOut();
     return navigate('/signin')
   }
 
   const closeSharedNote = async () => {
+    // Fecha a sharedNote mudando o campo openned para false
     if (selectedSharedNoteIndex !== null) {
       const dbRef = doc(db, 'sharedNotes', selectedSharedNoteIndex);
       try {
@@ -652,24 +687,22 @@ function App() {
   }
 
   const selectStudy = () => {
+    // Abre a tela de revisão de cards
     setShowCard(false);
     setShowNote(false);
     setShowStudy(true);
     closeSharedNote();
   }
 
-  const selectGroup = () => {
-    setShowCard(false);
-    setShowNote(false);
-    setShowStudy(false);
-  };
 
   const selectChat = () => {
+    // Abre o chat na tela 
     setShowChat(!showChat);
     setShowCard(false);
   }
 
   const selectSharedNotesEditor = () => {
+    // Abre o editor de notas compartilhadas 
     setShowNote(false);
     setShowStudy(false);
     setShowSharedNotes(true);
@@ -742,15 +775,13 @@ function App() {
               deleteSharedNote={deleteSharedNote}
 
               selectStudy={selectStudy}
-              selectGroup={selectGroup}
-
 
 
             />
           </Grid>
           {(selectedNote && showNote) ? (
             <Grid item xs={(showCard) ? 7 : 10}>
-              <EditorComponent
+              <NoteEditorComponent
                 selectedNote={selectedNote}
                 noteUpdate={noteUpdate}
                 selectedNotebookIndex={selectedNotebookIndex}

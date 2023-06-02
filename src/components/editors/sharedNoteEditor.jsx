@@ -57,6 +57,7 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
 
 
     const handleImageUpload = () => {
+        // Upload de imagens
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
@@ -65,12 +66,15 @@ const SharedNoteEditor = ({ selectedSharedNoteIndex, sharedNoteUpdate, closeShar
     };
 
     const handleFileChange = (event) => {
+        // Conversão para pdf
         const file = event.target.files[0];
         uploadImage(file).then((imageUrl) => {
             const range = quillRef.current.getEditor().getSelection();
             quillRef.current.getEditor().insertEmbed(range ? range.index : 0, 'image', imageUrl);
         });
     };
+
+    // Configurações do React-quill
 
     const modules = {
         toolbar: {
