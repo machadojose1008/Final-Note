@@ -9,7 +9,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
 import { TreeView } from '@mui/lab';
-import { Button, DialogContent, DialogTitle, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, DialogContent, DialogTitle, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material';
 import List from '@mui/material/List';
 import { useLayoutEffect, useState } from 'react';
 import { ActionList, AddDialog, SidebarContainer, UserIcon } from '../componentStyles';
@@ -24,21 +24,27 @@ import SidebarItemComponent from './itens/sidebar-notes';
 import SidebarSharedNoteComponent from './itens/sidebar-shared';
 import { StyledTreeItem } from './itens/styled-tree-item';
 import TopicIcon from '@mui/icons-material/Topic';
+import SearchBox from "./Search";
+
 
 function SidebarComponent(props) {
     const { decks = [], notebooks = [], selectedNoteIndex, selectedCardIndex, selectedSharedNoteIndex, selectStudy, selectGroup } = props;
 
     const [notes, setNotes] = useState([]);
     const [title, setTitle] = useState(null);
+    const [notesSearch, setNotesSearch] = useState([]);
 
     const [notebookTitle, setNotebookTitle] = useState(null);
     const [notebooksTitle, setNotebooksTitle] = useState([]);
+    const [selectedNotebookIndex, setSelectedNotebookIndex] = useState(null);
 
     const [cards, setCards] = useState([]);
     const [cardTitle, setCardTitle] = useState(null);
+    const [cardsSearch, setCardsSearch] = useState([]);
 
     const [decksTitle, setDecksTitle] = useState([]);
     const [deckTitle, setDeckTitle] = useState(null);
+    const [selectedDeckIndex, setSelectedDeckIndex] = useState(null);
 
     const [sharedNotes, setSharedNotes] = useState([]);
 
@@ -48,7 +54,6 @@ function SidebarComponent(props) {
     const [renameId, setRenameId] = useState(null);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
-
     const openMenu = Boolean(anchorEl);
 
 
@@ -164,6 +169,8 @@ function SidebarComponent(props) {
         const settingNotes = async () => {
             const fetchNotes = await notebooks.map(el => el.notes);
             setNotes(fetchNotes);
+            const mergedNotes = await mergeArrays(fetchNotes);
+            setNotesSearch(mergedNotes);
         }
 
         const settingTitles = async () => {
@@ -174,6 +181,8 @@ function SidebarComponent(props) {
         const settingCards = async () => {
             const fetchCards = await decks.map(el => el.cards);
             setCards(fetchCards);
+            const mergedCards = await mergeArrays(fetchCards);
+            setCardsSearch(mergedCards);
         }
 
         const settingCardTitles = async () => {
@@ -194,6 +203,44 @@ function SidebarComponent(props) {
         setSharedNotes(props.sharedNotes);
     }, [props.sharedNotes]);
 
+    const mergeArrays = async (array) => {
+        // Função que vai pegar o array de arrays e juntar os objetos em um array só.
+        const mergedCards = await array.reduce((acc, curr) => acc.concat(curr), []);
+        return mergedCards;
+    };
+
+    const SelectSearch = (item) => {
+        if (item === null) {
+            return;
+        } else {
+            if ('ease' in item) {
+                // é um card
+                decks.map((deck) => {
+                    deck.cards.map((card) => {
+                        if (card.id === item.id) {
+                            setSelectedDeckIndex(deck.id);
+                        };
+                    })
+                })
+
+                props.selectCard(item, item.id, selectedDeckIndex);
+
+            } else {
+                // é uma note 
+                notebooks.map((notebook) => {
+                    notebook.notes.map((note) => {
+                        if (note.id === item.id) {
+                            setSelectedNotebookIndex(notebook.id);
+                        }
+                    })
+                })
+
+                props.selectNote(item, item.id, selectedNotebookIndex);
+            }
+        }
+
+    }
+
     return (
         <div>
             {(decks.length === 0 || notebooks.length === 0) ? (
@@ -201,22 +248,29 @@ function SidebarComponent(props) {
             ) : (
 
                 <SidebarContainer>
-                
-                        <UserIcon onClick={handleMenu} label={props.username} icon={<Logout />} >
-                            
-                        </UserIcon>
-                        <Menu
-                            id='user-menu'
-                            anchorEl={anchorEl}
-                            open={openMenu}
-                            onClose={handleCloseMenu}
-                            MenuListProps={{
-                                'aria-labelledby': 'basic-button'
-                            }}
-                        >
-                            <MenuItem onClick={handleLogOut} >Sair</MenuItem>
-                        </Menu>
-                   
+
+                    <UserIcon onClick={handleMenu} label={props.username} icon={<Logout />} >
+
+                    </UserIcon>
+                    <Menu
+                        id='user-menu'
+                        anchorEl={anchorEl}
+                        open={openMenu}
+                        onClose={handleCloseMenu}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button'
+                        }}
+                    >
+                        <MenuItem onClick={handleLogOut} >Sair</MenuItem>
+                    </Menu>
+                    {(decks.length !== 0 && notebooks.length !== 0 && cards.length !== 0 && notes.length !== 0) ? (
+                        <SearchBox
+                            notes={notesSearch}
+                            cards={cardsSearch}
+                            select={SelectSearch}
+                        />
+
+                    ) : null}
 
                     <SidebarButton>
                         <AddNotebook newNotebook={newNotebook} />
@@ -317,7 +371,7 @@ function SidebarComponent(props) {
                             defaultEndIcon={<div style={{ width: 24 }} />}
                             sx={{ maxWidth: 200 }}
                         >
-                            <StyledTreeItem nodeId='sharedNotes'  labelText='Notas Compartilhadas' labelIcon={ShareIcon}>
+                            <StyledTreeItem nodeId='sharedNotes' labelText='Notas Compartilhadas' labelIcon={ShareIcon}>
 
                                 <List>
                                     {sharedNotes.map((sharedNote) => (
