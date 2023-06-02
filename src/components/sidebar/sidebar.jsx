@@ -1,18 +1,15 @@
-import { Face, Logout } from "@mui/icons-material";
+import { Logout } from "@mui/icons-material";
 import * as React from 'react';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import BookIcon from '@mui/icons-material/Book';
-import GroupIcon from '@mui/icons-material/Group';
 import NoteIcon from '@mui/icons-material/Note';
 import ShareIcon from '@mui/icons-material/Share';
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
 import { TreeView } from '@mui/lab';
-import { Autocomplete, Button, DialogContent, DialogTitle, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material';
+import {  Button, DialogContent, DialogTitle, Menu, MenuItem, TextField} from '@mui/material';
 import List from '@mui/material/List';
 import { useLayoutEffect, useState } from 'react';
-import { ActionList, AddDialog, SidebarContainer, UserIcon } from '../componentStyles';
+import { AddDialog, SidebarContainer, UserIcon } from '../componentStyles';
 import AddCard from './buttons/add-card';
 import AddDeck from './buttons/add-deck';
 import AddNote from './buttons/add-note';
@@ -210,6 +207,7 @@ function SidebarComponent(props) {
     };
 
     const SelectSearch = (item) => {
+        // Função executada quando a seleção de um item é feita na busca selecionando o item.
         if (item === null) {
             return;
         } else {
