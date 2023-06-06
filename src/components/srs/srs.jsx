@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Fade, Grid, Modal, Typography } from "@mui/material";
+import { Backdrop, Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Fade, Grid, Modal, Typography } from "@mui/material";
 import { ButtonContainer, StudyComponentDiv, StyledCardContent } from "../componentStyles";
 import { useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore";
@@ -330,12 +330,20 @@ const SrsComponent = (props) => {
                                                 open={openModal}
                                                 onClose={handleCloseModal}
                                                 closeAfterTransition
+                                                BackdropComponent={(props) => {
+                                                    <div
+                                                        {...props}
+                                                        style={{...props.style, backgroundColor:'rgba(0,0,0,0.1)',
+                                                    }}
+                                                    />
+                                                }}
+                       
 
                                                 sx={{
                                                     display: "flex",
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
-
+                                                    backgroundColor:'rgb(0 ,0 ,0 , 0.1)'
                                                 }}
                                             >
 

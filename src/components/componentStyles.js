@@ -110,7 +110,7 @@ export const SidebarContainer = styles('div')({
   position: 'relative',
   width: "100%",
   marginTop: "5%",
-  paddingLeft: "5%",
+  paddingLeft: "7%",
   backgroundColor: "#Ececec",
   maxWidth: '100%',
   borderTopRightRadius: '1em',

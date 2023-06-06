@@ -231,7 +231,7 @@ function App() {
     // Atualiza a nota no banco de dados com as informações que o componente enviar
     if (noteObj.body === '<p><br></p>') {
       return;
-    } else {
+    } else  if ({id}) {
       const noteRef = doc(db, `users/${userId}/notebooks/${selectedNotebookId}/notes`, id);
       const data = {
         title: noteObj.title,
@@ -239,13 +239,9 @@ function App() {
         timestamp: serverTimestamp()
       };
 
-      updateDoc(noteRef, data)
-        .then((docRef) => {
-          setNotesUpdated(true);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      await updateDoc(noteRef, data)
+      setNotesUpdated(true);
+        
     }
 
 

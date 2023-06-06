@@ -286,7 +286,7 @@ function SidebarComponent(props) {
                         defaultCollapseIcon={<ArrowDropDownIcon />}
                         defaultExpandIcon={<ArrowRightIcon />}
                         defaultEndIcon={<div style={{ width: 24 }} />}
-                        sx={{ maxWidth: 200 }}
+                        sx={{ maxWidth: 195 }}
                     >
                         <StyledTreeItem nodeId='notebooks' labelText='Cadernos' labelIcon={TopicIcon} >
                             {notebooks.map((notebook) => (

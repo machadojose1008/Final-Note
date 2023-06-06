@@ -119,7 +119,7 @@ const NoteEditorComponent = ({ selectedNote, noteUpdate, selectedNotebookIndex, 
 
     const update = useCallback(
         debounce((noteObj) => {
-            noteUpdate(id, selectedNotebookIndex, noteObj);
+            noteUpdate(selectedNote.id, selectedNotebookIndex, noteObj);
             setUpdateDate(new Date());
         }, 1500),
         [id, selectedNotebookIndex, noteUpdate]
