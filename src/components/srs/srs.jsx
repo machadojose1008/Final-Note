@@ -187,14 +187,14 @@ const SrsComponent = (props) => {
         <StudyComponentDiv>
             {(showSrs) ? (
                 <Grid container spacing={1} key='srs'>
-                    <Grid item xs={8.5} key='title'>
+                    <Grid item xs={8} key='title'>
                         <Grid key='deckName'>
                             <h1>Baralhos</h1>
                             <Typography sx={{ fontStyle: 'italic', color: 'red', fontWeight: 'bold' }}>Cartões em Vermelho precisam de revisão</Typography>
                         </Grid>
 
                     </Grid>
-                    <Grid key='ComoFunciona-button' item xs={1.5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                    <Grid key='ComoFunciona-button' item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                         <Button
                             onClick={handleHow}
                             data-testid='howto-button'
